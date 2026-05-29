@@ -1,0 +1,621 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html,
+body {
+  background-color: rgb(233, 211, 82);
+  overflow: hidden;
+}
+
+
+.form-floating>.form-control-plaintext::placeholder,
+.form-floating>.form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating>.form-control-plaintext:focus::placeholder,
+.form-floating>.form-control:focus::placeholder {
+  text-align: start;
+}
+
+/*ventana de login*/
+.estilo-login {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  justify-content: center;
+  padding: 5px;
+}
+
+.login {
+  background-color: white;
+  padding: 30px;
+  border-radius: 50px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 0 15px rgb(0, 0, 0);
+}
+
+.img_Usuario {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 10px;
+}
+
+.form-control {
+  margin-bottom: 20px;
+  border-radius: 20px;
+}
+
+.form-control {
+  text-align: center;
+  padding: 10px;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.card:hover {
+  background-color: rgb(100, 100, 100);
+  color: white;
+}
+
+/*cuentas de usuario existentes*/
+.cuentas {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100vh;
+  gap: 10px;
+}
+
+.cuenta {
+  padding: 10px;
+  width: 150px;
+  border-color: black;
+  border-style: solid;
+  border-radius: 15px;
+  text-align: left;
+  font-weight: bold;
+  background-color: rgb(92, 92, 92);
+  color: white;
+}
+
+/*vista de administrador*/
+.estilo-administrador {
+  display: flex;
+  align-items: stretch;
+  min-height: 100vh;
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(92, 92, 92);
+  border-radius: 0 5px 5px 0;
+  width: 50px;
+  flex-shrink: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+
+.img-menu {
+  width: 30px;
+  height: 30px;
+}
+
+.nav-link {
+  font-weight: bold;
+  padding: 100% 9px 100% 9px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: rgb(92, 92, 92);
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.filas {
+  display: flex;
+  flex: 1;
+  margin: 15px;
+  gap: 15px;
+}
+
+.card {
+  flex: 1;
+  border-color: black;
+  border-style: solid;
+  border-radius: 15px;
+  background-color: rgb(92, 92, 92);
+  color: white;
+  min-height: 0;
+}
+
+.card-title {
+  font-weight: bold;
+  text-align: center;
+}
+
+/*Vista cajero*/
+.estilo-cajero {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/*barra superior*/
+.encabezado {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 72px;
+  gap: 2px;
+  margin-bottom: 2px;
+}
+
+.fila {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  gap: 2px;
+}
+
+.contenedor-tabla-cajero {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: auto;
+  text-align: center;
+  margin: 0 4px 4px 4px;
+  border-radius: 10px;
+}
+
+.titulo {
+  display: flex;
+  width: 100%;
+  background-color: rgb(92, 92, 92);
+  color: white;
+  justify-content: center;
+  height: 35px;
+  align-items: center;
+  font-weight: bold;
+  border-style: solid;
+  border-color: black;
+  border-width: 0 0 2px;
+  box-sizing: border-box;
+}
+
+.info-encabezado {
+  display: flex;
+  width: 100%;
+  color: white;
+  gap: 2px;
+  height: 35px;
+  margin-right: 4px;
+}
+
+.info-encabezado a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.elemento-info-encabezado {
+  display: flex;
+  flex: 1;
+  border-width: 2px;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-style: solid;
+  border-color: black;
+  background-color: rgb(92, 92, 92);
+  color: white;
+}
+
+.busqueda {
+  display: flex;
+  width: 100%;
+  height: 35px;
+}
+
+.barra-busqueda {
+  display: flex;
+  flex: 1;
+  border-radius: 30px 0 0 30px;
+  border-style: solid;
+  border-color: black;
+  border-width: 2px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  background-color: rgb(92, 92, 92);
+  margin-left: 4px;
+}
+
+.barra-busqueda::placeholder {
+  color: white;
+}
+
+.lupa-inventario {
+  height: 35px;
+  border-radius: 0 30px 30px 0;
+  border-style: solid;
+  border-color: black;
+  border-width: 2px;
+  border-left: 0;
+  box-sizing: border-box;
+  background-color: rgb(92, 92, 92);
+}
+
+
+
+.tablas {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+
+
+.contenedor-tabla {
+  display: flex;
+  flex: 1;
+  overflow: auto;
+  text-align: center;
+  margin: 0 4px 4px 4px;
+  border-radius: 10px;
+}
+
+
+.tabla-superior {
+  flex: 1;
+  background-color: rgb(33, 37, 41);
+  margin-bottom: 4px;
+  border-radius: 10px;
+}
+
+.cantidad{
+  justify-content: center;
+}
+
+.transparente{
+  color: transparent;
+}
+
+.btn-cantidad{
+  width: 100%;
+  background-color: rgb(92, 92, 92);
+  color: white;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.img-cantidad{
+  height: 15px;
+}
+
+.tabla-productos {
+  flex: 1;
+  background-color: rgb(33, 37, 41);
+}
+
+.contenedor-tabla table {
+  min-height: auto;
+  margin-bottom: 0;
+}
+.contenedor-tabla thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+
+.tabla-inferior {
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: rgb(33, 37, 41);
+}
+
+
+.cobrar-total {
+  background-color: gray;
+  color: white;
+  border-radius: 10px;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+/*inventario*/
+.estilo-inventario {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+}
+
+.estilo-inventario .menu {
+  border-radius: 0 0 5px 0;
+}
+
+.inventario {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: auto;
+}
+
+.btn-inventario {
+  width: 20px;
+  margin-left: 6px;
+}
+
+.sesion{
+  height: 35px;
+  width: 35px;
+  border-radius: 30px;
+  border-style: solid;
+  border-color: black;
+  background-color: rgb(92, 92, 92);
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  margin-left: 4px;
+}
+
+.cuenta-busqueda {
+  height: 35px;
+}
+
+.modal-header{
+  display: flex;
+  justify-content: center;
+}
+
+.modal-content{
+  display: flex;
+  text-align: center;
+}
+
+.btn-close{
+  position: absolute;
+  right: 15px;
+}
+
+/*Historial*/
+.estilo-historial {
+  display: flex;
+  flex: 1;
+}
+
+.historial {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  align-items: stretch;
+}
+
+.estilo-historial .menu {
+  width: 50px;
+  flex-shrink: 0;
+  border-radius: 0 0 5px 0;
+}
+
+.seleccionado {
+  background-color: rgb(70, 70, 70);
+}
+
+/*tienda*/
+.estilo-tiendas {
+  display: flex;
+}
+
+.historial {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  align-items: stretch;
+}
+
+.tiendas {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: auto;
+}
+
+.estilo-tiendas .menu {
+  width: 50px;
+  flex-shrink: 0;
+  border-radius: 0 0 5px 0;
+}
+
+.dropdown {
+  display: flex;
+  flex: 1;
+}
+
+.dropdown-toggle {
+  color: white;
+  height: 100%;
+}
+
+.dropdown-toggle::after {
+  border-top-color: black;
+}
+
+.dropdown-menu{
+  background-color: transparent;
+  color: white;
+  padding: 0;
+  border-width: 0;
+  width: 100%;
+}
+
+.dropdown-item{
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  border-radius: 10px;
+  background-color: rgb(92, 92, 92);
+}
+
+.modal-title{
+  color:black
+}
+
+.modal-body{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 4px;
+  color: black;
+}
+
+.info-tienda{
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.info-tienda input{
+  width: 50%;
+  margin-left: auto;
+}
+
+.info-tienda select{
+  width: 50%;
+  margin-left: auto;
+  text-align: center;
+}
+
+.btn-detalles-tienda {
+  display: flex;
+  flex: 1;
+  border: 2px solid black;
+  border-radius: 10px;
+  justify-content: center;
+  background-color: rgb(136, 136, 255);
+  color: white;
+  text-decoration: none;
+}
+
+
+.table td.no-ajustar,
+.table th.no-ajustar {
+    width: 120px;
+}
+
+.btn-modal {
+  display: flex;
+  flex: 1;
+  border: 2px solid black;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(92, 92, 92);
+  color: white;
+}
+
+.detalles-tienda{
+  display: flex;
+  height: 100vh;
+}
+
+.detalles{
+  display: flex;
+  flex: 1;
+  gap: 4px;
+  margin: 0 4px 4px 4px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.contenedor-tabla-detalles{
+  display: flex;
+  height: 100%;
+  overflow: auto;
+  text-align: center;
+  border-radius: 10px;
+  background-color: rgb(33, 37, 41);
+}
+
+.table {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  table-layout: fixed;
+}
+
+.table th, td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dt-colresizable-hover {
+    background-color: rgb(92, 92, 92) !important;
+}
+
+.invisible{
+  display: none;
+}
+
+.table thead,
+.table thead tr,
+.table thead th {
+  margin: 0 !important;
+  padding-top: 0 !important;
+}
+
+/*Pedidos*/
+.fila-titulo {
+  display: flex;
+  flex: 1;
+  width: 100%;
+}
+
+.regreso{
+  background-color: rgb(92, 92, 92);
+  display: flex;
+  flex: 1;
+  border-bottom: 2px solid black;
+  align-items: center;
+}
+
+.btn-regreso{
+  width: 25px;
+  position: absolute;
+}
+
+.busqueda.completo{
+  margin-right: 4px;
+}

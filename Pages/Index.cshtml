@@ -1,0 +1,40 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<!--ya no se usa el menú de navegación ni el pie de página, por lo que se han comentado en el archivo _Layout.cshtml-->
+
+<!--Login--> 
+<div class="estilo-login row">
+    <div class="col"></div>
+    
+    <div class="estilo-login col">
+        <form method="post" class="login">
+            
+            <img class="img_Usuario" src="/img/usuarioIcono2.png" alt="Icono de usuario">
+
+            <div class="mb-3">
+                <input asp-for="Nombre" type="text" class="form-control" placeholder="Usuario">
+                <input asp-for="Contrasena" type="password" class="form-control" placeholder="Contraseña">
+            </div>
+            <button type="submit" class="btn btn-primary">
+                Ingresar
+            </button>
+            @if (!string.IsNullOrEmpty(Model.Mensaje))
+            {
+                <p class="text-danger mt-2">@Model.Mensaje</p>
+            }
+        </form>
+    
+    </div>
+    <!--seleccion de usuarios registrados-->
+    <div class="col">
+        <div class="cuentas">
+            <button class="cuenta" onclick="seleccionarUsuario('Edgar')">Edgar</button>
+            <button class="cuenta" onclick="seleccionarUsuario('Emmanuel')">Emmanuel</button>
+            <button class="cuenta" onclick="seleccionarUsuario('Juan')">Juan</button>
+        </div>
+    </div>
+</div>
+    

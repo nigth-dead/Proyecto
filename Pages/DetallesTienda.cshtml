@@ -1,0 +1,171 @@
+@page
+@using Proyecto.Models
+@model DetallesTiendaModel
+@{
+    ViewData["Title"] = "Administrar tiendas";
+}
+<div class="estilo-tiendas">
+    
+    <ul class="nav menu">
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion"><img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt=""></button>
+            <div class="modal" tabindex="-1" id="modal-sesion">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Informacion de Usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if(Model.UsuarioActual != null){
+                                <p>Nombre: @Model.UsuarioActual.Nombre</p>
+                                <p>Telefono: @Model.UsuarioActual.Telefono</p>
+                                <p>Rol: @Model.UsuarioActual.Rol</p>
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Aceptar</button>
+                            <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Administrador"><img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Inventario"><img title="Inventario" class = "img-menu" src="/img/barcode-solid.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link seleccionado" asp-page="/Tiendas"><img title="Tiendas" class="img-menu" src="/img/store.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Historial"><img title="Historial" class="img-menu" src="/img/historial.svg" alt=""></a>
+        </li>
+    </ul>
+    <div class="tiendas detalles-tienda">
+        <div class="encabezado">
+            <div class="fila-titulo">
+                <div class="regreso">
+                    <a asp-page="/Tiendas" class="btn-regreso"><img src="/img/arrow-left-solid.svg" alt=""></a>
+                </div>
+                <div class="titulo">Nombre de tienda</div>
+            </div>
+            <div class="fila">
+                <div class="busqueda">
+                    <input class="barra-busqueda" type="text" placeholder="Buscar por nombre o codigo">
+                    <div>
+                        <a asp-page="/Index"><img src="/img/lupa.png" alt="" class="lupa-inventario"></a>
+                    </div>
+                </div>
+                <div class="info-encabezado">
+                    <div class="elemento-info-encabezado">
+                        <a asp-page="/Pedidos">Historial de pedidos</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="detalles">
+            <div class="contenedor-tabla-detalles">
+                    <table class="table table-dark table-striped tabla-dinamica">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Codigo</th>
+                                <th scope="col">Cantidad</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Categoria</th>
+                                <th scope="col" class="no-ordenar"></th>
+                                <th scope="col" class="no-ajustar no-ordenar"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Coca</td>
+                                <td>1586492301 <span class="invisible">codigo</span></td>
+                                <td>533<span class="invisible">cantidad</span></td>
+                                <td>$22<span class="invisible">precio</span></td>
+                                <td>Refresco</td>
+                                <td><button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-reducir-stock">Reducir <img class="btn-inventario"src="/img/editar.svg" alt=""></button>
+                                    <div class="modal" tabindex="-1" id="modal-reducir-stock" data-bs-backdrop="static">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Reduccion de stock</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!--Ingresar datos-->
+                                                    <div class="info-tienda">
+                                                        Id: <input type="text" id="tiendaId" disabled>
+                                                    </div>
+                                                    <div class="info-tienda">
+                                                        Nombre: <input type="text" id="nombre">
+                                                    </div>
+                                                    <div class="info-tienda">
+                                                        Codigo: <input type="text" id="codigo">
+                                                    </div>
+                                                    <div class="info-tienda">
+                                                        Cantidad: <input type="number" id="categoria">
+                                                    </div>
+                                                    <div class="info-tienda">
+                                                        Razon de la reduccion: <input type="text" id="precio">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Cancelar</button>
+                                                    <a asp-page="" class="btn btn-primary">Registrar reduccion</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-aumentar-stock">Aumentar<img class="btn-inventario"src="/img/agregar.svg" alt=""></button>
+                                    <div class="modal" tabindex="-1" id="modal-aumentar-stock" data-bs-backdrop="static">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Nuevo de pedido</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <!--Ingresar datos-->
+                                                    <div class="info-tienda">
+                                                        id: <input type="text" id="tiendaId" disabled>
+                                                    </div>
+                                                    <div class="info-tienda">
+                                                        Proveedor: <input type="text" id="nombre">
+                                                    </div>
+                                                    <div class="info-tienda">
+                                                        Empleado: <input type="text" id="direccion" disabled>
+                                                    </div>
+                                                    <div class="info-tienda">
+                                                        Fecha: <input type="date" id="direccion">
+                                                    </div>
+                                                    <div class="info-tienda">
+                                                        Monto total: <input type="text" id="direccion">
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-bs-dismiss="modal">Cancelar</button>
+                                                    <a asp-page="" class="btn btn-primary">Registrar pedido</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </div>
+        </div>
+    </div>
+</div>

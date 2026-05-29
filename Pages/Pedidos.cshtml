@@ -1,0 +1,132 @@
+@page
+@using Proyecto.Models
+@model PedidosModel
+@{
+    ViewData["Title"] = "Pedidos";
+}
+<div class="estilo-tiendas">
+    
+    <ul class="nav menu">
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion"><img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt=""></button>
+            <div class="modal" tabindex="-1" id="modal-sesion">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Informacion de Usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if(Model.UsuarioActual != null){
+                                <p>Nombre: @Model.UsuarioActual.Nombre</p>
+                                <p>Telefono: @Model.UsuarioActual.Telefono</p>
+                                <p>Rol: @Model.UsuarioActual.Rol</p>
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Aceptar</button>
+                            <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Administrador"><img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Inventario"><img title="Inventario" class = "img-menu" src="/img/barcode-solid.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link seleccionado" asp-page="/Tiendas"><img title="Tiendas" class="img-menu" src="/img/store.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Historial"><img title="Historial" class="img-menu" src="/img/historial.svg" alt=""></a>
+        </li>
+    </ul>
+    <div class="tiendas detalles-tienda">
+        <div class="encabezado">
+            <div class="fila-titulo">
+                <div class="regreso">
+                    <a asp-page="/DetallesTienda" class="btn-regreso"><img src="/img/arrow-left-solid.svg" alt=""></a>
+                </div>
+                <div class="titulo">Nombre de tienda - Pedidos</div>
+            </div>
+            <div class="fila">
+                <div class="busqueda completo">
+                    <input class="barra-busqueda" type="text" placeholder="Buscar por codigo o proveedor">
+                    <div>
+                        <a asp-page="/Index"><img src="/img/lupa.png" alt="" class="lupa-inventario"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="detalles">
+            <div class="contenedor-tabla-detalles">
+                <table class="table table-dark table-striped tabla-dinamica">
+                    <thead>
+                        <tr>
+                            <th scope="col">Codigo</th>
+                            <th scope="col">Proveedor</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col" class="no-ordenar"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1586492301<span class="invisible">codigo</span></td>
+                            <td>Coca-cola</td>
+                            <td>Edgar</td>
+                            <td>19/05/2025</td>
+                            <td>$1000<span class="invisible">Total</span></td>
+                            <td>Pendiente</td>
+                            <td><button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-reducir-stock">Detalles<img class="btn-inventario"src="/img/editar.svg" alt=""></button>
+                                <div class="modal" tabindex="-1" id="modal-reducir-stock" data-bs-backdrop="static">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Informacion del pedido</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!--Ingresar datos-->
+                                                <div class="info-tienda">
+                                                    Producto: <input type="text" id="tiendaId" disabled>
+                                                </div>
+                                                <div class="info-tienda">
+                                                    Cantidad: <input type="text" id="nombre" disabled>
+                                                </div>
+                                                <div class="info-tienda">
+                                                    Monto: <input type="text" id="codigo" disabled>
+                                                </div>
+                                                <div class="info-tienda">
+                                                    <!--Si esta concluido o cancelado desactivar esta opcion-->
+                                                    Estado: <select name="Estado" id="pedido">
+                                                        <option value="1">Pendiente</option>
+                                                        <option value="2">Concluido</option>
+                                                        <option value="3">Cancelado</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Cancelar</button>
+                                                <a asp-page="" class="btn btn-primary">Guardar cambios</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

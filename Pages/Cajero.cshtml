@@ -1,0 +1,126 @@
+@page
+@model CajeroModel
+@{
+    ViewData["Title"] = "Cajero page";
+}
+
+<div class="estilo-cajero">
+    <div class="encabezado">
+        <div class="fila">
+            <div class="titulo">Caja #</div>
+        </div>
+        <div class="fila">
+            <div class="busqueda">
+                <div>
+                    <div>
+                        <!--<a asp-page="/Index"><img src="/img/usuarioIcono2.png" alt="" class="cuenta-busqueda"></a>-->
+                        <button class="sesion" data-bs-toggle="modal" data-bs-target="#modal-sesion"><img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt=""></button>
+                        <div class="modal" tabindex="-1" id="modal-sesion">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Informacion de usuario</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @if(Model.UsuarioActual != null){
+                                            <p>Nombre: @Model.UsuarioActual.Nombre</p>
+                                            <p>Telefono: @Model.UsuarioActual.Telefono</p>
+                                            <p>Rol: @Model.UsuarioActual.Rol</p>
+                                        }
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Aceptar</button>
+                                        <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input class="barra-busqueda" type="text" placeholder="Buscar producto por codigo o nombre">
+                <div>
+                    <a asp-page="/Index"><img src="/img/lupa.png" alt="" class="lupa-inventario"></a>
+                </div>
+            </div>
+            <div class="info-encabezado">
+                
+                <div class="elemento-info-encabezado">
+                    Codigo de venta
+                </div>
+                <time class="elemento-info-encabezado">
+                    @Model.Fecha
+                </time>
+                <div class="elemento-info-encabezado">
+                    <a asp-page="/Index">
+                        <div>Corte De Caja</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tablas">
+        <div class="contenedor-tabla">
+            <div class="tabla-productos">
+                <table class="table table-dark table-striped tabla-dinamica">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Codigo</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Categoria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Coca</td>
+                        <td>1586492301 <span class="invisible">codigo</span></td>
+                        <td>533<span class="invisible">cantidad</span></td>
+                        <td>$22<span class="invisible">precio</span></td>
+                        <td>Refresco</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="contenedor-tabla-cajero">
+            <div class="tabla-superior">
+                <table class="table table-dark table-striped tabla-dinamica">
+                    <thead>
+                        <tr>
+                            <th scope="col">Producto</th>
+                            <th scope="col"class="no-ordenar"><span class="transparente">aumentar</span></th>
+                            <th scope="col"class="no-ordenar">Cantidad</th>
+                            <th scope="col"class="no-ordenar"><span class="transparente">-reducir</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Coca</td>
+                            <td class="cantidad"><button class="btn-cantidad"><img class="img-cantidad" src="/img/plus.svg" alt=""></button></td>
+                            <td class="cantidad">2 <span class="invisible">cantidad</span></td>
+                            <td class="cantidad"><button class="btn-cantidad"><img class="img-cantidad" src="/img/minus.svg" alt=""></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tabla-inferior">
+                <table class="table table-dark table-striped">
+                    <tbody>
+                        <tr>
+                            <td>Subtotal</td>
+                            <td>---</td>
+                        </tr>
+                        <tr>
+                            <td>Total</td>
+                            <td>---</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="cobrar-total">Cobrar</button>
+            </div>
+        </div>
+    </div>
+</div>

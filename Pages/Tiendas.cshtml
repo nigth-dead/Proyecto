@@ -1,0 +1,135 @@
+@page
+@using Proyecto.Models
+@model TiendasModel
+@{
+    ViewData["Title"] = "Administrar tiendas";
+}
+<div class="estilo-tiendas">
+    
+    <ul class="nav menu">
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion"><img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt=""></button>
+            <div class="modal" tabindex="-1" id="modal-sesion">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Informacion de Usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if(Model.UsuarioActual != null){
+                                <p>Nombre: @Model.UsuarioActual.Nombre</p>
+                                <p>Telefono: @Model.UsuarioActual.Telefono</p>
+                                <p>Rol: @Model.UsuarioActual.Rol</p>
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Aceptar</button>
+                            <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Administrador"><img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Inventario"><img title="Inventario" class = "img-menu" src="/img/barcode-solid.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link seleccionado" asp-page="/Tiendas"><img title="Tiendas" class="img-menu" src="/img/store.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Historial"><img title="Historial" class="img-menu" src="/img/historial.svg" alt=""></a>
+        </li>
+    </ul>
+    <div class="tiendas">
+        <div class="encabezado">
+            <div class="fila">
+                <div class="titulo">Administrar tiendas</div>
+            </div>
+            <div class="fila">
+                <div class="busqueda">
+                    <input class="barra-busqueda" type="text" placeholder="Buscar por nombre o direccion">
+                    <div>
+                        <a asp-page="/Index"><img src="/img/lupa.png" alt="" class="lupa-inventario"></a>
+                    </div>
+                </div>
+                <div class="info-encabezado">
+                    <button class="btn-modal" data-bs-toggle="modal" data-bs-target="#modal-tienda">Nueva tienda<img class="btn-inventario" src="/img/agregar.svg" alt=""></button>
+                    <div class="modal" tabindex="-1" id="modal-tienda" data-bs-backdrop="static">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Ingrese la informacion de la tienda</h5>
+                                    
+                                </div>
+                                <div class="modal-body">
+                                    <!--Ingresar datos-->
+                                    <div class="info-tienda">
+                                        Id de la tienda: <input type="text" id="tiendaId" disabled>
+                                    </div>
+                                    <div class="info-tienda">
+                                        Nombre de la tienda: <input type="text" id="nombre">
+                                    </div>
+                                    <div class="info-tienda">
+                                        Direccion de la tienda: <input type="text" id="direccion">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Cancelar</button>
+                                    <button class="btn btn-primary">Registrar nueva tienda</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tablas">
+            <div class="contenedor-tabla">
+                <div class="tabla-productos">
+                    <table class="table table-dark table-striped tabla-dinamica">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Direccion</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Ventas</th>
+                                <th scope="col" class="no-ordenar"></th>
+                                <th scope="col" class="no-ordenar"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Tiendas.Count; i++)
+                            {
+                                
+                                <tr>
+                                    <td>@Model.Tiendas[i].Nombre</td>
+                                    <td>@Model.Tiendas[i].Direccion</td>
+                                    <td>
+                                        @if (Model.Tiendas[i].Estado == true)
+                                        {
+                                            @:Activo
+                                        }
+                                        else
+                                        {
+                                            @:Inactivo
+                                        }
+                                    </td>
+                                    <td>@Model.Tiendas[i].VentaTotal.ToString("C") <span class="invisible">pesos</span></td>
+                                    <td><a asp-page="/DetallesTienda" class="btn-detalles-tienda">Inventario</a></td>
+                                    <td><a asp-page-handler="AbrirEmpleados" asp-route-id="@Model.Tiendas[i].TiendaId" class="btn-detalles-tienda">Empleados</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

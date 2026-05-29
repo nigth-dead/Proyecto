@@ -1,0 +1,217 @@
+@page
+@using Proyecto.Models
+@model EmpleadosModel
+@{
+    ViewData["Title"] = "Administrar empleados";
+}
+<div class="estilo-tiendas">
+    
+    <ul class="nav menu">
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion"><img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt=""></button>
+            <div class="modal" tabindex="-1" id="modal-sesion">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Informacion de Usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if(Model.UsuarioActual != null){
+                                <p>Nombre: @Model.UsuarioActual.Nombre</p>
+                                <p>Telefono: @Model.UsuarioActual.Telefono</p>
+                                <p>Rol: @Model.UsuarioActual.Rol</p>
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Aceptar</button>
+                            <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Administrador"><img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Inventario"><img title="Inventario" class = "img-menu" src="/img/barcode-solid.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link seleccionado" asp-page="/Tiendas"><img title="Tiendas" class="img-menu" src="/img/store.svg" alt=""></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Historial"><img title="Historial" class="img-menu" src="/img/historial.svg" alt=""></a>
+        </li>
+    </ul>
+    <div class="tiendas">
+        <div class="encabezado">
+            <div class="fila-titulo">
+                <div class="regreso">
+                    <a asp-page="/Tiendas" class="btn-regreso"><img src="/img/arrow-left-solid.svg" alt=""></a>
+                </div>
+                <div class="titulo">Administrar Empleados</div>
+            </div>
+            <div class="fila">
+                <div class="busqueda">
+                    <input class="barra-busqueda" type="text" placeholder="Buscar por nombre o telefono">
+                    <div>
+                        <a asp-page="/Index"><img src="/img/lupa.png" alt="" class="lupa-inventario"></a>
+                    </div>
+                </div>
+                <div class="info-encabezado">
+                    <button class="elemento-info-encabezado" data-bs-toggle="modal" data-bs-target="#modal-tienda">Registrar empleado<img class="btn-inventario" src="/img/agregar.svg" alt=""></button>
+                    <div class="modal" tabindex="-1" id="modal-tienda" data-bs-backdrop="static">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Informacion del Usuario</h5>
+                                    
+                                </div>
+                                <form method="post" id="registrarEmpleado">
+                                    <div class="modal-body">
+                                        <!--Ingresar datos-->
+                                        <div class="info-tienda">
+                                            Tienda: <input type="text" value="@Model.TiendaActual?.Nombre" disabled>
+                                        </div>
+                                        <div class="info-tienda">
+                                            Nombre: <input type="text" name="nombre" required>
+                                        </div>
+                                        <div class="info-tienda">
+                                            Telefono: <input type="tel"
+                                            name="Telefono"
+                                            required
+                                            pattern="^\d{10}$"
+                                            maxlength="10"
+                                            title="El teléfono debe contener exactamente 10 dígitos numéricos.">
+                                        </div>
+                                        <div class="info-tienda">
+                                            Contraseña: <input type="password"
+                                            name="contrasena"
+                                            required
+                                            minlength="8"
+                                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+                                            title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.">
+                                        </div>
+                                        <div class="info-tienda">
+                                            Rol: <select name="rol" required>
+                                                <option value="Cajero">Cajero</option>
+                                                <option value="Administrador">Administrador</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary" onclick="$('registrarEmpleado').submit();">Registrar nuevo usuario</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tablas">
+            <div class="contenedor-tabla">
+                <div class="tabla-productos">
+                    <table class="table table-dark table-striped tabla-dinamica">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Telefono</th>
+                                <th scope="col">Rol</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col">Situacion</th>
+                                <th scope="col" class="no-ordenar"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.Usuarios.Count; i++){
+                                <tr>
+                                    <td>@Model.Usuarios[i].Nombre</td>
+                                    <td>@Model.Usuarios[i].Telefono <span class="invisible">numero</span></td>
+                                    <td>@Model.Usuarios[i].Rol</td>
+                                    <td>
+                                        @if (Model.Usuarios[i].Trabajando == true){
+                                            @:Trabajando
+                                        } else{
+                                            @:Inactivo
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (Model.Usuarios[i].Contratado == true){
+                                            @:Contratado
+                                        } else{
+                                            @:Despedido
+                                        }
+                                    </td>
+                                    <td><button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-editar-usuario-@Model.Usuarios[i].UsuarioId">Editar <img class="btn-inventario"src="/img/editar.svg" alt=""></button>
+                                        <div class="modal" tabindex="-1" id="modal-editar-usuario-@Model.Usuarios[i].UsuarioId" data-bs-backdrop="static">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Informacion de Usuario</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <!--Ingresar datos-->
+                                                        <div class="info-tienda">
+                                                            Tienda: <select name="tienda_id" required>
+                                                                @foreach (var tienda in Model.Tiendas)
+                                                                {
+                                                                    <option value="@tienda.TiendaId">
+                                                                        @tienda.Nombre
+                                                                    </option>
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        <div class="info-tienda">
+                                                            Nombre: <input type="text" name="nombre" value="@Model.Usuarios[i].Nombre">
+                                                        </div>
+                                                        <div class="info-tienda">
+                                                            Telefono: <input type="tel"
+                                                            value="@Model.Usuarios[i].Telefono"
+                                                            name="Telefono"
+                                                            required
+                                                            pattern="^\d{10}$"
+                                                            maxlength="10"
+                                                            title="El teléfono debe contener exactamente 10 dígitos numéricos.">
+                                                        </div>
+                                                        <div class="info-tienda">
+                                                            Contraseña: <input type="text"
+                                                            value="@Model.Usuarios[i].Contrasena"
+                                                            name="Contrasena"
+                                                            required
+                                                            minlength="8"
+                                                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
+                                                            title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.">
+                                                        </div>
+                                                        <div class="info-tienda">
+                                                            Rol: <select name="rol" value="@Model.Usuarios[i].Rol">
+                                                                <option value="Cajero">Cajero</option>
+                                                                <option value="Administrador">Administrador</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Aceptar</button>
+                                                        <a asp-page="" class="btn btn-primary">Cerrar sesion</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
