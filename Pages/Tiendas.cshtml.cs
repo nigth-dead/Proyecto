@@ -8,11 +8,11 @@ namespace Proyecto.Pages;
 
 public class TiendasModel : PageModel
 {
-    private readonly PuntoDeVentaContext _context;
+    private readonly punto_de_ventaContext _context;
     public Usuario? UsuarioActual { get; set; }
     public List<TiendaVM> Tiendas { get; set; } = new();
     public List<Venta> Ventas { get; set; } = new();
-    public TiendasModel(PuntoDeVentaContext context)
+    public TiendasModel(punto_de_ventaContext context)
     {
         _context = context;
     }

@@ -17,7 +17,7 @@ public partial class HistorialPedido
 
     public string Estado { get; set; } = null!;
 
-    public virtual ICollection<HistorialPedidoDetalle> HistorialPedidoDetalles { get; set; } = new List<HistorialPedidoDetalle>();
+    public virtual ICollection<HistorialPedidoDetalle> HistorialPedidoDetalle { get; set; } = new List<HistorialPedidoDetalle>();
 
     public virtual Proveedor Proveedor { get; set; } = null!;
 

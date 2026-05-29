@@ -116,7 +116,7 @@
                                 <tr>
                                     <td>@producto.Nombre</td>
                                     <td>@producto.Codigo<span class="invisible">codigo</span></td>
-                                    <td>@producto.Inventarios.Sum(i => i.Stock)<span class="invisible">cantidad</span></td>
+                                    <td>@producto.Inventario.Sum(i => i.Stock)<span class="invisible">cantidad</span></td>
                                     <td>$@producto.Precio<span class="invisible">precio</span></td>
                                     <td>Refresco</td>
                                     <td><button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-editar-producto">Editar <img class="btn-inventario"src="/img/editar.svg" alt=""></button>

@@ -13,7 +13,7 @@ public partial class Inventario
 
     public int Stock { get; set; }
 
-    public virtual ICollection<HistorialMovimiento> HistorialMovimientos { get; set; } = new List<HistorialMovimiento>();
+    public virtual ICollection<HistorialMovimiento> HistorialMovimiento { get; set; } = new List<HistorialMovimiento>();
 
     public virtual Producto Producto { get; set; } = null!;
 

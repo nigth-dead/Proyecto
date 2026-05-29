@@ -8,7 +8,7 @@ namespace Proyecto.Pages;
 
 public class EmpleadosModel : PageModel
 {
-    private PuntoDeVentaContext? dbContext;
+    private punto_de_ventaContext? dbContext;
     public Usuario? UsuarioActual { get; set; }
     [BindProperty]
     public Usuario NuevoUsuario { get; set; } = new();
@@ -46,14 +46,14 @@ public class EmpleadosModel : PageModel
         /*Tienda*/
         CargarTiendaActual();
         
-        using (dbContext = new PuntoDeVentaContext())
+        using (dbContext = new punto_de_ventaContext())
         {
             /*Tiendas*/
             Tiendas = await dbContext.Tienda.ToListAsync();
             if (TiendaActual != null)
             {
                 /*Usuarios de la tienda*/
-                Usuarios = await dbContext.Usuarios
+                Usuarios = await dbContext.Usuario
                     .Where(u => u.TiendaId == TiendaActual.TiendaId)
                     .ToListAsync();
             }
@@ -65,7 +65,7 @@ public class EmpleadosModel : PageModel
         /*Registrar usuario*/
         CargarTiendaActual();
         
-        using (dbContext = new PuntoDeVentaContext())
+        using (dbContext = new punto_de_ventaContext())
         {
             if (TiendaActual == null)
             {
@@ -81,7 +81,7 @@ public class EmpleadosModel : PageModel
                 Trabajando = false,
                 Contratado = true,
             };
-            dbContext.Usuarios.Add(NuevoUsuario);
+            dbContext.Usuario.Add(NuevoUsuario);
             await dbContext.SaveChangesAsync();
         }
         return RedirectToPage();

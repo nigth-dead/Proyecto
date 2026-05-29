@@ -7,7 +7,7 @@ namespace Proyecto.Pages;
 
 public class InventarioModel : PageModel
 {
-    private PuntoDeVentaContext? dbContext;
+    private punto_de_ventaContext? dbContext;
     public string Fecha { get; set; } = "";
     public Usuario? UsuarioActual {get; set;}
     public List<Producto> Productos { get; set; } = new();
@@ -28,9 +28,9 @@ public class InventarioModel : PageModel
             new System.Globalization.CultureInfo("es-MX"));
         
         /*Cargar productos*/
-        using (dbContext = new PuntoDeVentaContext())
+        using (dbContext = new punto_de_ventaContext())
         {
-            Productos = dbContext.Productos.Include(p => p.Inventarios).ToList();
+            Productos = dbContext.Producto.Include(p => p.Inventario).ToList();
         }
     }
 }

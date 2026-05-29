@@ -4,38 +4,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Proyecto.Models;
 
-public partial class PuntoDeVentaContext : DbContext
+public partial class punto_de_ventaContext : DbContext
 {
-    public PuntoDeVentaContext()
+    public punto_de_ventaContext()
     {
     }
 
-    public PuntoDeVentaContext(DbContextOptions<PuntoDeVentaContext> options)
+    public punto_de_ventaContext(DbContextOptions<punto_de_ventaContext> options)
         : base(options)
     {
     }
 
-    public virtual DbSet<CorteCaja> CorteCajas { get; set; }
+    public virtual DbSet<Categoria> Categoria { get; set; }
+
+    public virtual DbSet<CorteCaja> CorteCaja { get; set; }
 
     public virtual DbSet<DetalleVenta> DetalleVenta { get; set; }
 
-    public virtual DbSet<HistorialMovimiento> HistorialMovimientos { get; set; }
+    public virtual DbSet<HistorialMovimiento> HistorialMovimiento { get; set; }
 
-    public virtual DbSet<HistorialPedido> HistorialPedidos { get; set; }
+    public virtual DbSet<HistorialPedido> HistorialPedido { get; set; }
 
-    public virtual DbSet<HistorialPedidoDetalle> HistorialPedidoDetalles { get; set; }
+    public virtual DbSet<HistorialPedidoDetalle> HistorialPedidoDetalle { get; set; }
 
-    public virtual DbSet<Inventario> Inventarios { get; set; }
+    public virtual DbSet<Inventario> Inventario { get; set; }
 
-    public virtual DbSet<Pago> Pagos { get; set; }
+    public virtual DbSet<Pago> Pago { get; set; }
 
-    public virtual DbSet<Producto> Productos { get; set; }
+    public virtual DbSet<Producto> Producto { get; set; }
 
-    public virtual DbSet<Proveedor> Proveedors { get; set; }
+    public virtual DbSet<Proveedor> Proveedor { get; set; }
 
     public virtual DbSet<Tienda> Tienda { get; set; }
 
-    public virtual DbSet<Usuario> Usuarios { get; set; }
+    public virtual DbSet<Usuario> Usuario { get; set; }
 
     public virtual DbSet<Venta> Venta { get; set; }
 
@@ -45,6 +47,27 @@ public partial class PuntoDeVentaContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Categoria>(entity =>
+        {
+            entity.HasKey(e => e.CategoriaId).HasName("PRIMARY");
+
+            entity.ToTable("categoria");
+
+            entity.HasIndex(e => e.Nombre, "nombre").IsUnique();
+
+            entity.Property(e => e.CategoriaId).HasColumnName("categoria_id");
+            entity.Property(e => e.Activo)
+                .IsRequired()
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("activo");
+            entity.Property(e => e.Descripcion)
+                .HasMaxLength(100)
+                .HasColumnName("descripcion");
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(50)
+                .HasColumnName("nombre");
+        });
+
         modelBuilder.Entity<CorteCaja>(entity =>
         {
             entity.HasKey(e => e.CorteId).HasName("PRIMARY");
@@ -78,12 +101,12 @@ public partial class PuntoDeVentaContext : DbContext
             entity.Property(e => e.TiendaId).HasColumnName("tienda_id");
             entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
 
-            entity.HasOne(d => d.Tienda).WithMany(p => p.CorteCajas)
+            entity.HasOne(d => d.Tienda).WithMany(p => p.CorteCaja)
                 .HasForeignKey(d => d.TiendaId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_corte_tienda");
 
-            entity.HasOne(d => d.Usuario).WithMany(p => p.CorteCajas)
+            entity.HasOne(d => d.Usuario).WithMany(p => p.CorteCaja)
                 .HasForeignKey(d => d.UsuarioId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_corte_usuario");
@@ -150,12 +173,12 @@ public partial class PuntoDeVentaContext : DbContext
                 .HasColumnName("tipo");
             entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
 
-            entity.HasOne(d => d.Inventario).WithMany(p => p.HistorialMovimientos)
+            entity.HasOne(d => d.Inventario).WithMany(p => p.HistorialMovimiento)
                 .HasForeignKey(d => d.InventarioId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_movimiento_inventario");
 
-            entity.HasOne(d => d.Usuario).WithMany(p => p.HistorialMovimientos)
+            entity.HasOne(d => d.Usuario).WithMany(p => p.HistorialMovimiento)
                 .HasForeignKey(d => d.UsuarioId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("fk_movimiento_usuario");
@@ -188,12 +211,12 @@ public partial class PuntoDeVentaContext : DbContext
             entity.Property(e => e.ProveedorId).HasColumnName("proveedor_id");
             entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
 
-            entity.HasOne(d => d.Proveedor).WithMany(p => p.HistorialPedidos)
+            entity.HasOne(d => d.Proveedor).WithMany(p => p.HistorialPedido)
                 .HasForeignKey(d => d.ProveedorId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_pedido_proveedor");
 
-            entity.HasOne(d => d.Usuario).WithMany(p => p.HistorialPedidos)
+            entity.HasOne(d => d.Usuario).WithMany(p => p.HistorialPedido)
                 .HasForeignKey(d => d.UsuarioId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("fk_pedido_usuario");
@@ -214,11 +237,11 @@ public partial class PuntoDeVentaContext : DbContext
                 .HasPrecision(10)
                 .HasColumnName("costo_unitario");
 
-            entity.HasOne(d => d.Pedido).WithMany(p => p.HistorialPedidoDetalles)
+            entity.HasOne(d => d.Pedido).WithMany(p => p.HistorialPedidoDetalle)
                 .HasForeignKey(d => d.PedidoId)
                 .HasConstraintName("fk_pedido_det_pedido");
 
-            entity.HasOne(d => d.Producto).WithMany(p => p.HistorialPedidoDetalles)
+            entity.HasOne(d => d.Producto).WithMany(p => p.HistorialPedidoDetalle)
                 .HasForeignKey(d => d.ProductoId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_pedido_det_producto");
@@ -241,12 +264,12 @@ public partial class PuntoDeVentaContext : DbContext
             entity.Property(e => e.Stock).HasColumnName("stock");
             entity.Property(e => e.TiendaId).HasColumnName("tienda_id");
 
-            entity.HasOne(d => d.Producto).WithMany(p => p.Inventarios)
+            entity.HasOne(d => d.Producto).WithMany(p => p.Inventario)
                 .HasForeignKey(d => d.ProductoId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_inventario_producto");
 
-            entity.HasOne(d => d.Tienda).WithMany(p => p.Inventarios)
+            entity.HasOne(d => d.Tienda).WithMany(p => p.Inventario)
                 .HasForeignKey(d => d.TiendaId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_inventario_tienda");
@@ -275,7 +298,7 @@ public partial class PuntoDeVentaContext : DbContext
             entity.Property(e => e.Procesado).HasColumnName("procesado");
             entity.Property(e => e.VentaId).HasColumnName("venta_id");
 
-            entity.HasOne(d => d.Venta).WithMany(p => p.Pagos)
+            entity.HasOne(d => d.Venta).WithMany(p => p.Pago)
                 .HasForeignKey(d => d.VentaId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_pago_venta");
@@ -287,6 +310,8 @@ public partial class PuntoDeVentaContext : DbContext
 
             entity.ToTable("producto");
 
+            entity.HasIndex(e => e.CategoriaId, "fk_producto_categoria");
+
             entity.HasIndex(e => e.ProveedorId, "idx_producto_proveedor");
 
             entity.Property(e => e.ProductoId).HasColumnName("producto_id");
@@ -294,6 +319,7 @@ public partial class PuntoDeVentaContext : DbContext
                 .IsRequired()
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("activo");
+            entity.Property(e => e.CategoriaId).HasColumnName("categoria_id");
             entity.Property(e => e.Codigo)
                 .HasMaxLength(50)
                 .HasColumnName("codigo");
@@ -305,7 +331,12 @@ public partial class PuntoDeVentaContext : DbContext
                 .HasColumnName("precio");
             entity.Property(e => e.ProveedorId).HasColumnName("proveedor_id");
 
-            entity.HasOne(d => d.Proveedor).WithMany(p => p.Productos)
+            entity.HasOne(d => d.Categoria).WithMany(p => p.Producto)
+                .HasForeignKey(d => d.CategoriaId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("fk_producto_categoria");
+
+            entity.HasOne(d => d.Proveedor).WithMany(p => p.Producto)
                 .HasForeignKey(d => d.ProveedorId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("fk_producto_proveedor");
@@ -387,7 +418,7 @@ public partial class PuntoDeVentaContext : DbContext
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("trabajando");
 
-            entity.HasOne(d => d.Tienda).WithMany(p => p.Usuarios)
+            entity.HasOne(d => d.Tienda).WithMany(p => p.Usuario)
                 .HasForeignKey(d => d.TiendaId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_usuario_tienda");

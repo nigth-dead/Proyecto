@@ -15,7 +15,7 @@ public partial class Proveedor
 
     public bool? Activo { get; set; }
 
-    public virtual ICollection<HistorialPedido> HistorialPedidos { get; set; } = new List<HistorialPedido>();
+    public virtual ICollection<HistorialPedido> HistorialPedido { get; set; } = new List<HistorialPedido>();
 
-    public virtual ICollection<Producto> Productos { get; set; } = new List<Producto>();
+    public virtual ICollection<Producto> Producto { get; set; } = new List<Producto>();
 }

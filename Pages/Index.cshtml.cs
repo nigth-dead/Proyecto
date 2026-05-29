@@ -6,7 +6,7 @@ using System.Text.Json;
 
 public class IndexModel : PageModel
 {
-    private readonly PuntoDeVentaContext _context;
+    private readonly punto_de_ventaContext _context;
 
     [BindProperty]
     public string Nombre { get; set; } = "";
@@ -16,14 +16,14 @@ public class IndexModel : PageModel
 
     public string Mensaje { get; set; } = "";
 
-    public IndexModel(PuntoDeVentaContext context)
+    public IndexModel(punto_de_ventaContext context)
     {
         _context = context;
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        var usuario = await _context.Usuarios
+        var usuario = await _context.Usuario
             .FirstOrDefaultAsync(u =>
                 u.Nombre == Nombre &&
                 u.Contrasena == Contrasena &&

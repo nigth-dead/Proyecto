@@ -16,9 +16,9 @@ public partial class Tienda
     /// </summary>
     public bool? Estado { get; set; }
 
-    public virtual ICollection<CorteCaja> CorteCajas { get; set; } = new List<CorteCaja>();
+    public virtual ICollection<CorteCaja> CorteCaja { get; set; } = new List<CorteCaja>();
 
-    public virtual ICollection<Inventario> Inventarios { get; set; } = new List<Inventario>();
+    public virtual ICollection<Inventario> Inventario { get; set; } = new List<Inventario>();
 
-    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+    public virtual ICollection<Usuario> Usuario { get; set; } = new List<Usuario>();
 }

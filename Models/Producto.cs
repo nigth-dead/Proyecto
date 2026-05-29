@@ -17,11 +17,15 @@ public partial class Producto
 
     public bool? Activo { get; set; }
 
+    public int? CategoriaId { get; set; }
+
+    public virtual Categoria? Categoria { get; set; }
+
     public virtual ICollection<DetalleVenta> DetalleVenta { get; set; } = new List<DetalleVenta>();
 
-    public virtual ICollection<HistorialPedidoDetalle> HistorialPedidoDetalles { get; set; } = new List<HistorialPedidoDetalle>();
+    public virtual ICollection<HistorialPedidoDetalle> HistorialPedidoDetalle { get; set; } = new List<HistorialPedidoDetalle>();
 
-    public virtual ICollection<Inventario> Inventarios { get; set; } = new List<Inventario>();
+    public virtual ICollection<Inventario> Inventario { get; set; } = new List<Inventario>();
 
     public virtual Proveedor? Proveedor { get; set; }
 }

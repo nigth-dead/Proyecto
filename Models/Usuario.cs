@@ -24,11 +24,11 @@ public partial class Usuario
 
     public bool? Contratado { get; set; }
 
-    public virtual ICollection<CorteCaja> CorteCajas { get; set; } = new List<CorteCaja>();
+    public virtual ICollection<CorteCaja> CorteCaja { get; set; } = new List<CorteCaja>();
 
-    public virtual ICollection<HistorialMovimiento> HistorialMovimientos { get; set; } = new List<HistorialMovimiento>();
+    public virtual ICollection<HistorialMovimiento> HistorialMovimiento { get; set; } = new List<HistorialMovimiento>();
 
-    public virtual ICollection<HistorialPedido> HistorialPedidos { get; set; } = new List<HistorialPedido>();
+    public virtual ICollection<HistorialPedido> HistorialPedido { get; set; } = new List<HistorialPedido>();
 
     public virtual Tienda Tienda { get; set; } = null!;
 

@@ -21,7 +21,7 @@ public partial class Venta
 
     public virtual ICollection<DetalleVenta> DetalleVenta { get; set; } = new List<DetalleVenta>();
 
-    public virtual ICollection<Pago> Pagos { get; set; } = new List<Pago>();
+    public virtual ICollection<Pago> Pago { get; set; } = new List<Pago>();
 
     public virtual Usuario Usuario { get; set; } = null!;
 }

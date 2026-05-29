@@ -11,7 +11,7 @@ builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
 
 // DB CONTEXT (MySQL oficial)
-builder.Services.AddDbContext<PuntoDeVentaContext>(options =>
+builder.Services.AddDbContext<punto_de_ventaContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
