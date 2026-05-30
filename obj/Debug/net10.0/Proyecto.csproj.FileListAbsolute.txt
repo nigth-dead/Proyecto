@@ -119,11 +119,15 @@ C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\Proyecto.AssemblyInfo.cs
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\Proyecto.csproj.CoreCompileInputs.cache
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\Proyecto.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\Proyecto.RazorAssemblyInfo.cache
+C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\Proyecto.RazorAssemblyInfo.cs
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\Proyecto.sourcelink.json
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\rjimswa.dswa.cache.json
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
+C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\scopedcss\bundle\Proyecto.styles.css
+C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\scopedcss\projectbundle\Proyecto.bundle.scp.css
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\compressed\nvf4bqdsjo-{0}-1oqvbhcd5f-1oqvbhcd5f.gz
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\compressed\wk2ido8zjn-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\compressed\tume2qlomm-{0}-mz6ixd7fhv-mz6ixd7fhv.gz
@@ -201,6 +205,8 @@ C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\compressed\avs398ar6a-{0}-muycvpuwrr-muycvpuwrr.gz
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\compressed\eq2n5dflz0-{0}-87fc7y1x7t-87fc7y1x7t.gz
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\compressed\scwvevtl31-{0}-mlv21k5csn-mlv21k5csn.gz
+C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\compressed\xsbswkr46e-{0}-4oq3gssqbk-4oq3gssqbk.gz
+C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\compressed\zz3vfgcjo5-{0}-4oq3gssqbk-4oq3gssqbk.gz
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\staticwebassets.build.json
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\staticwebassets.build.json.cache
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\staticwebassets.development.json
@@ -212,9 +218,3 @@ C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\Proyecto.pdb
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\Proyecto.genruntimeconfig.cache
 C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\ref\Proyecto.dll
-C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\Proyecto.RazorAssemblyInfo.cache
-C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\Proyecto.RazorAssemblyInfo.cs
-C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
-C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\scopedcss\projectbundle\Proyecto.bundle.scp.css
-C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\compressed\xsbswkr46e-{0}-4oq3gssqbk-4oq3gssqbk.gz
-C:\Users\coppe\Desktop\Procesos de desarrollo de software\Proyecto\obj\Debug\net10.0\compressed\zz3vfgcjo5-{0}-4oq3gssqbk-4oq3gssqbk.gz
