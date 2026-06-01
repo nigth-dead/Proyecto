@@ -5,6 +5,8 @@ namespace Proyecto.Models;
 
 public partial class HistorialPedidoDetalle
 {
+    public int DetalleId { get; set; }
+
     public int PedidoId { get; set; }
 
     public int ProductoId { get; set; }

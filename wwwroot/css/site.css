@@ -18,8 +18,9 @@ html {
 
 html,
 body {
-  background-color: rgb(233, 211, 82);
+  background-color: rgb(236, 240, 243);
   overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 
@@ -97,7 +98,7 @@ body {
   border-radius: 15px;
   text-align: left;
   font-weight: bold;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
   color: white;
 }
 
@@ -112,7 +113,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
   border-radius: 0 5px 5px 0;
   width: 50px;
   flex-shrink: 0;
@@ -131,7 +132,7 @@ body {
   padding: 100% 9px 100% 9px;
   border-style: solid;
   border-width: 2px;
-  border-color: rgb(92, 92, 92);
+  border-color: rgb(52, 73, 94);
 }
 
 .dashboard {
@@ -152,7 +153,7 @@ body {
   border-color: black;
   border-style: solid;
   border-radius: 15px;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
   color: white;
   min-height: 0;
 }
@@ -200,7 +201,7 @@ body {
 .titulo {
   display: flex;
   width: 100%;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
   color: white;
   justify-content: center;
   height: 35px;
@@ -236,7 +237,7 @@ body {
   text-align: center;
   border-style: solid;
   border-color: black;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
   color: white;
 }
 
@@ -255,7 +256,7 @@ body {
   border-width: 2px;
   padding: 0 10px;
   box-sizing: border-box;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
   margin-left: 4px;
 }
 
@@ -271,7 +272,7 @@ body {
   border-width: 2px;
   border-left: 0;
   box-sizing: border-box;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
 }
 
 
@@ -296,7 +297,7 @@ body {
 
 .tabla-superior {
   flex: 1;
-  background-color: rgb(33, 37, 41);
+  background-color: rgb(47, 54, 64);
   margin-bottom: 4px;
   border-radius: 10px;
 }
@@ -311,7 +312,7 @@ body {
 
 .btn-cantidad{
   width: 100%;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
   color: white;
   border-radius: 10px;
   font-weight: bold;
@@ -323,7 +324,7 @@ body {
 
 .tabla-productos {
   flex: 1;
-  background-color: rgb(33, 37, 41);
+  background-color: rgb(47, 54, 64);
 }
 
 .contenedor-tabla table {
@@ -340,7 +341,7 @@ body {
 .tabla-inferior {
   overflow: hidden;
   border-radius: 10px;
-  background-color: rgb(33, 37, 41);
+  background-color: rgb(47, 54, 64);
 }
 
 
@@ -381,7 +382,7 @@ body {
   border-radius: 30px;
   border-style: solid;
   border-color: black;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
   display: flex;
   justify-content: center;
   overflow: hidden;
@@ -428,7 +429,7 @@ body {
 }
 
 .seleccionado {
-  background-color: rgb(70, 70, 70);
+  background-color: rgb(44, 62, 80);
 }
 
 /*tienda*/
@@ -485,7 +486,7 @@ body {
   border-color: black;
   border-width: 1px;
   border-radius: 10px;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
 }
 
 .modal-title{
@@ -520,29 +521,36 @@ body {
 
 .btn-detalles-tienda {
   display: flex;
-  flex: 1;
+  width: 100%;
   border: 2px solid black;
   border-radius: 10px;
   justify-content: center;
-  background-color: rgb(136, 136, 255);
+  background-color: rgb(52, 152, 219);
   color: white;
   text-decoration: none;
 }
 
+.btn-detalles-tienda:hover {
+  background-color: rgb(41, 128, 185);
+}
 
-.table td.no-ajustar,
-.table th.no-ajustar {
-    width: 120px;
+.btn-cantidad:hover,
+.btn-modal:hover,
+.dropdown-item:hover {
+  background-color: rgb(44, 62, 80);
+}
+
+.ajustar{
+  width: 20%;
 }
 
 .btn-modal {
   display: flex;
   flex: 1;
-  border: 2px solid black;
   border-radius: 10px;
   justify-content: center;
   align-items: center;
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
   color: white;
 }
 
@@ -566,7 +574,7 @@ body {
   overflow: auto;
   text-align: center;
   border-radius: 10px;
-  background-color: rgb(33, 37, 41);
+  background-color: rgb(47, 54, 64);
 }
 
 .table {
@@ -581,8 +589,9 @@ body {
   white-space: nowrap;
 }
 
+
 .dt-colresizable-hover {
-    background-color: rgb(92, 92, 92) !important;
+    background-color: rgb(52, 73, 94) !important;
 }
 
 .invisible{
@@ -604,7 +613,7 @@ body {
 }
 
 .regreso{
-  background-color: rgb(92, 92, 92);
+  background-color: rgb(52, 73, 94);
   display: flex;
   flex: 1;
   border-bottom: 2px solid black;
@@ -618,4 +627,16 @@ body {
 
 .busqueda.completo{
   margin-right: 4px;
+}
+
+.producto-pedido{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.cont-pedido{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }

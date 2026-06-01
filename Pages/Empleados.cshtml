@@ -2,7 +2,7 @@
 @using Proyecto.Models
 @model EmpleadosModel
 @{
-    ViewData["Title"] = "Administrar empleados";
+    ViewData["Title"] = "Empleados";
 }
 <div class="estilo-tiendas">
     
@@ -52,7 +52,7 @@
                 <div class="regreso">
                     <a asp-page="/Tiendas" class="btn-regreso"><img src="/img/arrow-left-solid.svg" alt=""></a>
                 </div>
-                <div class="titulo">Administrar Empleados</div>
+                <div class="titulo">Empleados de la tienda: @Model.TiendaActual?.Nombre</div>
             </div>
             <div class="fila">
                 <div class="busqueda">
