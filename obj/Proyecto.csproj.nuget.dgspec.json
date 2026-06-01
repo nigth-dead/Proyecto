@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\coppe\\Desktop\\Procesos de desarrollo de software\\Proyecto\\Proyecto.csproj": {}
+    "C:\\Users\\Laptop\\PROYECTO-PROCESOS\\Proyecto\\Proyecto.csproj": {}
   },
   "projects": {
-    "C:\\Users\\coppe\\Desktop\\Procesos de desarrollo de software\\Proyecto\\Proyecto.csproj": {
+    "C:\\Users\\Laptop\\PROYECTO-PROCESOS\\Proyecto\\Proyecto.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\coppe\\Desktop\\Procesos de desarrollo de software\\Proyecto\\Proyecto.csproj",
+        "projectUniqueName": "C:\\Users\\Laptop\\PROYECTO-PROCESOS\\Proyecto\\Proyecto.csproj",
         "projectName": "Proyecto",
-        "projectPath": "C:\\Users\\coppe\\Desktop\\Procesos de desarrollo de software\\Proyecto\\Proyecto.csproj",
-        "packagesPath": "C:\\Users\\coppe\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\coppe\\Desktop\\Procesos de desarrollo de software\\Proyecto\\obj\\",
+        "projectPath": "C:\\Users\\Laptop\\PROYECTO-PROCESOS\\Proyecto\\Proyecto.csproj",
+        "packagesPath": "C:\\Users\\Laptop\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Laptop\\PROYECTO-PROCESOS\\Proyecto\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\coppe\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Laptop\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"

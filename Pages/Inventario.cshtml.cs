@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 using Proyecto.Models;
@@ -9,8 +10,49 @@ public class InventarioModel : PageModel
 {
     private punto_de_ventaContext? dbContext;
     public string Fecha { get; set; } = "";
-    public Usuario? UsuarioActual {get; set;}
+    public Usuario? UsuarioActual { get; set; }
     public List<Producto> Productos { get; set; } = new();
+
+    [BindProperty]
+    public Producto NuevoProducto { get; set; } = new();
+
+    [BindProperty]
+    public Producto ProductoEditar { get; set; } = new();
+    public IActionResult OnPostAgregar()
+    {
+        using (dbContext = new punto_de_ventaContext())
+        {
+            NuevoProducto.Activo = true;
+
+            dbContext.Producto.Add(NuevoProducto);
+            dbContext.SaveChanges();
+        }
+
+        return RedirectToPage();
+    }
+
+    public IActionResult OnPostEditar()
+    {
+        using (dbContext = new punto_de_ventaContext())
+        {
+            var producto = dbContext.Producto
+                .FirstOrDefault(p => p.ProductoId == ProductoEditar.ProductoId);
+
+            if (producto != null)
+            {
+                producto.Nombre = ProductoEditar.Nombre;
+                producto.Codigo = ProductoEditar.Codigo;
+                producto.Precio = ProductoEditar.Precio;
+                producto.CategoriaId = ProductoEditar.CategoriaId;
+                producto.Activo = ProductoEditar.Activo;
+
+                dbContext.SaveChanges();
+            }
+            
+        }
+
+        return RedirectToPage();
+    }
 
     public void OnGet()
     {
@@ -19,18 +61,22 @@ public class InventarioModel : PageModel
 
         if (Json != null)
         {
-            UsuarioActual = 
+            UsuarioActual =
             JsonSerializer.Deserialize<Usuario>(Json);
         }
 
         /*Fecha*/
-        Fecha = DateTime.Now.ToString("dd '/' MM '/' yyyy", 
+        Fecha = DateTime.Now.ToString("dd '/' MM '/' yyyy",
             new System.Globalization.CultureInfo("es-MX"));
-        
+
         /*Cargar productos*/
         using (dbContext = new punto_de_ventaContext())
         {
-            Productos = dbContext.Producto.Include(p => p.Inventario).ToList();
+            Productos = dbContext.Producto
+                .Include(p => p.Inventario)
+                .Include(p => p.Categoria)
+                .ToList();
         }
     }
 }
+
