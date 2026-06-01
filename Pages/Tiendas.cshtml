@@ -122,7 +122,7 @@
                                         }
                                     </td>
                                     <td>@Model.Tiendas[i].VentaTotal.ToString("C") <span class="invisible">pesos</span></td>
-                                    <td><a asp-page="/DetallesTienda" class="btn-detalles-tienda">Inventario</a></td>
+                                    <td><a asp-page-handler="AbrirInventario" asp-route-id="@Model.Tiendas[i].TiendaId" class="btn-detalles-tienda">Inventario</a></td>
                                     <td><a asp-page-handler="AbrirEmpleados" asp-route-id="@Model.Tiendas[i].TiendaId" class="btn-detalles-tienda">Empleados</a></td>
                                 </tr>
                             }

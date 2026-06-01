@@ -59,4 +59,14 @@ public class TiendasModel : PageModel
         }
         return RedirectToPage("/Empleados");
     }
+
+    public IActionResult OnGetAbrirInventario(int id)
+    {
+        var tienda = _context.Tienda.FirstOrDefault(t => t.TiendaId == id);
+        if (tienda != null)
+        {
+            HttpContext.Session.SetString("Tienda", JsonSerializer.Serialize(tienda));
+        }
+        return RedirectToPage("/DetallesTienda");
+    }
 }
