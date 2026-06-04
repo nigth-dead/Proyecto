@@ -97,26 +97,26 @@
                                     <div class="modal-body">
                                         <div class="info-tienda">
                                             Nombre:
-                                            <input asp-for="NuevoProducto.Nombre" class="form-control">
+                                            <input asp-for="NuevoProducto.Nombre" class="form-control" maxlength="50" required>
                                         </div>
 
                                         <div class="info-tienda">
                                             Codigo:
-                                            <input asp-for="NuevoProducto.Codigo" class="form-control">
+                                            <input asp-for="NuevoProducto.Codigo" type="text" inputmode="numeric" pattern="[0-9]+" maxlength="50" placeholder="Solo numeros" class="form-control" required>
                                         </div>
 
                                         <div class="info-tienda">
                                             Precio:
-                                            <input asp-for="NuevoProducto.Precio" class="form-control">
+                                            <input asp-for="NuevoProducto.Precio" type="number" step="0.01" min="0" class="form-control" required>
                                         </div>
 
                                         <div class="info-tienda">
                                             Categoria:
-                                            <select asp-for="NuevoProducto.CategoriaId" class="form-control">
-                                                <option value="1">Refresco</option>
-                                                <option value="2">Botana</option>
-                                                <option value="3">Lácteos</option>
-                                                <option value="4">Panadería</option>
+                                            <select asp-for="NuevoProducto.CategoriaId" class="form-control form-select" required>
+                                                <option value="" selected disabled hidden>Seleccione una opcion</option>
+                                                @foreach(var Categoria in Model.Categorias){
+                                                    <option value="@Categoria.CategoriaId">@Categoria.Nombre</option>
+                                                }
                                             </select>
                                         </div>
                                     </div>
@@ -149,6 +149,7 @@
                                 <th scope="col">Cantidad</th>
                                 <th scope="col">Precio</th>
                                 <th scope="col">Categoria</th>
+                                <th scope="col">Estado</th>
                                 <th scope="col" class="no-ordenar">
                                     <span class="invisible">Detalles</span>
                                 </th>
@@ -164,6 +165,13 @@
                                     <td>@producto.Inventario.Sum(i => i.Stock)<span class="invisible">cantidad</span></td>
                                     <td>$@producto.Precio<span class="invisible">precio</span></td>
                                     <td>@producto.Categoria?.Nombre</td>
+                                    <td>
+                                        @if(producto.Activo ==true){
+                                            @:Activo
+                                        } else{
+                                            @:Desactivado
+                                        }
+                                    </td>
 
                                     <td>
                                         <button class="btn-detalles-tienda" data-bs-toggle="modal"
@@ -191,49 +199,52 @@
                                                         <div class="modal-body">
                                                             <div class="info-tienda">
                                                                 Id:
-                                                                <input type="text" value="@producto.ProductoId" disabled>
+                                                                <input type="text" class="form-control" value="@producto.ProductoId" disabled>
                                                             </div>
 
                                                             <div class="info-tienda">
                                                                 Nombre:
-                                                                <input type="text" name="ProductoEditar.Nombre"
+                                                                <input type="text" class="form-control" name="ProductoEditar.Nombre" maxlength="50"
                                                                        value="@producto.Nombre">
                                                             </div>
 
                                                             <div class="info-tienda">
                                                                 Codigo:
-                                                                <input type="text" name="ProductoEditar.Codigo"
+                                                                <input type="text" class="form-control" inputmode="numeric" pattern="[0-9]+" 
+                                                                placeholder="Solo numeros" name="ProductoEditar.Codigo" required maxlength="50"
                                                                        value="@producto.Codigo">
                                                             </div>
 
                                                             <div class="info-tienda">
                                                                 Precio:
-                                                                <input type="text" name="ProductoEditar.Precio"
+                                                                <input type="number" class="form-control" name="ProductoEditar.Precio" step="0.01" min="0" required
                                                                        value="@producto.Precio">
                                                             </div>
 
                                                             <div class="info-tienda">
                                                                 Categoria:
-                                                                <select name="ProductoEditar.CategoriaId">
-                                                                    <option value="1">Refresco</option>
-                                                                    <option value="2">Botana</option>
-                                                                    <option value="3">Lácteos</option>
-                                                                    <option value="4">Panadería</option>
+                                                                <select name="ProductoEditar.CategoriaId" class="form-control form-select" required>
+                                                                    <option value="@producto.CategoriaId" selected hidden>@producto.Categoria?.Nombre</option>
+                                                                    @foreach(var Categoria in Model.Categorias){
+                                                                        if(Categoria.CategoriaId != producto.CategoriaId){
+                                                                            <option value="@Categoria.CategoriaId">@Categoria.Nombre</option>
+                                                                        }
+                                                                    }
                                                                 </select>
                                                             </div>
 
                                                             <div class="info-tienda">
                                                                 Estado:
-                                                                <select name="ProductoEditar.Activo">
+                                                                <select name="ProductoEditar.Activo" class="form-control form-select">
                                                                     @if (producto.Activo == true)
                                                                     {
-                                                                        <option value="true" selected>Activo</option>
+                                                                        <option value="true" selected hidden>Activo</option>
                                                                         <option value="false">Inactivo</option>
                                                                     }
                                                                     else
                                                                     {
                                                                         <option value="true">Activo</option>
-                                                                        <option value="false" selected>Inactivo</option>
+                                                                        <option value="false" selected hidden>Inactivo</option>
                                                                     }
                                                                 </select>
                                                             </div>
@@ -244,12 +255,58 @@
                                                                     data-bs-dismiss="modal">
                                                                 Cancelar
                                                             </button>
-
+                                                            <button type="button"
+                                                                    class="btn btn-danger"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#modal-confirmar-eliminar-@producto.ProductoId">
+                                                                Borrar
+                                                            </button>
                                                             <button type="submit" class="btn btn-primary">
                                                                 Guardar cambios
                                                             </button>
                                                         </div>
                                                     </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="modal-confirmar-eliminar-@producto.ProductoId" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Confirmar eliminación</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Cerrar"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <p>
+                                                            ¿Seguro que deseas este producto?
+                                                        </p>
+                                                        <p>
+                                                            <strong>@producto.Nombre</strong>
+                                                        </p>
+                                                        <p class="text-danger mb-0">
+                                                            Esta acción no se puede deshacer
+                                                        </p>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                                class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                            Cancelar
+                                                        </button>
+
+                                                        <form method="post" asp-page-handler="Eliminar">
+                                                            <input type="hidden" name="id" value="@producto.ProductoId" />
+
+                                                            <button type="submit" class="btn btn-danger">
+                                                                Sí, borrar
+                                                            </button>
+                                                        </form>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>

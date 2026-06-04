@@ -554,6 +554,15 @@ body {
   color: white;
 }
 
+form{
+  width: 100%;
+}
+
+.form-control{
+  margin-bottom: 5px;
+  border-width: 2px;
+}
+
 .detalles-tienda{
   display: flex;
   height: 100vh;

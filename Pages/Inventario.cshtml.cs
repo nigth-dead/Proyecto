@@ -12,6 +12,7 @@ public class InventarioModel : PageModel
     public string Fecha { get; set; } = "";
     public Usuario? UsuarioActual { get; set; }
     public List<Producto> Productos { get; set; } = new();
+    public List<Categoria> Categorias { get; set; } = new();
 
     [BindProperty]
     public Producto NuevoProducto { get; set; } = new();
@@ -76,7 +77,27 @@ public class InventarioModel : PageModel
                 .Include(p => p.Inventario)
                 .Include(p => p.Categoria)
                 .ToList();
+
+            Categorias = dbContext.Categoria
+            .ToList();
         }
+    }
+
+    public async Task<IActionResult> OnPostEliminarAsync(int id)
+    {
+        using (dbContext = new punto_de_ventaContext())
+        {
+            var producto = await dbContext.Producto.FindAsync(id);
+
+            if (producto == null)
+            {
+                return RedirectToPage();
+            }
+
+            dbContext.Producto.Remove(producto);
+            await dbContext.SaveChangesAsync();
+        }
+        return RedirectToPage();
     }
 }
 
