@@ -62,29 +62,27 @@
                     <button class="elemento-info-encabezado" data-bs-toggle="modal" data-bs-target="#modal-tienda">Nueva tienda<img class="btn-inventario" src="/img/agregar.svg" alt=""></button>
                     <div class="modal" tabindex="-1" id="modal-tienda" data-bs-backdrop="static">
                         <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Ingrese la informacion de la tienda</h5>
-                                    
-                                </div>
-                                <div class="modal-body">
-                                    <!--Ingresar datos-->
-                                    <div class="info-tienda">
-                                        Id de la tienda: <input type="text" id="tiendaId" disabled>
+                            <form method="post" asp-page-handler="Registrar">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Ingrese la informacion de la tienda</h5>
+                                        
                                     </div>
-                                    <div class="info-tienda">
-                                        Nombre de la tienda: <input type="text" id="nombre">
+                                    <div class="modal-body">
+                                        <!--Ingresar datos-->
+                                        <div class="info-tienda">
+                                            Nombre de la tienda: <input type="text" name="Nombre" id="nombre" class="form-control" maxlength="50" required>
+                                        </div>
+                                        <div class="info-tienda">
+                                            Direccion de la tienda: <input type="text" name="Direccion" id="direccion" class="form-control" maxlength="50" required>
+                                        </div>
                                     </div>
-                                    <div class="info-tienda">
-                                        Direccion de la tienda: <input type="text" id="direccion">
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary">Registrar nueva tienda</button>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Cancelar</button>
-                                    <button class="btn btn-primary">Registrar nueva tienda</button>
-                                </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -100,6 +98,7 @@
                                 <th scope="col">Direccion</th>
                                 <th scope="col">Estado</th>
                                 <th scope="col">Ventas</th>
+                                <th scope="col" class="no-ordenar"></th>
                                 <th scope="col" class="no-ordenar"></th>
                                 <th scope="col" class="no-ordenar"></th>
                             </tr>
@@ -124,6 +123,81 @@
                                     <td>@Model.Tiendas[i].VentaTotal.ToString("C") <span class="invisible">pesos</span></td>
                                     <td><a asp-page-handler="AbrirInventario" asp-route-id="@Model.Tiendas[i].TiendaId" class="btn-detalles-tienda">Inventario</a></td>
                                     <td><a asp-page-handler="AbrirEmpleados" asp-route-id="@Model.Tiendas[i].TiendaId" class="btn-detalles-tienda">Empleados</a></td>
+                                    <td>
+                                        <button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-editar-@Model.Tiendas[i].TiendaId">Editar<img class="btn-inventario" src="/img/editar.svg" alt=""></button>
+                                        <div class="modal" tabindex="-1" id="modal-editar-@Model.Tiendas[i].TiendaId" data-bs-backdrop="static">
+                                            <div class="modal-dialog">
+                                                <form method="post" asp-page-handler="Editar">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Informacion de la tienda</h5>
+                                                            
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <!--Ingresar datos-->
+                                                            <input type="hidden" name="TiendaId" value="@Model.Tiendas[i].TiendaId">
+                                                            <div class="info-tienda">
+                                                                Id: <input type="number" value="@Model.Tiendas[i].TiendaId" id="nombre" class="form-control" disabled>
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Nombre: <input type="text" value="@Model.Tiendas[i].Nombre" name="Nombre" id="nombre" class="form-control" maxlength="50" required>
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Direccion: <input type="text" value="@Model.Tiendas[i].Direccion" name="Direccion" id="direccion" class="form-control" maxlength="50" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal-confirmar-eliminar-@Model.Tiendas[i].TiendaId">Borrar
+                                                            </button>
+                                                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="modal-confirmar-eliminar-@Model.Tiendas[i].TiendaId" tabindex="-1">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Confirmar eliminación</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Cerrar"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <p>
+                                                            ¿Seguro que deseas eliminar esta tienda?
+                                                        </p>
+                                                        <p>
+                                                            <strong>@Model.Tiendas[i].TiendaId</strong>
+                                                        </p>
+                                                        <p class="text-danger mb-0">
+                                                            Esta acción no se puede deshacer
+                                                        </p>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        <button type="button"
+                                                                class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                            Cancelar
+                                                        </button>
+
+                                                        <form method="post" asp-page-handler="Eliminar">
+                                                            <input type="hidden" name="id" value="@Model.Tiendas[i].TiendaId" />
+
+                                                            <button type="submit" class="btn btn-danger">
+                                                                Sí, borrar
+                                                            </button>
+                                                        </form>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             }
                         </tbody>

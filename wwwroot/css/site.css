@@ -60,13 +60,12 @@ body {
 }
 
 .form-control {
-  margin-bottom: 20px;
-  border-radius: 20px;
-}
-
-.form-control {
   text-align: center;
+  border-width: 2px;
   padding: 10px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  border-radius: 20px;
 }
 
 .btn {
@@ -558,10 +557,6 @@ form{
   width: 100%;
 }
 
-.form-control{
-  margin-bottom: 5px;
-  border-width: 2px;
-}
 
 .detalles-tienda{
   display: flex;
@@ -642,6 +637,21 @@ form{
   display: flex;
   flex-direction: column;
   width: 100%;
+  border: solid rgb(200, 200, 200);
+  border-radius: 10px;
+  margin-bottom: 2px;
+}
+
+.btn-eliminar-producto {
+    border: none;
+    background-color: red;
+    color: black;
+    border-radius: 10px;
+}
+
+.btn-eliminar-producto:hover {
+  background-color: rgb(198, 14, 14);
+  color: black;
 }
 
 .cont-pedido{

@@ -20,7 +20,7 @@ public class DetallesTiendaModel : PageModel
     [BindProperty]
     public int Cantidad { get; set; }
     [BindProperty]
-    public String? Motivo { get; set;} = "";
+    public String? Motivo { get; set; } = "";
     /*Datos de nuevo pedido*/
     [BindProperty]
     public int ProveedorId { get; set; }
@@ -31,6 +31,13 @@ public class DetallesTiendaModel : PageModel
     [BindProperty]
     public List<decimal> CostosUnitarios { get; set; } = new();
 
+    [TempData]
+    public string? Mensaje { get; set; }
+    [TempData]
+    public string? TipoMensaje { get; set; }
+    [TempData]
+    public string? TituloMensaje { get; set; }
+
 
     public async Task OnGetAsync()
     {
@@ -39,32 +46,59 @@ public class DetallesTiendaModel : PageModel
 
     public async Task<IActionResult> OnPostRegistrarPedidoAsync()
     {
+        if (ProductoIds.Count == 0 ||
+            ProductoIds.Count != Cantidades.Count ||
+            ProductoIds.Count != CostosUnitarios.Count)
+        {
+            TituloMensaje = "Pedido incompleto";
+            Mensaje = "Debes agregar al menos un producto y completar todos los campos.";
+            TipoMensaje = "warning";
+            return RedirectToPage();
+        }
         if (ProductoIds.Count != ProductoIds.Distinct().Count())
         {
-            await CargarDatos();
-            return Page();
+            TituloMensaje = "Producto repetido";
+            Mensaje = "No puedes registrar el mismo producto más de una vez en el pedido.";
+            TipoMensaje = "warning";
+            return RedirectToPage();
         }
-        if(Cantidades.Any(c => c <= 0))
+        if (Cantidades.Any(c => c <= 0))
         {
-            return Page();
+            TituloMensaje = "Cantidad inválida";
+            Mensaje = "La cantidad de cada producto debe ser mayor a 0.";
+            TipoMensaje = "warning";
+            return RedirectToPage();
         }
         if (CostosUnitarios.Any(c => c <= 0))
         {
-            return Page();
+            TituloMensaje = "Costo inválido";
+            Mensaje = "El costo unitario de cada producto debe ser mayor a 0.";
+            TipoMensaje = "warning";
+            return RedirectToPage();
         }
         await CargarDatos();
-        if(TiendaActual == null || UsuarioActual == null)
+        if (TiendaActual == null)
         {
-            return Page();
+            TituloMensaje = "Tienda no encontrada";
+            Mensaje = "No se pudo identificar la tienda actual.";
+            TipoMensaje = "danger";
+            return RedirectToPage();
+        }
+        if (UsuarioActual == null)
+        {
+            TituloMensaje = "Usuario no encontrado";
+            Mensaje = "No se pudo identificar el usuario actual.";
+            TipoMensaje = "danger";
+            return RedirectToPage();
         }
         using (dbContext = new punto_de_ventaContext())
         {
             decimal MontoTotal = 0;
-            foreach(decimal costo in CostosUnitarios)
+            for (int i = 0; i < ProductoIds.Count; i++)
             {
-                MontoTotal += costo;
+                MontoTotal += Cantidades[i] * CostosUnitarios[i];
             }
-            HistorialPedido Pedido = new HistorialPedido()
+            HistorialPedido pedido = new HistorialPedido()
             {
                 TiendaId = TiendaActual.TiendaId,
                 ProveedorId = ProveedorId,
@@ -73,13 +107,13 @@ public class DetallesTiendaModel : PageModel
                 MontoTotal = MontoTotal,
                 Estado = "Pendiente"
             };
-            dbContext.Add(Pedido);
+            dbContext.Add(pedido);
             await dbContext.SaveChangesAsync();
-            for(int i = 0; i < ProductoIds.Count; i++)
+            for (int i = 0; i < ProductoIds.Count; i++)
             {
                 HistorialPedidoDetalle detalle = new HistorialPedidoDetalle()
                 {
-                    PedidoId = Pedido.PedidoId,
+                    PedidoId = pedido.PedidoId,
                     ProductoId = ProductoIds[i],
                     Cantidad = Cantidades[i],
                     CostoUnitario = CostosUnitarios[i]
@@ -88,42 +122,68 @@ public class DetallesTiendaModel : PageModel
             }
             await dbContext.SaveChangesAsync();
         }
+        TituloMensaje = "Pedido registrado";
+        Mensaje = "El pedido se registró correctamente.";
+        TipoMensaje = "success";
         return RedirectToPage();
-    }
+}
 
     public async Task<IActionResult> OnPostReducirStockAsync()
     {
         await CargarDatos();
-        if(UsuarioActual == null)
+        if (UsuarioActual == null)
         {
+            TituloMensaje = "Usuario no encontrado";
+            Mensaje = "No se pudo identificar el usuario actual.";
+            TipoMensaje = "danger";
+
             return RedirectToPage();
         }
+
         using (dbContext = new punto_de_ventaContext())
         {
-            Inventario? Inventario = await dbContext.Inventario.FirstOrDefaultAsync(i => i.InventarioId == InventarioId);
-            if (Inventario == null)
+            Inventario? inventario = await dbContext.Inventario
+                .FirstOrDefaultAsync(i => i.InventarioId == InventarioId);
+
+            if (inventario == null)
             {
-                await CargarDatos();
-                return Page();
+                TituloMensaje = "Reduccion no registrada";
+                Mensaje = "No se encontró el producto en el inventario.";
+                TipoMensaje = "danger";
+
+                return RedirectToPage();
             }
-            if(Cantidad <= 0)
+
+            if (Cantidad <= 0)
             {
-                await CargarDatos();
-                return Page();
+                TituloMensaje = "Reduccion no registrada";
+                Mensaje = "La cantidad a reducir debe ser mayor a 0.";
+                TipoMensaje = "warning";
+
+                return RedirectToPage();
             }
+
             if (string.IsNullOrWhiteSpace(Motivo))
             {
-                await CargarDatos();
-                return Page();
+                TituloMensaje = "Reduccion no registrada";
+                Mensaje = "Debes escribir una razón para la reducción de stock.";
+                TipoMensaje = "warning";
+
+                return RedirectToPage();
             }
-            if (Inventario.Stock < Cantidad)
+
+            if (inventario.Stock < Cantidad)
             {
-                ModelState.AddModelError("", "No hay suficiente Stock");
-                await CargarDatos();
-                return Page();
+                TituloMensaje = "Reduccion no registrada";
+                Mensaje = $"No hay suficiente stock. Stock actual: {inventario.Stock}.";
+                TipoMensaje = "warning";
+
+                return RedirectToPage();
             }
-            Inventario.Stock -= Cantidad;
-            HistorialMovimiento NuevoMovimiento = new HistorialMovimiento()
+
+            inventario.Stock -= Cantidad;
+
+            HistorialMovimiento nuevoMovimiento = new HistorialMovimiento()
             {
                 InventarioId = InventarioId,
                 UsuarioId = UsuarioActual.UsuarioId,
@@ -132,9 +192,15 @@ public class DetallesTiendaModel : PageModel
                 Motivo = Motivo,
                 Fecha = DateTime.Now
             };
-            dbContext.Add(NuevoMovimiento);
+
+            dbContext.Add(nuevoMovimiento);
             await dbContext.SaveChangesAsync();
+
+            TituloMensaje = "Stock actualizado";
+            Mensaje = "La reducción de stock se registró correctamente.";
+            TipoMensaje = "success";
         }
+
         return RedirectToPage();
     }
 
@@ -162,12 +228,20 @@ public class DetallesTiendaModel : PageModel
 
     private async Task CargarProveedores()
     {
-        if(dbContext != null)
+        if (dbContext != null)
         {
             Proveedores = await dbContext.Proveedor.ToListAsync();
         }
     }
-    
+
+    public async Task CargarProductos()
+    {
+        if (dbContext != null)
+        {
+            Productos = await dbContext.Producto.ToListAsync();
+        }
+    }
+
     private async Task CargarDatos()
     {
         CargarTiendaActual();
@@ -175,6 +249,7 @@ public class DetallesTiendaModel : PageModel
         using (dbContext = new punto_de_ventaContext())
         {
             await CargarProveedores();
+            await CargarProductos();
             if (TiendaActual != null)
             {
                 Inventarios = await dbContext.Inventario

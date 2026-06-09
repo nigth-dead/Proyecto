@@ -18,6 +18,14 @@ public class PedidosModel : PageModel
     public String Estado { get; set; } = "";
     [BindProperty]
     public int PedidoId { get; set; }
+    public List<HistorialPedidoDetalle> Detalles { get; set; } = new();
+
+    [TempData]
+    public string? Mensaje { get; set; }
+    [TempData]
+    public string? TipoMensaje { get; set; }
+    [TempData]
+    public string? TituloMensaje { get; set; }
 
     public async Task OnGetAsync()
     {
@@ -32,6 +40,7 @@ public class PedidosModel : PageModel
                 .Include(p => p.Usuario)
                 .Include(p => p.HistorialPedidoDetalle)
                 .ThenInclude(p => p.Producto)
+                .ThenInclude(p => p.Inventario)
                 .Where(i => i.TiendaId == TiendaActual.TiendaId)
                 .ToListAsync();
             }
@@ -62,12 +71,101 @@ public class PedidosModel : PageModel
 
     public async Task<IActionResult> OnPostAsync()
     {
-        using(dbContext = new punto_de_ventaContext())
+        if (!string.IsNullOrWhiteSpace(Estado))
         {
-            HistorialPedido? pedido = await dbContext.HistorialPedido.FirstOrDefaultAsync(p => p.PedidoId == PedidoId);
-            pedido?.Estado =Estado;
-            dbContext.SaveChanges();
+            Estado = Estado.Trim();
+
+            if (Estado != "Pendiente" && Estado != "Completado" && Estado != "Cancelado")
+            {
+                TituloMensaje = "Estado inválido";
+                Mensaje = "El estado seleccionado no es válido.";
+                TipoMensaje = "danger";
+
+                return RedirectToPage();
+            }
+
+            using (dbContext = new punto_de_ventaContext())
+            {
+                HistorialPedido? pedido = await dbContext.HistorialPedido
+                    .FirstOrDefaultAsync(p => p.PedidoId == PedidoId);
+
+                if (pedido == null)
+                {
+                    TituloMensaje = "Pedido no encontrado";
+                    Mensaje = "No se encontró el pedido que intentas actualizar.";
+                    TipoMensaje = "danger";
+
+                    return RedirectToPage();
+                }
+
+                if (pedido.Estado != Estado)
+                {
+                    pedido.Estado = Estado;
+
+                    if (pedido.Estado == "Completado")
+                    {
+                        Detalles = await dbContext.HistorialPedidoDetalle
+                            .Include(d => d.Producto)
+                            .ThenInclude(d => d.Inventario)
+                            .Where(d => d.PedidoId == pedido.PedidoId)
+                            .ToListAsync();
+
+                        foreach (var detalle in Detalles)
+                        {
+                            var Inventario = detalle.Producto.Inventario
+                                .FirstOrDefault(i => i.TiendaId == pedido.TiendaId);
+
+                            if (Inventario != null)
+                            {
+                                Inventario.Stock += detalle.Cantidad;
+                            }
+                            else
+                            {
+                                Inventario NuevoInventario = new Inventario()
+                                {
+                                    TiendaId = pedido.TiendaId,
+                                    ProductoId = detalle.ProductoId,
+                                    Stock = detalle.Cantidad
+                                };
+
+                                dbContext.Add(NuevoInventario);
+                            }
+                        }
+
+                        TituloMensaje = "Pedido completado";
+                        Mensaje = "El pedido se marcó como completado y el stock fue actualizado correctamente.";
+                        TipoMensaje = "success";
+                    }
+                    else if (pedido.Estado == "Cancelado")
+                    {
+                        TituloMensaje = "Pedido cancelado";
+                        Mensaje = "El pedido se canceló correctamente.";
+                        TipoMensaje = "warning";
+                    }
+                    else
+                    {
+                        TituloMensaje = "Estado actualizado";
+                        Mensaje = "El estado del pedido se actualizó correctamente.";
+                        TipoMensaje = "success";
+                    }
+
+                    await dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    TituloMensaje = "Sin cambios";
+                    Mensaje = "El pedido ya tenía ese estado.";
+                    TipoMensaje = "info";
+                }
+            }
         }
+        else
+        {
+            TituloMensaje = "Sin cambios";
+            Mensaje = "No se seleccionó ningún estado para actualizar.";
+            TipoMensaje = "warning";
+        }
+
         return RedirectToPage();
     }
 }

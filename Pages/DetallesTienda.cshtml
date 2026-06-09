@@ -75,13 +75,12 @@
                                 <form method="post" id="RegistrarPedido" asp-page-handler="RegistrarPedido">
                                     <div class="modal-header">
                                         <h5 class="modal-title">Nuevo pedido</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <!--Ingresar datos-->
                                         <div class="info-tienda">
-                                            Proveedor: <select name="ProveedorId" id="proveedorId" required>
+                                            Proveedor: <select name="ProveedorId" class="form-control form-select" id="proveedorId" required>
                                                 <option value="" selected disabled>Seleccione un proveedor</option>
                                                 @foreach(var proveedor in Model.Proveedores){
                                                     <option value="@proveedor.ProveedorId">
@@ -91,25 +90,25 @@
                                             </select>
                                         </div>
                                         <div class="info-tienda">
-                                            Fecha: <input type="date" id="fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly>
+                                            Fecha: <input type="date" class="form-control" id="fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly>
                                         </div>
                                         <div class="cont-pedido" id="productosPedido">
                                             <div class="producto-pedido">
                                                 <div class="info-tienda">
                                                     Producto:
-                                                    <select name="ProductoIds" required onchange="actualizarProductos()">
+                                                    <select name="ProductoIds" class="form-control form-select" required onchange="actualizarProductos()">
                                                         <option value="" selected disabled>Seleccione un producto</option>
-                                                        @foreach (var inventario in Model.Inventarios)
+                                                        @foreach (var producto in Model.Productos)
                                                         {
-                                                            <option value="@inventario.Producto.ProductoId">
-                                                                @inventario.Producto.Nombre
+                                                            <option value="@producto.ProductoId">
+                                                                @producto.Nombre
                                                             </option>
                                                         }
                                                     </select>
                                                 </div>
                                                 <div class="info-tienda">
                                                     Cantidad:
-                                                    <input type="number"
+                                                    <input type="number" class="form-control"
                                                         name="Cantidades"
                                                         min="1"
                                                         required
@@ -117,17 +116,18 @@
                                                 </div>
                                                 <div class="info-tienda">
                                                     Costo unitario:
-                                                    <input type="number"
+                                                    <input type="number" class="form-control"
                                                         name="CostosUnitarios"
-                                                        min="0"
+                                                        min="0.01"
                                                         step="0.01"
                                                         required
                                                         oninput="calcularTotal()">
                                                 </div>
+                                                <button type="button" class="btn-eliminar-producto" onclick="eliminarProducto(this)">Eliminar producto</button>
                                             </div>
                                         </div>
                                         <div class="info-tienda">
-                                            Total: <input type="text" id="montoTotal" readonly value="$0.00">
+                                            Total: <input type="text" class="form-control" id="montoTotal" readonly value="$0.00">
                                         </div>
                                         <button type="button" class="btn btn-secondary" onclick="agregarProducto()">
                                             Agregar otro producto
@@ -187,19 +187,19 @@
                                                         <!--Ingresar datos-->
                                                         <input type="hidden" name="InventarioId" value="@inventario.InventarioId">
                                                         <div class="info-tienda">
-                                                            Id: <input type="text" id="productoId" disabled value="@inventario.Producto.ProductoId">
+                                                            Id: <input type="text" class="form-control" id="productoId" disabled value="@inventario.Producto.ProductoId">
                                                         </div>
                                                         <div class="info-tienda">
-                                                            Nombre: <input type="text" id="nombre" disabled value="@inventario.Producto.Nombre">
+                                                            Nombre: <input type="text" class="form-control" id="nombre" disabled value="@inventario.Producto.Nombre">
                                                         </div>
                                                         <div class="info-tienda">
-                                                            Codigo: <input type="text" id="codigo" disabled value="@inventario.Producto.Codigo">
+                                                            Codigo: <input type="text" class="form-control" id="codigo" disabled value="@inventario.Producto.Codigo">
                                                         </div>
                                                         <div class="info-tienda">
-                                                            Cantidad: <input type="number" id="categoria" min="1" required name="Cantidad">
+                                                            Cantidad: <input type="number" class="form-control" id="categoria" min="1" max="@inventario.Stock" required name="Cantidad">
                                                         </div>
                                                         <div class="info-tienda">
-                                                            Razon de la reduccion: <input type="text" id="precio" required name="Motivo">
+                                                            Razon de la reduccion: <input type="text" class="form-control" maxlength="100" id="precio" required name="Motivo">
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
@@ -221,3 +221,36 @@
         </div>
     </div>
 </div>
+
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="modal fade" id="modalMensaje" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header bg-@Model.TipoMensaje text-white">
+                    <h5 class="modal-title">@Model.TituloMensaje</h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Cerrar">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="mb-0">@Model.Mensaje</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Aceptar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

@@ -74,39 +74,41 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Edgar</td>
-                                <td>264589 <span class="invisible">codigo</span></td>
-                                <td>10/5/2026</td>
-                                <td>$500.00<span class="invisible">total</span></td>
-                                <td><button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-editar-producto">Detalles <img class="btn-inventario"src="/img/circle-info.svg" alt=""></button>
-                                    <div class="modal" tabindex="-1" id="modal-editar-producto" data-bs-backdrop="static">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Informacion del producto</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <!--Ingresar datos-->
-                                                    <div class="info-tienda">
-                                                        Producto: <input type="text" id="producto" disabled>
+                            @for(int i = 0; i < Model.Ventas.Count; i++){
+                                <tr>
+                                    <td>@Model.Ventas</td>
+                                    <td>264589 <span class="invisible">codigo</span></td>
+                                    <td>10/5/2026</td>
+                                    <td>$500.00<span class="invisible">total</span></td>
+                                    <td><button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-editar-producto">Detalles <img class="btn-inventario"src="/img/circle-info.svg" alt=""></button>
+                                        <div class="modal" tabindex="-1" id="modal-editar-producto" data-bs-backdrop="static">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Informacion del producto</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                     </div>
-                                                    <div class="info-tienda">
-                                                        Cantidad: <input type="text" id="cantidad" disabled>
+                                                    <div class="modal-body">
+                                                        <!--Ingresar datos-->
+                                                        <div class="info-tienda">
+                                                            Producto: <input type="text" id="producto" disabled>
+                                                        </div>
+                                                        <div class="info-tienda">
+                                                            Cantidad: <input type="text" id="cantidad" disabled>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Cancelar</button>
-                                                    <a asp-page="" class="btn btn-primary">Registrar cambios</a>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancelar</button>
+                                                        <a asp-page="" class="btn btn-primary">Registrar cambios</a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </td>
-                            </tr>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>

@@ -74,9 +74,9 @@
                     <thead>
                         <tr>
                             <th scope="col">Codigo</th>
+                            <th scope="col">Fecha</th>
                             <th scope="col">Proveedor</th>
                             <th scope="col">Usuario</th>
-                            <th scope="col">Fecha</th>
                             <th scope="col">Total</th>
                             <th scope="col">Estado</th>
                             <th scope="col" class="no-ordenar"></th>
@@ -85,56 +85,57 @@
                     <tbody>
                         @foreach(HistorialPedido pedido in Model.Pedidos){
                             <tr>
-                            <td>@pedido.PedidoId<span class="invisible">codigo</span></td>
-                            <td>@pedido.Proveedor.Nombre</td>
-                            <td>@pedido.Usuario?.Nombre</td>
-                            <td>@pedido.Fecha</td>
-                            <td>@pedido.MontoTotal<span class="invisible">Total</span></td>
-                            <td>@pedido.Estado</td>
-                            <td><button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-reducir-stock-@pedido.PedidoId">Detalles<img class="btn-inventario"src="/img/editar.svg" alt=""></button>
-                                <div class="modal" tabindex="-1" id="modal-reducir-stock-@pedido.PedidoId" data-bs-backdrop="static">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <form method="post" id="ActualizarPedido">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title">Informacion del pedido</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <!--Ingresar datos-->
-                                                    @foreach(HistorialPedidoDetalle detalle in pedido.HistorialPedidoDetalle){
-                                                        <input type="hidden" id="pedidoId" name="PedidoId" value="@pedido.PedidoId">
+                                
+                                <td>@pedido.PedidoId<span class="invisible">codigo</span></td>
+                                <td>@pedido.Fecha</td>
+                                <td>@pedido.Proveedor.Nombre</td>
+                                <td>@pedido.Usuario?.Nombre</td>
+                                <td>@pedido.MontoTotal<span class="invisible">Total</span></td>
+                                <td>@pedido.Estado</td>
+                                <td><button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-reducir-stock-@pedido.PedidoId">Detalles<img class="btn-inventario"src="/img/editar.svg" alt=""></button>
+                                    <div class="modal" tabindex="-1" id="modal-reducir-stock-@pedido.PedidoId" data-bs-backdrop="static">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form method="post" id="ActualizarPedido">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Informacion del pedido</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <!--Ingresar datos-->
+                                                        @foreach(HistorialPedidoDetalle detalle in pedido.HistorialPedidoDetalle){
+                                                            <input type="hidden" class="form-control" id="pedidoId-@pedido.PedidoId" name="PedidoId" value="@pedido.PedidoId">
+                                                            <div class="info-tienda">
+                                                            Producto: <input type="text" class="form-control" id="producto-@pedido.PedidoId" value="@detalle.Producto.Nombre" disabled>
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Cantidad: <input type="text" class="form-control" value="@detalle.Cantidad" id="cantidad-@pedido.PedidoId" disabled>
+                                                            </div>
+                                                        }
                                                         <div class="info-tienda">
-                                                        Producto: <input type="text" id="producto" value="@detalle.Producto.Nombre" disabled>
+                                                            Monto Total: <input type="text" class="form-control" id="monto-total" value="@pedido.MontoTotal" disabled>
                                                         </div>
                                                         <div class="info-tienda">
-                                                            Cantidad: <input type="text" value="@detalle.Cantidad" id="cantidad" disabled>
+                                                            <!--Si esta concluido o cancelado desactivar esta opcion-->
+                                                            Estado: <select name="Estado" class="form-control form-select" id="pedido" disabled="@(pedido.Estado != "Pendiente")">
+                                                                <option value="Pendiente" selected="@(pedido.Estado == "Pendiente")">Pendiente</option>
+                                                                <option value="Completado" selected="@(pedido.Estado == "Completado")">Completado</option>
+                                                                <option value="Cancelado" selected="@(pedido.Estado == "Cancelado")">Cancelado</option>
+                                                            </select>
                                                         </div>
-                                                    }
-                                                    <div class="info-tienda">
-                                                        Monto Total: <input type="text" id="monto" value="@pedido.MontoTotal" disabled>
                                                     </div>
-                                                    <div class="info-tienda">
-                                                        <!--Si esta concluido o cancelado desactivar esta opcion-->
-                                                        Estado: <select name="Estado" id="pedido" disabled="@(pedido.Estado != "Pendiente")">
-                                                            <option value="Pendiente" selected="@(pedido.Estado == "Pendiente")">Pendiente</option>
-                                                            <option value="Completado"selected="@(pedido.Estado == "Completado")">Completado</option>
-                                                            <option value="Cancelado"selected="@(pedido.Estado == "Cancelado")">Cancelado</option>
-                                                        </select>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                                                     </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-bs-dismiss="modal">Cancelar</button>
-                                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                                                </div>
-                                            </form>
+                                                </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -142,3 +143,35 @@
         </div>
     </div>
 </div>
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="modal fade" id="modalMensaje" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header bg-@Model.TipoMensaje text-white">
+                    <h5 class="modal-title">@Model.TituloMensaje</h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Cerrar">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="mb-0">@Model.Mensaje</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Aceptar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

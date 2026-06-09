@@ -70,33 +70,24 @@
                                     <h5 class="modal-title">Informacion del Usuario</h5>
                                     
                                 </div>
-                                <form method="post" id="registrarEmpleado">
+                                <form method="post" id="registrarEmpleado" asp-page-handler="RegistrarEmpleado">
                                     <div class="modal-body">
                                         <!--Ingresar datos-->
                                         <div class="info-tienda">
-                                            Tienda: <input type="text" value="@Model.TiendaActual?.Nombre" disabled>
+                                            Tienda: <input type="text" class="form-control" value="@Model.TiendaActual?.Nombre" disabled>
                                         </div>
                                         <div class="info-tienda">
-                                            Nombre: <input type="text" name="nombre" required>
+                                            Nombre: <input type="text" name="Nombre" class="form-control" maxlength="50" required>
                                         </div>
                                         <div class="info-tienda">
-                                            Telefono: <input type="tel"
-                                            name="Telefono"
-                                            required
-                                            pattern="^\d{10}$"
-                                            maxlength="10"
-                                            title="El teléfono debe contener exactamente 10 dígitos numéricos.">
+                                            Telefono: <input type="tel" name="Telefono" class="form-control" required pattern="^\d{10}$" maxlength="10" title="El teléfono debe contener exactamente 10 dígitos numéricos.">
                                         </div>
                                         <div class="info-tienda">
-                                            Contraseña: <input type="password"
-                                            name="contrasena"
-                                            required
-                                            minlength="8"
-                                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
-                                            title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.">
+                                            Contraseña: <input type="password" name="Contrasena" class="form-control" required minlength="8" maxlength="255" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$" title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.">
                                         </div>
                                         <div class="info-tienda">
-                                            Rol: <select name="rol" required>
+                                            Rol: <select name="Rol" class="form-control form-select" required>
+                                                <option value="" selected>Seleccione un rol</option>
                                                 <option value="Cajero">Cajero</option>
                                                 <option value="Administrador">Administrador</option>
                                             </select>
@@ -105,7 +96,7 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-primary" onclick="$('registrarEmpleado').submit();">Registrar nuevo usuario</button>
+                                        <button type="submit" class="btn btn-primary">Registrar nuevo usuario</button>
                                     </div>
                                 </form>
                             </div>
@@ -152,56 +143,71 @@
                                         <div class="modal" tabindex="-1" id="modal-editar-usuario-@Model.Usuarios[i].UsuarioId" data-bs-backdrop="static">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Informacion de Usuario</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <!--Ingresar datos-->
-                                                        <div class="info-tienda">
-                                                            Tienda: <select name="tienda_id" required>
-                                                                @foreach (var tienda in Model.Tiendas)
-                                                                {
-                                                                    <option value="@tienda.TiendaId">
-                                                                        @tienda.Nombre
-                                                                    </option>
-                                                                }
-                                                            </select>
+                                                    <form method="post" id="editarEmpleado" asp-page-handler="EditarEmpleado">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Informacion de Usuario</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
                                                         </div>
-                                                        <div class="info-tienda">
-                                                            Nombre: <input type="text" name="nombre" value="@Model.Usuarios[i].Nombre">
+                                                        <div class="modal-body">
+                                                            <!--Ingresar datos-->
+                                                            <input type="hidden" value="@Model.Usuarios[i].UsuarioId" name="UsuarioId">
+                                                            <div class="info-tienda">
+                                                                Tienda: <select name="TiendaId" class="form-control form-select" required>
+                                                                    @foreach (var tienda in Model.Tiendas)
+                                                                    {
+                                                                        if(Model.Usuarios[i].TiendaId == tienda.TiendaId){
+                                                                            <option value="@tienda.TiendaId" hidden selected>
+                                                                                @tienda.Nombre
+                                                                            </option>
+                                                                        } else {
+                                                                            <option value="@tienda.TiendaId">
+                                                                                @tienda.Nombre
+                                                                            </option>
+                                                                        }
+                                                                        
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Nombre: <input type="text" class="form-control" name="Nombre" maxlength="50" value="@Model.Usuarios[i].Nombre">
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Telefono: <input type="tel" value="@Model.Usuarios[i].Telefono" name="Telefono" class="form-control" required pattern="^\d{10}$" maxlength="10" title="El teléfono debe contener exactamente 10 dígitos numéricos.">
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Contraseña: <input type="text" value="@Model.Usuarios[i].Contrasena" class="form-control" name="Contrasena" required minlength="8" maxlength="255" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$" title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.">
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Rol: <select name="Rol" class="form-control form-select">
+                                                                    @if(Model.Usuarios[i].Rol == "Administrador"){
+                                                                        <option value="Cajero">Cajero</option>
+                                                                        <option value="Administrador" selected hidden>Administrador</option>
+                                                                    } else{
+                                                                        <option value="Cajero" selected hidden>Cajero</option>
+                                                                        <option value="Administrador">Administrador</option>
+                                                                    }
+                                                                    
+                                                                </select>
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Rol: <select name="Contratado" class="form-control form-select">
+                                                                    @if(Model.Usuarios[i].Contratado == true){
+                                                                        <option value="true" selected hidden>Contratado</option>
+                                                                        <option value="false">Despedido</option>
+                                                                    } else{
+                                                                        <option value="true">Contratado</option>
+                                                                        <option value="false" selected hidden>Despedido</option>
+                                                                    }
+                                                                    
+                                                                </select>
+                                                            </div>
                                                         </div>
-                                                        <div class="info-tienda">
-                                                            Telefono: <input type="tel"
-                                                            value="@Model.Usuarios[i].Telefono"
-                                                            name="Telefono"
-                                                            required
-                                                            pattern="^\d{10}$"
-                                                            maxlength="10"
-                                                            title="El teléfono debe contener exactamente 10 dígitos numéricos.">
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                                                         </div>
-                                                        <div class="info-tienda">
-                                                            Contraseña: <input type="text"
-                                                            value="@Model.Usuarios[i].Contrasena"
-                                                            name="Contrasena"
-                                                            required
-                                                            minlength="8"
-                                                            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"
-                                                            title="La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número.">
-                                                        </div>
-                                                        <div class="info-tienda">
-                                                            Rol: <select name="rol" value="@Model.Usuarios[i].Rol">
-                                                                <option value="Cajero">Cajero</option>
-                                                                <option value="Administrador">Administrador</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Aceptar</button>
-                                                        <a asp-page="" class="btn btn-primary">Cerrar sesion</a>
-                                                    </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>

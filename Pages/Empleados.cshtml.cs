@@ -18,19 +18,21 @@ public class EmpleadosModel : PageModel
     public List<Venta> Ventas { get; set; } = new();
     /*Datos de nuevo usuario*/
     [BindProperty]
-    public int tienda_id { get; set; }
+    public int TiendaId { get; set; }
     [BindProperty]
-    public string nombre { get; set; } = null!;
+    public int UsuarioId { get; set; }
     [BindProperty]
-    public string? telefono { get; set; }
+    public string Nombre { get; set; } = null!;
     [BindProperty]
-    public string contrasena { get; set; } = null!;
+    public string? Telefono { get; set; }
     [BindProperty]
-    public string rol { get; set; } = null!;
+    public string Contrasena { get; set; } = null!;
     [BindProperty]
-    public bool? trabajando { get; set; }
+    public string Rol { get; set; } = null!;
     [BindProperty]
-    public bool? contratado { get; set; }
+    public bool? Trabajando { get; set; }
+    [BindProperty]
+    public bool? Contratado { get; set; }
 
     /*Cargar datos*/
     public async Task OnGetAsync()
@@ -60,7 +62,7 @@ public class EmpleadosModel : PageModel
         }
     }
     /*Registrar Usuarios*/
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostRegistrarEmpleadoAsync()
     {
         /*Registrar usuario*/
         CargarTiendaActual();
@@ -74,10 +76,10 @@ public class EmpleadosModel : PageModel
             Usuario NuevoUsuario = new Usuario()
             {
                 TiendaId = TiendaActual.TiendaId,
-                Nombre = nombre,
-                Telefono = telefono,
-                Contrasena = contrasena,
-                Rol = rol,
+                Nombre = Nombre,
+                Telefono = Telefono,
+                Contrasena = Contrasena,
+                Rol = Rol,
                 Trabajando = false,
                 Contratado = true,
             };
@@ -98,5 +100,24 @@ public class EmpleadosModel : PageModel
         {
             TiendaActual = JsonSerializer.Deserialize<Tienda>(json);
         }
+    }
+
+    public async Task<IActionResult> OnPostEditarEmpleadoAsync()
+    {
+        using (dbContext = new punto_de_ventaContext())
+        {
+            var EditarUsuario = await dbContext.Usuario.Where(u => u.UsuarioId == UsuarioId).FirstOrDefaultAsync();
+            if(EditarUsuario != null)
+            {
+                EditarUsuario.TiendaId = TiendaId;
+                EditarUsuario.Nombre = Nombre;
+                EditarUsuario.Telefono = Telefono;
+                EditarUsuario.Contrasena = Contrasena;
+                EditarUsuario.Rol = Rol;
+                EditarUsuario.Contratado = Contratado;
+                await dbContext.SaveChangesAsync();
+            }
+        }
+        return RedirectToPage();
     }
 }

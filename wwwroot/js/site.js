@@ -80,3 +80,29 @@ function actualizarProductos() {
         });
     });
 }
+
+window.addEventListener("load", function () {
+    const modal = document.getElementById("modalMensaje");
+
+    if (modal) {
+        const modalMensaje = new bootstrap.Modal(modal);
+        modalMensaje.show();
+    }
+});
+
+function eliminarProducto(boton) {
+    const productos = document.querySelectorAll(".producto-pedido");
+
+    if (productos.length > 1) {
+        boton.closest(".producto-pedido").remove();
+    } else {
+        const producto = boton.closest(".producto-pedido");
+
+        producto.querySelector('select[name="ProductoIds"]').selectedIndex = 0;
+        producto.querySelector('input[name="Cantidades"]').value = "";
+        producto.querySelector('input[name="CostosUnitarios"]').value = "";
+    }
+
+    calcularTotal();
+    actualizarProductos();
+}

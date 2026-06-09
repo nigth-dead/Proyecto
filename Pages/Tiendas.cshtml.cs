@@ -8,14 +8,18 @@ namespace Proyecto.Pages;
 
 public class TiendasModel : PageModel
 {
-    private readonly punto_de_ventaContext _context;
+    private punto_de_ventaContext? dbContext { get; set; }
     public Usuario? UsuarioActual { get; set; }
     public List<TiendaVM> Tiendas { get; set; } = new();
     public List<Venta> Ventas { get; set; } = new();
-    public TiendasModel(punto_de_ventaContext context)
-    {
-        _context = context;
-    }
+    [BindProperty]
+    public String Nombre { get; set; } = "";
+    [BindProperty]
+    public String Direccion { get; set; } ="";
+    [BindProperty]
+    public int TiendaId { get; set; }
+
+    
     public async Task OnGetAsync()
     {
         var Json = HttpContext.Session.GetString("Usuario");
@@ -23,50 +27,106 @@ public class TiendasModel : PageModel
         {
             UsuarioActual = JsonSerializer.Deserialize<Usuario>(Json);
         }
-
-        var tiendas = await _context.Tienda.ToListAsync();
-
-        var totales = await _context.Venta
-            .GroupBy(v => v.TiendaId)
-            .Select(t => new
-            {
-                TiendaId = t.Key,
-                Total = t.Sum(v => v.Total)
-            })
-            .ToListAsync();
-
-        Tiendas = tiendas.Select(t =>
+        using(dbContext = new punto_de_ventaContext())
         {
-            var total = totales.FirstOrDefault(x => x.TiendaId == t.TiendaId);
+            var tiendas = await dbContext.Tienda.ToListAsync();
 
-            return new TiendaVM
+            var totales = await dbContext.Venta
+                .GroupBy(v => v.TiendaId)
+                .Select(t => new
+                {
+                    TiendaId = t.Key,
+                    Total = t.Sum(v => v.Total)
+                })
+                .ToListAsync();
+
+            Tiendas = tiendas.Select(t =>
             {
-                TiendaId = t.TiendaId,
-                Nombre = t.Nombre,
-                Direccion = t.Direccion,
-                Estado = t.Estado,
-                VentaTotal = total?.Total ?? 0
-            };
-        }).ToList();
+                var total = totales.FirstOrDefault(x => x.TiendaId == t.TiendaId);
+
+                return new TiendaVM
+                {
+                    TiendaId = t.TiendaId,
+                    Nombre = t.Nombre,
+                    Direccion = t.Direccion,
+                    Estado = t.Estado,
+                    VentaTotal = total?.Total ?? 0
+                };
+            }).ToList();
+        }
     }
 
     public IActionResult OnGetAbrirEmpleados(int id)
     {
-        var tienda = _context.Tienda.FirstOrDefault(t => t.TiendaId == id);
-        if (tienda != null)
+        using(dbContext = new punto_de_ventaContext())
         {
-            HttpContext.Session.SetString("Tienda", JsonSerializer.Serialize(tienda));
+            var tienda = dbContext.Tienda.FirstOrDefault(t => t.TiendaId == id);
+            if (tienda != null)
+            {
+                HttpContext.Session.SetString("Tienda", JsonSerializer.Serialize(tienda));
+            }
         }
         return RedirectToPage("/Empleados");
     }
 
     public IActionResult OnGetAbrirInventario(int id)
     {
-        var tienda = _context.Tienda.FirstOrDefault(t => t.TiendaId == id);
-        if (tienda != null)
+        using(dbContext = new punto_de_ventaContext())
         {
-            HttpContext.Session.SetString("Tienda", JsonSerializer.Serialize(tienda));
+            var tienda = dbContext.Tienda.FirstOrDefault(t => t.TiendaId == id);
+            if (tienda != null)
+            {
+                HttpContext.Session.SetString("Tienda", JsonSerializer.Serialize(tienda));
+            }
+            return RedirectToPage("/DetallesTienda");
         }
-        return RedirectToPage("/DetallesTienda");
+    }
+
+    public async Task<IActionResult> OnPostRegistrarAsync()
+    {
+        using(dbContext = new punto_de_ventaContext())
+        {
+            Tienda NuevaTienda = new Tienda()
+            {
+                Nombre = Nombre,
+                Direccion = Direccion,
+                Estado = true
+            };
+            dbContext.Add(NuevaTienda);
+            dbContext.SaveChanges();
+            return RedirectToPage();
+        }
+    }
+
+    public async Task<IActionResult> OnPostEditarAsync()
+    {
+        using(dbContext = new punto_de_ventaContext())
+        {
+            Tienda? tienda = await dbContext.Tienda.Where(i => i.TiendaId == TiendaId).FirstOrDefaultAsync();
+            if(tienda != null)
+            {
+                tienda.Nombre = Nombre;
+                tienda.Direccion = Direccion;
+                dbContext.SaveChanges();
+            }
+            return RedirectToPage();
+        }
+    }
+
+    public async Task<IActionResult> OnPostEliminarAsync(int id)
+    {
+        using (dbContext = new punto_de_ventaContext())
+        {
+            var Tienda = await dbContext.Tienda.FindAsync(id);
+
+            if (Tienda == null)
+            {
+                return RedirectToPage();
+            }
+
+            dbContext.Tienda.Remove(Tienda);
+            await dbContext.SaveChangesAsync();
+        }
+        return RedirectToPage();
     }
 }
