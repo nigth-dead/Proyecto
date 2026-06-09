@@ -4,7 +4,22 @@
     ViewData["Title"] = "Cajero page";
 }
 
+<style>
+    /* Estilo para que el menú desplegable se vea bien en tu tema oscuro */
+    .sugerencia-item {
+        cursor: pointer;
+        background-color: #343a40;
+        color: white;
+        border-color: #454d55;
+    }
+
+    .sugerencia-item:hover {
+        background-color: #495057;
+    }
+</style>
+
 <div class="estilo-cajero">
+    @Html.AntiForgeryToken()
     <div class="encabezado">
         <div class="fila">
             <div class="titulo">Caja #</div>
@@ -13,18 +28,20 @@
             <div class="busqueda">
                 <div>
                     <div>
-                        <!--<a asp-page="/Index"><img src="/img/usuarioIcono2.png" alt="" class="cuenta-busqueda"></a>-->
-                        <button class="sesion" data-bs-toggle="modal" data-bs-target="#modal-sesion"><img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt=""></button>
+                        <button class="sesion" data-bs-toggle="modal" data-bs-target="#modal-sesion">
+                            <img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt="">
+                        </button>
                         <div class="modal" tabindex="-1" id="modal-sesion">
                             <div class="modal-dialog">
-                                <div class="modal-content">
+                                <div class="modal-content text-dark">
                                     <div class="modal-header">
                                         <h5 class="modal-title">Informacion de usuario</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        @if(Model.UsuarioActual != null){
+                                        @if (Model.UsuarioActual != null)
+                                        {
                                             <p>Nombre: @Model.UsuarioActual.Nombre</p>
                                             <p>Telefono: @Model.UsuarioActual.Telefono</p>
                                             <p>Rol: @Model.UsuarioActual.Rol</p>
@@ -33,19 +50,24 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Aceptar</button>
-                                        <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>                                    </div>
+                                        <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <input class="barra-busqueda" type="text" placeholder="Buscar producto por codigo o nombre">
-                <div>
-                    <a asp-page="/Index"><img src="/img/lupa.png" alt="" class="lupa-inventario"></a>
+
+                <div style="position: relative; flex-grow: 1; margin-right: 15px;">
+                    <input class="barra-busqueda" type="text" id="buscador" placeholder="Buscar producto por codigo o nombre" autocomplete="off" style="width: 100%; border-radius: 10px;">
+
+                    <ul id="lista-sugerencias" class="list-group position-absolute shadow"
+                        style="z-index: 1050; display: none; width: 100%; top: 100%; left: 0; max-height: 250px; overflow-y: auto;">
+                    </ul>
                 </div>
+
             </div>
             <div class="info-encabezado">
-                
                 <div class="elemento-info-encabezado">
                     Codigo de venta
                 </div>
@@ -53,56 +75,43 @@
                     @Model.Fecha
                 </time>
                 <div class="elemento-info-encabezado">
-                    <a asp-page="/Index">
+                    <a asp-page="/Index" style="text-decoration: none; color: inherit;">
                         <div>Corte De Caja</div>
                     </a>
                 </div>
             </div>
         </div>
     </div>
+
     <div class="tablas">
         <div class="contenedor-tabla">
             <div class="tabla-productos">
-                <table class="table table-dark table-striped tabla-dinamica">
-                <thead>
-                    <tr>
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Codigo</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Precio</th>
-                        <th scope="col">Categoria</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Coca</td>
-                        <td>1586492301 <span class="invisible">codigo</span></td>
-                        <td>533<span class="invisible">cantidad</span></td>
-                        <td>$22<span class="invisible">precio</span></td>
-                        <td>Refresco</td>
-                    </tr>
-                </tbody>
-            </table>
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Codigo</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Precio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-tabla-productos">
+                    </tbody>
+                </table>
             </div>
         </div>
         <div class="contenedor-tabla-cajero">
             <div class="tabla-superior">
-                <table class="table table-dark table-striped tabla-dinamica">
+                <table class="table table-dark table-striped">
                     <thead>
                         <tr>
                             <th scope="col">Producto</th>
-                            <th scope="col"class="no-ordenar"><span class="transparente">aumentar</span></th>
-                            <th scope="col"class="no-ordenar">Cantidad</th>
-                            <th scope="col"class="no-ordenar"><span class="transparente">-reducir</span></th>
+                            <th scope="col" class="no-ordenar"><span class="transparente">aumentar</span></th>
+                            <th scope="col" class="no-ordenar">Cantidad</th>
+                            <th scope="col" class="no-ordenar"><span class="transparente">-reducir</span></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Coca</td>
-                            <td class="cantidad"><button class="btn-cantidad"><img class="img-cantidad" src="/img/plus.svg" alt=""></button></td>
-                            <td class="cantidad">2 <span class="invisible">cantidad</span></td>
-                            <td class="cantidad"><button class="btn-cantidad"><img class="img-cantidad" src="/img/minus.svg" alt=""></button></td>
-                        </tr>
+                    <tbody id="cuerpo-tabla-acciones">
                     </tbody>
                 </table>
             </div>
@@ -111,16 +120,194 @@
                     <tbody>
                         <tr>
                             <td>Subtotal</td>
-                            <td>---</td>
+                            <td id="celda-subtotal">$0.00</td>
                         </tr>
                         <tr>
                             <td>Total</td>
-                            <td>---</td>
+                            <td id="celda-total">$0.00</td>
                         </tr>
                     </tbody>
                 </table>
-                <button class="cobrar-total">Cobrar</button>
+                <button id="btn-cobrar" class="cobrar-total">Cobrar</button>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    let carrito = [];
+
+    const buscador = document.getElementById('buscador');
+    const listaSugerencias = document.getElementById('lista-sugerencias');
+    const cuerpoTablaProductos = document.getElementById('cuerpo-tabla-productos');
+    const cuerpoTablaAcciones = document.getElementById('cuerpo-tabla-acciones');
+    const celdaSubtotal = document.getElementById('celda-subtotal');
+    const celdaTotal = document.getElementById('celda-total');
+
+    // 1. Manejo del Buscador Dinámico
+    buscador.addEventListener('input', async function () {
+        const termino = this.value.trim();
+
+        if (termino.length < 1) {
+            listaSugerencias.innerHTML = '';
+            listaSugerencias.style.display = 'none';
+            return;
+        }
+
+        try {
+            const respuesta = await fetch(`?handler=BuscarProductos&termino=${encodeURIComponent(termino)}`);
+            const productos = await respuesta.json();
+
+            listaSugerencias.innerHTML = '';
+
+            if (productos.length > 0) {
+                productos.forEach(prod => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item sugerencia-item';
+                    li.textContent = `${prod.nombre} - $${prod.precio} (Cód: ${prod.codigo})`;
+
+                    // Al hacer clic en un producto de la lista
+                    li.addEventListener('click', function () {
+                        agregarAlCarrito(prod);
+                        buscador.value = ''; // Limpiamos la barra
+                        listaSugerencias.style.display = 'none'; // Ocultamos el menú
+                        buscador.focus(); // Regresamos el cursor a la barra
+                    });
+
+                    listaSugerencias.appendChild(li);
+                });
+                listaSugerencias.style.display = 'block';
+            } else {
+                listaSugerencias.style.display = 'none';
+            }
+        } catch (error) {
+            console.error("Error al buscar productos:", error);
+        }
+    });
+
+    document.addEventListener('click', function (e) {
+        if (e.target !== buscador && e.target !== listaSugerencias) {
+            listaSugerencias.style.display = 'none';
+        }
+    });
+
+    function agregarAlCarrito(producto) {
+        const itemExistente = carrito.find(p => p.codigo === producto.codigo);
+
+        if (itemExistente) {
+            itemExistente.cantidad += 1;
+        } else {
+            carrito.push({
+                codigo: producto.codigo,
+                nombre: producto.nombre,
+                precio: producto.precio,
+                cantidad: 1
+            });
+        }
+        actualizarTablas();
+    }
+
+    function cambiarCantidad(codigo, cambio) {
+        const index = carrito.findIndex(p => p.codigo === codigo);
+        if (index !== -1) {
+            carrito[index].cantidad += cambio;
+
+            // Si la cantidad llega a 0, lo quitamos del carrito
+            if (carrito[index].cantidad <= 0) {
+                carrito.splice(index, 1);
+            }
+            actualizarTablas();
+        }
+    }
+
+    // 4. Redibujar el HTML y calcular totales
+    function actualizarTablas() {
+        cuerpoTablaProductos.innerHTML = '';
+        cuerpoTablaAcciones.innerHTML = '';
+        let total = 0;
+
+        carrito.forEach(item => {
+            total += item.precio * item.cantidad;
+
+            // Tabla general
+            cuerpoTablaProductos.innerHTML += `
+                <tr>
+                    <td>${item.nombre}</td>
+                    <td>${item.codigo}</td>
+                    <td>${item.cantidad}</td>
+                    <td>$${item.precio}</td>
+                </tr>
+            `;
+
+            // Tabla de acciones
+            cuerpoTablaAcciones.innerHTML += `
+                <tr>
+                    <td>${item.nombre}</td>
+                    <td class="cantidad"><button class="btn-cantidad" onclick="cambiarCantidad('${item.codigo}', 1)"><img class="img-cantidad" src="/img/plus.svg" alt="+"></button></td>
+                    <td class="cantidad">${item.cantidad}</td>
+                    <td class="cantidad"><button class="btn-cantidad" onclick="cambiarCantidad('${item.codigo}', -1)"><img class="img-cantidad" src="/img/minus.svg" alt="-"></button></td>
+                </tr>
+            `;
+        });
+
+        celdaSubtotal.innerText = `$${total.toFixed(2)}`;
+        celdaTotal.innerText = `$${total.toFixed(2)}`;
+    }
+
+    // 5. Función para Cobrar e insertar en la Base de Datos
+    const btnCobrar = document.getElementById('btn-cobrar');
+
+    btnCobrar.addEventListener('click', async function () {
+        if (carrito.length === 0) {
+            alert("El carrito está vacío. Agrega productos para cobrar.");
+            return;
+        }
+
+        // Bloqueamos el botón para que el cajero no le dé doble clic por accidente
+        btnCobrar.disabled = true;
+        btnCobrar.innerText = "Procesando...";
+
+        try {
+            // Obtenemos el token de seguridad oculto que insertamos arriba
+            const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+            const token = tokenElement ? tokenElement.value : '';
+
+            // Preparamos los datos tal como los espera C#
+            const datosCarrito = carrito.map(item => ({
+                Codigo: item.codigo,
+                Cantidad: item.cantidad
+            }));
+
+            // Enviamos los datos por POST a nuestro handler "Cobrar"
+            const respuesta = await fetch('?handler=Cobrar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: JSON.stringify(datosCarrito)
+            });
+
+            const resultado = await respuesta.json();
+
+            if (resultado.exito) {
+                // Si la base de datos responde que todo salió bien
+                alert(resultado.mensaje);
+                
+                // Limpiamos la pantalla para el siguiente cliente
+                carrito = [];
+                actualizarTablas();
+            } else {
+                alert(resultado.mensaje);
+            }
+
+        } catch (error) {
+            console.error("Error en la petición de cobro:", error);
+            alert("Ocurrió un error de conexión.");
+        } finally {
+            // Desbloqueamos el botón
+            btnCobrar.disabled = false;
+            btnCobrar.innerText = "Cobrar";
+        }
+    });
+</script>

@@ -42,7 +42,7 @@ public partial class punto_de_ventaContext : DbContext
     public virtual DbSet<Venta> Venta { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseMySQL("server=localhost;database=punto_de_venta;user=root;password=Honda2054++--");
+        => optionsBuilder.UseMySQL("server=localhost;database=punto_de_venta;user=root;password=USS-DF37K");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -132,7 +132,8 @@ public partial class punto_de_ventaContext : DbContext
             entity.Property(e => e.ProductoId).HasColumnName("producto_id");
             entity.Property(e => e.Subtotal)
                 .HasPrecision(10)
-                .HasColumnName("subtotal");
+                .HasColumnName("subtotal")
+                .ValueGeneratedOnAddOrUpdate();
             entity.Property(e => e.VentaId).HasColumnName("venta_id");
 
             entity.HasOne(d => d.Producto).WithMany(p => p.DetalleVenta)

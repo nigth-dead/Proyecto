@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Laptop\\PROYECTO-PROCESOS\\Proyecto\\Proyecto.csproj": {}
+    "C:\\Users\\Admin\\Documents\\Archivo de Registro General - Universidad Veracruzana 2024 - 2029\\Registro - 4to Semestre\\EE - Procesos de desarrolo de software\\Proyecto\\Proyecto.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Laptop\\PROYECTO-PROCESOS\\Proyecto\\Proyecto.csproj": {
+    "C:\\Users\\Admin\\Documents\\Archivo de Registro General - Universidad Veracruzana 2024 - 2029\\Registro - 4to Semestre\\EE - Procesos de desarrolo de software\\Proyecto\\Proyecto.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Laptop\\PROYECTO-PROCESOS\\Proyecto\\Proyecto.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\Documents\\Archivo de Registro General - Universidad Veracruzana 2024 - 2029\\Registro - 4to Semestre\\EE - Procesos de desarrolo de software\\Proyecto\\Proyecto.csproj",
         "projectName": "Proyecto",
-        "projectPath": "C:\\Users\\Laptop\\PROYECTO-PROCESOS\\Proyecto\\Proyecto.csproj",
-        "packagesPath": "C:\\Users\\Laptop\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Laptop\\PROYECTO-PROCESOS\\Proyecto\\obj\\",
+        "projectPath": "C:\\Users\\Admin\\Documents\\Archivo de Registro General - Universidad Veracruzana 2024 - 2029\\Registro - 4to Semestre\\EE - Procesos de desarrolo de software\\Proyecto\\Proyecto.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\Documents\\Archivo de Registro General - Universidad Veracruzana 2024 - 2029\\Registro - 4to Semestre\\EE - Procesos de desarrolo de software\\Proyecto\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Laptop\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -24,6 +24,7 @@
         },
         "frameworks": {
           "net10.0": {
+            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -38,10 +39,11 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Microsoft.EntityFrameworkCore": {
@@ -84,7 +86,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
