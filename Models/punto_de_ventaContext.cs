@@ -45,7 +45,10 @@ public partial class punto_de_ventaContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseMySQL("server=localhost;database=punto_de_venta;user=root;password=Honda2054++--");
+            var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+                ?? "server=localhost;port=3306;database=punto_de_venta;user=root;password=Honda2054++--;";
+
+            optionsBuilder.UseMySQL(connectionString);
         }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)

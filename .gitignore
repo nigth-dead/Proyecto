@@ -1,0 +1,29 @@
+# Carpetas generadas por .NET
+bin/
+obj/
+
+# Archivos de Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Configuraciones locales
+appsettings.Development.json
+
+# Paquetes y resultados de compilación
+[Bb]in/
+[Oo]bj/
+TestResults/
+*.trx
+
+# Archivos temporales
+*.tmp
+*.log
+*.cache
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+desktop.ini

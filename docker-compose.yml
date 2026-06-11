@@ -1,0 +1,33 @@
+services:
+  web:
+    build: .
+    container_name: punto_venta_web
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__DefaultConnection: "server=db;port=3306;database=punto_de_venta;user=root;password=Honda2054++--;"
+    restart: always
+
+  db:
+    image: mysql:8.0
+    container_name: punto_venta_db
+    environment:
+      MYSQL_ROOT_PASSWORD: Honda2054++--
+      MYSQL_DATABASE: punto_de_venta
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./bd:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pHonda2054++--"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  mysql_data:
