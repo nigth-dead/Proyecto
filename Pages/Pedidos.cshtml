@@ -60,12 +60,10 @@
                 </div>
             </div>
             <div class="fila">
-                <div class="busqueda completo">
+                <form method="postBusqueda" class="busqueda completo">
                     <input class="barra-busqueda" type="text" placeholder="Buscar por codigo o proveedor">
-                    <div>
-                        <a asp-page="/Index"><img src="/img/lupa.png" alt="" class="lupa-inventario"></a>
-                    </div>
-                </div>
+                    <button type="submit" class="btn-busqueda-lupa"><img src="/img/lupa.png" alt="" class="img-lupa"></button>
+                </form>
             </div>
         </div>
         <div class="detalles">

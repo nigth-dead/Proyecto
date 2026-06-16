@@ -60,12 +60,10 @@
                     </div>
             </div>
             <div class="fila">
-                <div class="busqueda">
+                <form method="postBusqueda" class="busqueda">
                     <input class="barra-busqueda" type="text" placeholder="Buscar por nombre o codigo">
-                    <div>
-                        <a asp-page="/Index"><img src="/img/lupa.png" alt="" class="lupa-inventario"></a>
-                    </div>
-                </div>
+                    <button type="submit" class="btn-busqueda-lupa"><img src="/img/lupa.png" alt="" class="img-lupa"></button>
+                </form>
                 <div class="info-encabezado">
                     <a class="elemento-info-encabezado" asp-page="/Pedidos">Historial de pedidos<img class="btn-inventario" src="/img/historial.svg" alt=""></a>
                     <button class="elemento-info-encabezado" data-bs-toggle="modal" data-bs-target="#modal-registrar-pedido">Registrar pedido<img class="btn-inventario"src="/img/agregar.svg" alt=""></button>

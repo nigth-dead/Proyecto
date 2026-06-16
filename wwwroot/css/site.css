@@ -516,43 +516,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  overflow: auto;
+  overflow: hidden;
+  height: 100vh;
 }
 
 .estilo-tiendas .menu {
   width: 50px;
   flex-shrink: 0;
   border-radius: 0 0 5px 0;
-}
-
-.dropdown {
-  display: flex;
-  flex: 1;
-}
-
-.dropdown-toggle {
-  color: white;
-  height: 100%;
-}
-
-.dropdown-toggle::after {
-  border-top-color: black;
-}
-
-.dropdown-menu{
-  background-color: transparent;
-  color: white;
-  padding: 0;
-  border-width: 0;
-  width: 100%;
-}
-
-.dropdown-item{
-  border-style: solid;
-  border-color: black;
-  border-width: 1px;
-  border-radius: 10px;
-  background-color: rgb(52, 73, 94);
 }
 
 .modal-title{

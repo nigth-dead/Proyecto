@@ -55,12 +55,10 @@
                 <div class="titulo">Empleados de la tienda: @Model.TiendaActual?.Nombre</div>
             </div>
             <div class="fila">
-                <div class="busqueda">
+                <form method="postBusqueda" class="busqueda">
                     <input class="barra-busqueda" type="text" placeholder="Buscar por nombre o telefono">
-                    <div>
-                        <a asp-page="/Index"><img src="/img/lupa.png" alt="" class="lupa-inventario"></a>
-                    </div>
-                </div>
+                    <button type="submit" class="btn-busqueda-lupa"><img src="/img/lupa.png" alt="" class="img-lupa"></button>
+                </form>
                 <div class="info-encabezado">
                     <button class="elemento-info-encabezado" data-bs-toggle="modal" data-bs-target="#modal-tienda">Registrar empleado<img class="btn-inventario" src="/img/agregar.svg" alt=""></button>
                     <div class="modal" tabindex="-1" id="modal-tienda" data-bs-backdrop="static">
