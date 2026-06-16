@@ -52,22 +52,21 @@
                 <div class="titulo">Historial de ventas</div>
             </div>
             <div class="fila">
-                <div class="busqueda completo">
-                    <input class="barra-busqueda" type="text" placeholder="Buscar por usuario o codigo">
-                    <div>
-                        <a asp-page="/Index"><img src="/img/lupa.png" alt="" class="lupa-inventario"></a>
-                    </div>
-                </div>
+                <form method="post" class="busqueda completo">
+                    <input class="barra-busqueda" type="text" placeholder="Buscar por usuario, tienda o codigo" name="ParametroDeBusqueda">
+                    <button type="submit" class="btn-busqueda-lupa"><img src="/img/lupa.png" alt="" class="img-lupa"></button>
+                </form>
             </div>
         </div>
         <div class="tablas">
-            <div class="contenedor-tabla">
-                <div class="tabla-productos">
-                    <table class="table table-dark table-striped tabla-dinamica">
+            <div class="contenedor-tabla-historial">
+                <div class="tabla-ventas">
+                    <table class="table table-dark table-striped tabla-dinamica" data-empty="No se encontraron ventas">
                         <thead>
                             <tr>
-                                <th scope="col">Usuario</th>
                                 <th scope="col">Codigo</th>
+                                <th scope="col">Usuario</th>
+                                <th scope="col">Tienda</th>
                                 <th scope="col">Fecha</th>
                                 <th scope="col">Total</th>
                                 <th scope="col" class="no-ordenar"></th>
@@ -76,32 +75,38 @@
                         <tbody>
                             @for(int i = 0; i < Model.Ventas.Count; i++){
                                 <tr>
-                                    <td>@Model.Ventas</td>
-                                    <td>264589 <span class="invisible">codigo</span></td>
-                                    <td>10/5/2026</td>
-                                    <td>$500.00<span class="invisible">total</span></td>
-                                    <td><button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-editar-producto">Detalles <img class="btn-inventario"src="/img/circle-info.svg" alt=""></button>
-                                        <div class="modal" tabindex="-1" id="modal-editar-producto" data-bs-backdrop="static">
+                                    <td>@Model.Ventas[i].VentaId <span class="invisible">codigo</span></td>
+                                    <td>@Model.Ventas[i].Usuario?.Nombre</td>
+                                    <td>@Model.Ventas[i].Usuario.Tienda.Nombre</td>
+                                    <td>@Model.Ventas[i].Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@Model.Ventas[i].Total.ToString("C")</td>
+                                    <td><button type="button" class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-editar-producto-@Model.Ventas[i].VentaId">Detalles <img class="btn-inventario" src="/img/circle-info.svg" alt=""></button>
+                                        <div class="modal" tabindex="-1" id="modal-editar-producto-@Model.Ventas[i].VentaId" data-bs-backdrop="static">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">Informacion del producto</h5>
+                                                        <h5 class="modal-title">Informacion de la venta</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                                 aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <!--Ingresar datos-->
+                                                        @foreach(var detalle in Model.Ventas[i].DetalleVenta){
+                                                            <div class="info-tienda">
+                                                                Producto: <input type="text" class="form-control" disabled value="@detalle.Producto.Nombre">
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Cantidad: <input type="text" class="form-control" disabled value="@detalle.Cantidad">
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Subtotal: <input type="text" class="form-control" disabled value="@detalle.Subtotal">
+                                                            </div>
+                                                        }
                                                         <div class="info-tienda">
-                                                            Producto: <input type="text" id="producto" disabled>
-                                                        </div>
-                                                        <div class="info-tienda">
-                                                            Cantidad: <input type="text" id="cantidad" disabled>
+                                                            Total: <input type="text" class="form-control" disabled value="@Model.Ventas[i].Total">
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Cancelar</button>
-                                                        <a asp-page="" class="btn btn-primary">Registrar cambios</a>
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
                                                     </div>
                                                 </div>
                                             </div>

@@ -3,6 +3,9 @@
 $(document).ready(function () {
     $('.tabla-dinamica').each(function () {
         if (!DataTable.isDataTable(this)) {
+            
+            const textoVacio = this.dataset.empty || "No hay registros disponibles";
+
             new DataTable(this, {
                 paging: false,
                 searching: false,
@@ -10,6 +13,9 @@ $(document).ready(function () {
                 ordering: true,
                 autoWidth: false,
                 scrollX: false,
+                language: {
+                    emptyTable: textoVacio,
+                },
                 colResize: {
                     isEnabled: true,
                     saveState: false

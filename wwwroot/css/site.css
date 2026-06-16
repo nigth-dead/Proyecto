@@ -256,6 +256,7 @@ body {
   padding: 0 10px;
   box-sizing: border-box;
   background-color: rgb(52, 73, 94);
+  color: white;
   margin-left: 4px;
 }
 
@@ -263,26 +264,33 @@ body {
   color: white;
 }
 
-.lupa-inventario {
+.img-lupa {
   height: 35px;
+}
+
+.btn-busqueda-lupa {
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 0 30px 30px 0;
   border-style: solid;
   border-color: black;
   border-width: 2px;
   border-left: 0;
-  box-sizing: border-box;
   background-color: rgb(52, 73, 94);
+  box-sizing: border-box;
 }
 
-
+.btn-busqueda-lupa:hover {
+  background-color: rgb(67, 91, 115);
+}
 
 .tablas {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
-
-
 
 .contenedor-tabla {
   display: flex;
@@ -411,14 +419,79 @@ body {
 .estilo-historial {
   display: flex;
   flex: 1;
+  overflow: auto;
 }
 
 .historial {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: auto;
+  overflow: hidden;
   align-items: stretch;
+  height: 100vh;
+}
+
+
+
+.contenedor-tabla-historial {
+  display: flex;
+  overflow: hidden;
+  text-align: center;
+  margin: 0 4px 4px 4px;
+  border-radius: 10px;
+}
+
+.tabla-ventas {
+  display: flex;
+  background-color: rgb(47, 54, 64);
+  overflow: auto;
+}
+
+.tabla-ventas table {
+  min-height: auto;
+}
+
+/*Quita el espacio de arriba de las tablas*/
+.dt-layout-row {
+  margin: 0 !important;
+}
+
+/*Acomodar las tablas numericas correctamente*/
+.tabla-ventas thead th.dt-type-numeric .dt-column-header {
+  flex-direction: row !important;
+}
+
+.tabla-ventas thead th.dt-type-numeric {
+  text-align: left !important;
+}
+
+.tabla-ventas tbody td.dt-type-numeric {
+  text-align: center !important;
+}
+/*Cambiar el color de la barra de scroll*/
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(47, 54, 64);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(160, 160, 160);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(190, 190, 190);
+}
+/**/
+
+.tabla-ventas thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 
 .estilo-historial .menu {
@@ -431,17 +504,11 @@ body {
   background-color: rgb(44, 62, 80);
 }
 
+
+
 /*tienda*/
 .estilo-tiendas {
   display: flex;
-}
-
-.historial {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  align-items: stretch;
 }
 
 .tiendas {
