@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using Proyecto.Models;
 using System.Text.Json;
 
@@ -18,6 +19,8 @@ public class TiendasModel : PageModel
     public String Direccion { get; set; } ="";
     [BindProperty]
     public int TiendaId { get; set; }
+    [BindProperty]
+    public string ParametroDeBusqueda { get; set; } = "";
 
     
     public async Task OnGetAsync()
@@ -30,29 +33,7 @@ public class TiendasModel : PageModel
         using(dbContext = new punto_de_ventaContext())
         {
             var tiendas = await dbContext.Tienda.ToListAsync();
-
-            var totales = await dbContext.Venta
-                .GroupBy(v => v.TiendaId)
-                .Select(t => new
-                {
-                    TiendaId = t.Key,
-                    Total = t.Sum(v => v.Total)
-                })
-                .ToListAsync();
-
-            Tiendas = tiendas.Select(t =>
-            {
-                var total = totales.FirstOrDefault(x => x.TiendaId == t.TiendaId);
-
-                return new TiendaVM
-                {
-                    TiendaId = t.TiendaId,
-                    Nombre = t.Nombre,
-                    Direccion = t.Direccion,
-                    Estado = t.Estado,
-                    VentaTotal = total?.Total ?? 0
-                };
-            }).ToList();
+            await CalcularTotales(tiendas);
         }
     }
 
@@ -128,5 +109,58 @@ public class TiendasModel : PageModel
             await dbContext.SaveChangesAsync();
         }
         return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostBusquedaAsync()
+    {
+        using(dbContext = new punto_de_ventaContext())
+        {
+            List<Tienda> tiendas;
+            if (string.IsNullOrWhiteSpace(ParametroDeBusqueda))
+            {
+                tiendas = await dbContext.Tienda.ToListAsync();
+                
+            }
+            else
+            {
+                tiendas = await dbContext.Tienda
+                .Where(t => t.Nombre.Contains(ParametroDeBusqueda)||
+                t.Direccion.Contains(ParametroDeBusqueda))
+                .ToListAsync();
+            }
+            await CalcularTotales(tiendas);
+        }
+        return Page();
+    }
+
+    private async Task CalcularTotales(List<Tienda> tiendas)
+    {
+        using(dbContext = new punto_de_ventaContext())
+        {
+            var totales = await dbContext.Venta
+                .Where(v => v.Fecha >= DateTime.Today &&
+                v.Fecha < DateTime.Today.AddDays(1))
+                .GroupBy(v => v.TiendaId)
+                .Select(t => new
+                {
+                    TiendaId = t.Key,
+                    Total = t.Sum(v => v.Total)
+                })
+                .ToListAsync();
+
+            Tiendas = tiendas.Select(t =>
+            {
+                var total = totales.FirstOrDefault(x => x.TiendaId == t.TiendaId);
+
+                return new TiendaVM
+                {
+                    TiendaId = t.TiendaId,
+                    Nombre = t.Nombre,
+                    Direccion = t.Direccion,
+                    Estado = t.Estado,
+                    VentaTotal = total?.Total ?? 0
+                };
+            }).ToList();
+        }
     }
 }

@@ -11,7 +11,7 @@ public partial class Usuario
 
     public string Nombre { get; set; } = null!;
 
-    public string? Telefono { get; set; }
+    public string Telefono { get; set; } = "";
 
     /// <summary>
     /// Guardar como hash (bcrypt/argon2)

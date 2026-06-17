@@ -71,14 +71,10 @@
             </div>
 
             <div class="fila">
-                <div class="busqueda">
-                    <input class="barra-busqueda" type="text" placeholder="Buscar producto por nombre o codigo">
-                    <div>
-                        <a asp-page="/Index">
-                            <img src="/img/lupa.png" alt="" class="lupa-inventario">
-                        </a>
-                    </div>
-                </div>
+                <form method="post" asp-page-handler="Busqueda" class="busqueda">
+                    <input class="barra-busqueda" type="text" placeholder="Buscar producto por nombre, categoria o codigo" name="ParametroDeBusqueda" value="@Model.ParametroDeBusqueda">
+                    <button type="submit" class="btn-busqueda-lupa"><img src="/img/lupa.png" alt="" class="img-lupa"></button>
+                </form>
 
                 <div class="info-encabezado">
                     <button class="elemento-info-encabezado" data-bs-toggle="modal" data-bs-target="#modal-producto">
@@ -107,7 +103,7 @@
 
                                         <div class="info-tienda">
                                             Precio:
-                                            <input asp-for="NuevoProducto.Precio" type="number" step="0.01" min="0" class="form-control" required>
+                                            <input asp-for="NuevoProducto.Precio" type="number" step="0.01" min="0.01" class="form-control" required>
                                         </div>
 
                                         <div class="info-tienda">
@@ -217,7 +213,7 @@
 
                                                             <div class="info-tienda">
                                                                 Precio:
-                                                                <input type="number" class="form-control" name="ProductoEditar.Precio" step="0.01" min="0" required
+                                                                <input type="number" class="form-control" name="ProductoEditar.Precio" step="0.01" min="0.01" required
                                                                        value="@producto.Precio">
                                                             </div>
 

@@ -24,7 +24,7 @@ public class EmpleadosModel : PageModel
     [BindProperty]
     public string Nombre { get; set; } = null!;
     [BindProperty]
-    public string? Telefono { get; set; }
+    public string Telefono { get; set; } = "";
     [BindProperty]
     public string Contrasena { get; set; } = null!;
     [BindProperty]
@@ -33,6 +33,8 @@ public class EmpleadosModel : PageModel
     public bool? Trabajando { get; set; }
     [BindProperty]
     public bool? Contratado { get; set; }
+    [BindProperty]
+    public string ParametroDeBusqueda { get; set; } = "";
 
     /*Cargar datos*/
     public async Task OnGetAsync()
@@ -119,5 +121,38 @@ public class EmpleadosModel : PageModel
             }
         }
         return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostBusquedaAsync()
+    {
+        CargarTiendaActual();
+
+        using (dbContext = new punto_de_ventaContext())
+        {
+            /*Tiendas*/
+            Tiendas = await dbContext.Tienda.ToListAsync();
+            if (string.IsNullOrWhiteSpace(ParametroDeBusqueda))
+            {
+                if (TiendaActual != null)
+                {
+                    /*Usuarios de la tienda*/
+                    Usuarios = await dbContext.Usuario
+                        .Where(u => u.TiendaId == TiendaActual.TiendaId)
+                        .ToListAsync();
+                }
+            } else
+            {
+                if (TiendaActual != null)
+                {
+                    /*Usuarios de la tienda*/
+                    Usuarios = await dbContext.Usuario
+                        .Where(u => u.TiendaId == TiendaActual.TiendaId &&
+                        (u.Nombre.Contains(ParametroDeBusqueda) ||
+                        u.Telefono.Contains(ParametroDeBusqueda)))
+                        .ToListAsync();
+                }
+            }
+        }
+        return Page();
     }
 }

@@ -26,6 +26,8 @@ public class PedidosModel : PageModel
     public string? TipoMensaje { get; set; }
     [TempData]
     public string? TituloMensaje { get; set; }
+    [BindProperty]
+    public string ParametroDeBusqueda { get; set; } = "";
 
     public async Task OnGetAsync()
     {
@@ -167,5 +169,42 @@ public class PedidosModel : PageModel
         }
 
         return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostBusquedaAsync()
+    {
+        CargarTiendaActual();
+        using(dbContext = new punto_de_ventaContext())
+        {
+            if (TiendaActual != null)
+            {
+                if (string.IsNullOrWhiteSpace(ParametroDeBusqueda))
+                {
+                    Pedidos = await dbContext.HistorialPedido
+                    .Include(p => p.Proveedor)
+                    .Include(p => p.Usuario)
+                    .Include(p => p.HistorialPedidoDetalle)
+                    .ThenInclude(p => p.Producto)
+                    .ThenInclude(p => p.Inventario)
+                    .Where(i => i.TiendaId == TiendaActual.TiendaId)
+                    .ToListAsync();
+                }
+                else
+                {
+                    Pedidos = await dbContext.HistorialPedido
+                    .Where(i => i.TiendaId == TiendaActual.TiendaId)
+                    .Where(p => p.PedidoId.ToString().Contains(ParametroDeBusqueda)||
+                    p.Usuario.Nombre.Contains(ParametroDeBusqueda)||
+                    p.Proveedor.Nombre.Contains(ParametroDeBusqueda))
+                    .Include(p => p.Proveedor)
+                    .Include(p => p.Usuario)
+                    .Include(p => p.HistorialPedidoDetalle)
+                    .ThenInclude(p => p.Producto)
+                    .ThenInclude(p => p.Inventario)
+                    .ToListAsync();
+                }
+            }
+        }
+        return Page();
     }
 }

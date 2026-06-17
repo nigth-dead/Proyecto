@@ -37,6 +37,8 @@ public class DetallesTiendaModel : PageModel
     public string? TipoMensaje { get; set; }
     [TempData]
     public string? TituloMensaje { get; set; }
+    [BindProperty]
+    public String ParametroDeBusqueda { get; set; } = "";
 
 
     public async Task OnGetAsync()
@@ -259,5 +261,38 @@ public class DetallesTiendaModel : PageModel
                 .ToListAsync();
             }
         }
+    }
+
+    public async Task<IActionResult> OnPostBusqueda()
+    {
+        CargarTiendaActual();
+        using (dbContext = new punto_de_ventaContext())
+        {
+            if (string.IsNullOrWhiteSpace(ParametroDeBusqueda))
+            {
+                if (TiendaActual != null)
+                {
+                    Inventarios = await dbContext.Inventario
+                    .Include(i => i.Producto)
+                    .ThenInclude(p => p.Categoria)
+                    .Where(i => i.TiendaId == TiendaActual.TiendaId)
+                    .ToListAsync();
+                }
+            } else
+            {
+                if (TiendaActual != null)
+                {
+                    Inventarios = await dbContext.Inventario
+                    .Where(i => i.TiendaId == TiendaActual.TiendaId &&
+                    (i.Producto.Nombre.Contains(ParametroDeBusqueda)||
+                    i.Producto.Categoria.Nombre.Contains(ParametroDeBusqueda)||
+                    i.Producto.Codigo.Contains(ParametroDeBusqueda)))
+                    .Include(i => i.Producto)
+                    .ThenInclude(p => p.Categoria)
+                    .ToListAsync();
+                }
+            }
+        }
+        return Page();
     }
 }

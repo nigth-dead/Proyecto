@@ -19,6 +19,9 @@ public class InventarioModel : PageModel
 
     [BindProperty]
     public Producto ProductoEditar { get; set; } = new();
+    [BindProperty]
+    public string ParametroDeBusqueda { get; set; } = "";
+
     public IActionResult OnPostAgregar()
     {
         using (dbContext = new punto_de_ventaContext())
@@ -98,6 +101,31 @@ public class InventarioModel : PageModel
             await dbContext.SaveChangesAsync();
         }
         return RedirectToPage();
+    }
+
+    public async Task<IActionResult> OnPostBusquedaAsync()
+    {
+        using (dbContext = new punto_de_ventaContext())
+        {
+            if (string.IsNullOrWhiteSpace(ParametroDeBusqueda))
+            {
+                Productos = dbContext.Producto
+                    .Include(p => p.Inventario)
+                    .Include(p => p.Categoria)
+                    .ToList();
+            }
+            else
+            {
+                Productos = dbContext.Producto
+                    .Where(p => p.Nombre.Contains(ParametroDeBusqueda)||
+                    p.Codigo.Contains(ParametroDeBusqueda)||
+                    p.Categoria.Nombre.Contains(ParametroDeBusqueda))
+                    .Include(p => p.Inventario)
+                    .Include(p => p.Categoria)
+                    .ToList();
+            }
+        }
+        return Page();
     }
 }
 

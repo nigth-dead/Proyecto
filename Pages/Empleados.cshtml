@@ -55,8 +55,8 @@
                 <div class="titulo">Empleados de la tienda: @Model.TiendaActual?.Nombre</div>
             </div>
             <div class="fila">
-                <form method="postBusqueda" class="busqueda">
-                    <input class="barra-busqueda" type="text" placeholder="Buscar por nombre o telefono">
+                <form method="post" asp-page-handler="Busqueda" class="busqueda">
+                    <input class="barra-busqueda" type="text" placeholder="Buscar por nombre o telefono" name="ParametroDeBusqueda" value="@Model.ParametroDeBusqueda">
                     <button type="submit" class="btn-busqueda-lupa"><img src="/img/lupa.png" alt="" class="img-lupa"></button>
                 </form>
                 <div class="info-encabezado">
