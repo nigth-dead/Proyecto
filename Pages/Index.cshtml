@@ -3,31 +3,77 @@
 @{
     ViewData["Title"] = "Home page";
 }
-<!--ya no se usa el menú de navegación ni el pie de página, por lo que se han comentado en el archivo _Layout.cshtml-->
 
-<!--Login--> 
+
+<!--Login-->
 <div class="estilo-login row">
     <div class="col"></div>
-    
-    <div class="estilo-login col">
-        <form method="post" class="login">
-            
-            <img class="img_Usuario" src="/img/usuarioIcono2.png" alt="Icono de usuario">
 
-            <div class="mb-3">
-                <input asp-for="Nombre" type="text" class="form-control" placeholder="Usuario">
-                <input asp-for="Contrasena" type="password" class="form-control" placeholder="Contraseña">
-            </div>
-            <button type="submit" class="btn btn-primary">
-                Ingresar
-            </button>
-            @if (!string.IsNullOrEmpty(Model.Mensaje))
-            {
-                <p class="text-danger mt-2">@Model.Mensaje</p>
-            }
-        </form>
-    
+    <div class="estilo-login col">
+        @if (Model.MostrarSeleccionTienda)
+        {
+            <form method="post" asp-page-handler="SeleccionarTienda" class="login">
+                <img class="img_Usuario" src="/img/usuarioIcono2.png" alt="Icono de usuario">
+
+                <h5 class="text-center">Selecciona una tienda</h5>
+
+                <div class="mb-3">
+                    <select asp-for="TiendaIdSeleccionada" class="form-control form-select" required>
+                        <option value="" selected disabled>Seleccione una tienda</option>
+
+                        @foreach (var tienda in Model.TiendasAsignadas)
+                        {
+                            <option value="@tienda.TiendaId">@tienda.Nombre</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Entrar
+                </button>
+
+                <a asp-page="/Index" asp-page-handler="CerrarSesion" class="btn btn-secondary mt-2">
+                    Cancelar
+                </a>
+
+                @if (!string.IsNullOrEmpty(Model.Mensaje))
+                {
+                    <p class="text-danger mt-2">@Model.Mensaje</p>
+                }
+            </form>
+        }
+        else
+        {
+            <form method="post" class="login">
+
+                <img class="img_Usuario" src="/img/usuarioIcono2.png" alt="Icono de usuario">
+
+                <div class="mb-3">
+                    <input asp-for="Nombre"
+                           type="text"
+                           class="form-control"
+                           placeholder="Usuario"
+                           required>
+
+                    <input asp-for="Contrasena"
+                           type="password"
+                           class="form-control"
+                           placeholder="Contraseña"
+                           required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Ingresar
+                </button>
+
+                @if (!string.IsNullOrEmpty(Model.Mensaje))
+                {
+                    <p class="text-danger mt-2">@Model.Mensaje</p>
+                }
+            </form>
+        }
     </div>
+
     <!--seleccion de usuarios registrados-->
     <div class="col">
         <div class="cuentas">
@@ -37,4 +83,3 @@
         </div>
     </div>
 </div>
-    

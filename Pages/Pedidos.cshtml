@@ -4,71 +4,111 @@
 @{
     ViewData["Title"] = "Pedidos";
 }
+
 <div class="estilo-tiendas">
-    
+
     <ul class="nav menu">
         <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion"><img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt=""></button>
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion">
+                <img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt="">
+            </button>
+
             <div class="modal" tabindex="-1" id="modal-sesion">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">Informacion de Usuario</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close">
+                            </button>
                         </div>
+
                         <div class="modal-body">
-                            @if(Model.UsuarioActual != null){
+                            @if (Model.UsuarioActual != null)
+                            {
                                 <p>Nombre: @Model.UsuarioActual.Nombre</p>
                                 <p>Telefono: @Model.UsuarioActual.Telefono</p>
                                 <p>Rol: @Model.UsuarioActual.Rol</p>
                             }
                         </div>
+
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Aceptar</button>
-                            <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                Aceptar
+                            </button>
+
+                            <a asp-page="/Index" asp-page-handler="CerrarSesion" class="btn btn-primary">
+                                Cerrar sesion
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" asp-page="/Administrador"><img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt=""></a>
+            <a class="nav-link" asp-page="/Administrador">
+                <img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt="">
+            </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" asp-page="/Inventario"><img title="Inventario" class = "img-menu" src="/img/barcode-solid.svg" alt=""></a>
+            <a class="nav-link" asp-page="/Inventario">
+                <img title="Inventario" class="img-menu" src="/img/barcode-solid.svg" alt="">
+            </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link seleccionado" asp-page="/Tiendas"><img title="Tiendas" class="img-menu" src="/img/store.svg" alt=""></a>
+            <a class="nav-link seleccionado" asp-page="/Tiendas">
+                <img title="Tiendas" class="img-menu" src="/img/store.svg" alt="">
+            </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" asp-page="/Historial"><img title="Historial" class="img-menu" src="/img/historial.svg" alt=""></a>
+            <a class="nav-link" asp-page="/Historial">
+                <img title="Historial" class="img-menu" src="/img/historial.svg" alt="">
+            </a>
         </li>
     </ul>
+
     <div class="tiendas detalles-tienda">
         <div class="encabezado">
             <div class="fila-titulo">
                 <div class="regreso">
-                    <a asp-page="/DetallesTienda" class="btn-regreso"><img src="/img/arrow-left-solid.svg" alt=""></a>
+                    <a asp-page="/DetallesTienda" class="btn-regreso">
+                        <img src="/img/arrow-left-solid.svg" alt="">
+                    </a>
                 </div>
+
                 <div class="titulo">
                     Pedidos de la tienda:
-                    @if(Model.TiendaActual != null){
-                        @Model.TiendaActual.Nombre
-                    }
+                    @(Model.TiendaActual?.Nombre ?? "Sin tienda seleccionada")
                 </div>
             </div>
+
             <div class="fila">
                 <form method="post" asp-page-handler="Busqueda" class="busqueda completo">
-                    <input class="barra-busqueda" type="text" placeholder="Buscar por codigo, usuario o proveedor" name="ParametroDeBusqueda" value="@Model.ParametroDeBusqueda">
-                    <button type="submit" class="btn-busqueda-lupa"><img src="/img/lupa.png" alt="" class="img-lupa"></button>
+                    <input class="barra-busqueda"
+                           type="text"
+                           placeholder="Buscar por código, usuario, proveedor, producto o estado"
+                           name="ParametroDeBusqueda"
+                           value="@Model.ParametroDeBusqueda">
+
+                    <button type="submit" class="btn-busqueda-lupa">
+                        <img src="/img/lupa.png" alt="" class="img-lupa">
+                    </button>
                 </form>
             </div>
         </div>
-        <div class="detalles">
+
+        <div class="detalles orden-correcto">
             <div class="contenedor-tabla-detalles">
-                <table class="table table-dark table-striped tabla-dinamica">
+                <table class="table table-dark table-striped tabla-mayor-menor" data-empty="No se encontraron pedidos">
                     <thead>
                         <tr>
                             <th scope="col">Codigo</th>
@@ -80,53 +120,140 @@
                             <th scope="col" class="no-ordenar"></th>
                         </tr>
                     </thead>
+
                     <tbody>
-                        @foreach(HistorialPedido pedido in Model.Pedidos){
+                        @foreach (HistorialPedido pedido in Model.Pedidos)
+                        {
                             <tr>
-                                
-                                <td>@pedido.PedidoId<span class="invisible">codigo</span></td>
-                                <td>@pedido.Fecha</td>
-                                <td>@pedido.Proveedor.Nombre</td>
-                                <td>@pedido.Usuario?.Nombre</td>
-                                <td>@pedido.MontoTotal<span class="invisible">Total</span></td>
-                                <td>@pedido.Estado</td>
-                                <td><button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-reducir-stock-@pedido.PedidoId">Detalles<img class="btn-inventario"src="/img/editar.svg" alt=""></button>
-                                    <div class="modal" tabindex="-1" id="modal-reducir-stock-@pedido.PedidoId" data-bs-backdrop="static">
+                                <td>@pedido.PedidoId</td>
+
+                                <td data-order="@pedido.Fecha.ToString("yyyy-MM-dd HH:mm:ss")">
+                                    @pedido.Fecha.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+
+                                <td>@(pedido.Proveedor?.Nombre ?? "Sin proveedor")</td>
+
+                                <td>@(pedido.Usuario?.Nombre ?? "Sin usuario")</td>
+
+                                <td>@pedido.MontoTotal.ToString("C")</td>
+
+                                <td>
+                                    @if (pedido.Estado == "Pendiente")
+                                    {
+                                        @:<p class="text-warning">Pendiente</p>
+                                    }
+                                    else if (pedido.Estado == "Completado")
+                                    {
+                                        @:<p class="text-success">Completado</p>
+                                    }
+                                    else
+                                    {
+                                        @:<p class="text-danger">Cancelado</p>
+                                    }
+                                </td>
+
+                                <td>
+                                    <button class="btn-detalles-tienda"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal-detalles-pedido-@pedido.PedidoId">
+                                        Detalles
+                                        <img class="btn-inventario" src="/img/editar.svg" alt="">
+                                    </button>
+
+                                    <div class="modal" tabindex="-1" id="modal-detalles-pedido-@pedido.PedidoId" data-bs-backdrop="static">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
-                                                <form method="post" id="ActualizarPedido">
+                                                <form method="post" id="ActualizarPedido-@pedido.PedidoId">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">Informacion del pedido</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
+
+                                                        <button type="button"
+                                                                class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close">
+                                                        </button>
                                                     </div>
+
                                                     <div class="modal-body">
-                                                        <!--Ingresar datos-->
-                                                        @foreach(HistorialPedidoDetalle detalle in pedido.HistorialPedidoDetalle){
-                                                            <input type="hidden" class="form-control" id="pedidoId-@pedido.PedidoId" name="PedidoId" value="@pedido.PedidoId">
-                                                            <div class="info-tienda">
-                                                            Producto: <input type="text" class="form-control" id="producto-@pedido.PedidoId" value="@detalle.Producto.Nombre" disabled>
-                                                            </div>
-                                                            <div class="info-tienda">
-                                                                Cantidad: <input type="text" class="form-control" value="@detalle.Cantidad" id="cantidad-@pedido.PedidoId" disabled>
+                                                        <input type="hidden" name="PedidoId" value="@pedido.PedidoId">
+
+                                                        @foreach (HistorialPedidoDetalle detalle in pedido.HistorialPedidoDetalle)
+                                                        {
+                                                            <div class="producto-venta">
+                                                                <div class="info-tienda">
+                                                                    Producto:
+                                                                    <input type="text"
+                                                                           class="form-control"
+                                                                           value="@(detalle.Producto?.Nombre ?? "Sin producto")"
+                                                                           disabled>
+                                                                </div>
+
+                                                                <div class="info-tienda">
+                                                                    Cantidad:
+                                                                    <input type="text"
+                                                                           class="form-control"
+                                                                           value="@detalle.Cantidad"
+                                                                           disabled>
+                                                                </div>
                                                             </div>
                                                         }
+
                                                         <div class="info-tienda">
-                                                            Monto Total: <input type="text" class="form-control" id="monto-total" value="@pedido.MontoTotal" disabled>
+                                                            Monto Total:
+                                                            <input type="text"
+                                                                   class="form-control"
+                                                                   value="@pedido.MontoTotal.ToString("C")"
+                                                                   disabled>
                                                         </div>
+
                                                         <div class="info-tienda">
-                                                            <!--Si esta concluido o cancelado desactivar esta opcion-->
-                                                            Estado: <select name="Estado" class="form-control form-select" id="pedido" disabled="@(pedido.Estado != "Pendiente")">
-                                                                <option value="Pendiente" selected="@(pedido.Estado == "Pendiente")">Pendiente</option>
-                                                                <option value="Completado" selected="@(pedido.Estado == "Completado")">Completado</option>
-                                                                <option value="Cancelado" selected="@(pedido.Estado == "Cancelado")">Cancelado</option>
+                                                            Estado:
+                                                            <select name="Estado"
+                                                                    class="form-control form-select"
+                                                                    id="estado-pedido-@pedido.PedidoId"
+                                                                    disabled="@(pedido.Estado != "Pendiente")">
+
+                                                                <option value="Pendiente" selected="@(pedido.Estado == "Pendiente")">
+                                                                    Pendiente
+                                                                </option>
+
+                                                                <option value="Completado" selected="@(pedido.Estado == "Completado")">
+                                                                    Completado
+                                                                </option>
+
+                                                                <option value="Cancelado" selected="@(pedido.Estado == "Cancelado")">
+                                                                    Cancelado
+                                                                </option>
                                                             </select>
                                                         </div>
+
+                                                        @if (pedido.Estado != "Pendiente")
+                                                        {
+                                                            <p class="text-warning mb-0">
+                                                                Este pedido ya fue cerrado y no puede modificarse.
+                                                            </p>
+                                                        }
                                                     </div>
+
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                                        <button type="button"
+                                                                class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                            Cancelar
+                                                        </button>
+
+                                                        @if (pedido.Estado == "Pendiente")
+                                                        {
+                                                            <button type="submit" class="btn btn-primary">
+                                                                Guardar Cambios
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button type="submit" class="btn btn-primary" disabled>
+                                                                Guardar Cambios
+                                                            </button>
+                                                        }
                                                     </div>
                                                 </form>
                                             </div>
@@ -141,6 +268,7 @@
         </div>
     </div>
 </div>
+
 @if (!string.IsNullOrWhiteSpace(Model.Mensaje))
 {
     <div class="modal fade" id="modalMensaje" tabindex="-1">

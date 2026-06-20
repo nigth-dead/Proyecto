@@ -5,7 +5,6 @@
 }
 
 <style>
-    /* Estilo para que el menú desplegable se vea bien en tu tema oscuro */
     .sugerencia-item {
         cursor: pointer;
         background-color: #343a40;
@@ -20,65 +19,91 @@
 
 <div class="estilo-cajero">
     @Html.AntiForgeryToken()
+
     <div class="encabezado">
         <div class="fila">
-            <div class="titulo">Caja #</div>
+            <div class="titulo">Tienda: @(Model.Tienda?.Nombre ?? "Sin tienda seleccionada")</div>
         </div>
-        <div class="fila">
-            <div class="busqueda">
-                <div>
-                    <div>
-                        <button class="sesion" data-bs-toggle="modal" data-bs-target="#modal-sesion">
-                            <img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt="">
-                        </button>
-                        <div class="modal" tabindex="-1" id="modal-sesion">
-                            <div class="modal-dialog">
-                                <div class="modal-content text-dark">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Informacion de usuario</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        @if (Model.UsuarioActual != null)
-                                        {
-                                            <p>Nombre: @Model.UsuarioActual.Nombre</p>
-                                            <p>Telefono: @Model.UsuarioActual.Telefono</p>
-                                            <p>Rol: @Model.UsuarioActual.Rol</p>
-                                        }
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">Aceptar</button>
-                                        <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>
-                                    </div>
-                                </div>
+
+        <div class="fila fila-cajero">
+            <div class="busqueda-cajero">
+                <button class="sesion" data-bs-toggle="modal" data-bs-target="#modal-sesion">
+                    <img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt="">
+                </button>
+
+                <div class="modal" tabindex="-1" id="modal-sesion">
+                    <div class="modal-dialog">
+                        <div class="modal-content text-dark">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Informacion de usuario</h5>
+
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                @if (Model.UsuarioActual != null)
+                                {
+                                    <p>Nombre: @Model.UsuarioActual.Nombre</p>
+                                    <p>Telefono: @Model.UsuarioActual.Telefono</p>
+                                    <p>Rol: @Model.UsuarioActual.Rol</p>
+                                }
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Aceptar
+                                </button>
+
+                                <a asp-page="/Index"
+                                   asp-page-handler="CerrarSesion"
+                                   id="btn-cerrar-sesion"
+                                   class="btn btn-primary">
+                                    Cerrar sesion
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div style="position: relative; flex-grow: 1; margin-right: 15px;">
-                    <input class="barra-busqueda" type="text" id="buscador" placeholder="Buscar producto por codigo o nombre" autocomplete="off" style="width: 100%; border-radius: 10px;">
+                <div class="contenedor-buscador-cajero">
+                    <input class="barra-busqueda"
+                           type="text"
+                           id="buscador"
+                           placeholder="Buscar producto por codigo o nombre"
+                           autocomplete="off">
 
-                    <ul id="lista-sugerencias" class="list-group position-absolute shadow"
-                        style="z-index: 1050; display: none; width: 100%; top: 100%; left: 0; max-height: 250px; overflow-y: auto;">
+                    <ul id="lista-sugerencias" class="list-group position-absolute shadow">
                     </ul>
                 </div>
-
             </div>
-            <div class="info-encabezado">
-                <div class="elemento-info-encabezado">
-                    Codigo de venta
+
+            <div class="info-encabezado cajero-info">
+                <div class="elemento-info-encabezado" id="codigo-venta">
+                    Ultima venta #
                 </div>
+
                 <time class="elemento-info-encabezado">
                     @Model.Fecha
                 </time>
-                <div class="elemento-info-encabezado">
-                    <a asp-page="/Index" style="text-decoration: none; color: inherit;">
-                        <div>Corte De Caja</div>
-                    </a>
-                </div>
+
+                <button type="button"
+                        class="elemento-info-encabezado btn-cancelar-venta"
+                        id="btn-cancelar-venta">
+                    Cancelar venta
+                </button>
+
+                <button type="button"
+                        class="elemento-info-encabezado"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modal-corte-caja">
+                    Corte De Caja
+                </button>
             </div>
         </div>
     </div>
@@ -93,28 +118,33 @@
                             <th scope="col">Codigo</th>
                             <th scope="col">Cantidad</th>
                             <th scope="col">Precio</th>
+                            <th scope="col" class="no-ordenar">Quitar</th>
                         </tr>
                     </thead>
+
                     <tbody id="cuerpo-tabla-productos">
                     </tbody>
                 </table>
             </div>
         </div>
+
         <div class="contenedor-tabla-cajero">
             <div class="tabla-superior">
                 <table class="table table-dark table-striped">
                     <thead>
                         <tr>
                             <th scope="col">Producto</th>
-                            <th scope="col" class="no-ordenar"><span class="transparente">aumentar</span></th>
+                            <th scope="col" class="no-ordenar"></th>
                             <th scope="col" class="no-ordenar">Cantidad</th>
-                            <th scope="col" class="no-ordenar"><span class="transparente">-reducir</span></th>
+                            <th scope="col" class="no-ordenar"></th>
                         </tr>
                     </thead>
+
                     <tbody id="cuerpo-tabla-acciones">
                     </tbody>
                 </table>
             </div>
+
             <div class="tabla-inferior">
                 <table class="table table-dark table-striped">
                     <tbody>
@@ -122,13 +152,297 @@
                             <td>Subtotal</td>
                             <td id="celda-subtotal">$0.00</td>
                         </tr>
+
+                        <tr>
+                            <td>IVA</td>
+                            <td id="celda-iva">$0.00</td>
+                        </tr>
+
                         <tr>
                             <td>Total</td>
                             <td id="celda-total">$0.00</td>
                         </tr>
                     </tbody>
                 </table>
+
                 <button id="btn-cobrar" class="cobrar-total">Cobrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-abrir-caja" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="AbrirCaja" id="form-abrir-caja" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title">Abrir caja</h5>
+                </div>
+
+                <div class="modal-body">
+                    <div class="info-tienda">
+                        Cajero:
+                        <input type="text"
+                               class="form-control"
+                               value="@Model.UsuarioActual?.Nombre"
+                               disabled>
+                    </div>
+
+                    <div class="info-tienda">
+                        Saldo inicial:
+                        <input type="number"
+                               id="saldo-inicial-caja"
+                               name="SaldoInicial"
+                               class="form-control"
+                               step="0.01"
+                               min="0"
+                               required>
+                    </div>
+
+                    <p class="text-danger fw-bold mt-2 mb-0">
+                        Debes abrir la caja antes de registrar ventas.
+                    </p>
+                </div>
+
+                <div class="modal-footer">
+                    <a asp-page="/Index"
+                       asp-page-handler="CerrarSesion"
+                       class="btn btn-secondary">
+                        Salir
+                    </a>
+
+                    <button type="submit" class="btn btn-success">
+                        Abrir caja
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-corte-caja" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" asp-page-handler="CorteCaja" id="form-corte-caja" novalidate>
+                <div class="modal-header">
+                    <h5 class="modal-title">Corte de caja</h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Cerrar">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="info-tienda">
+                        Cajero:
+                        <input type="text"
+                               class="form-control"
+                               value="@Model.UsuarioActual?.Nombre"
+                               disabled>
+                    </div>
+
+                    <div class="info-tienda">
+                        Fecha:
+                        <input type="text"
+                               class="form-control"
+                               value="@DateTime.Now.ToString("dd/MM/yyyy HH:mm")"
+                               disabled>
+                    </div>
+
+                    <div class="info-tienda">
+                        Total vendido:
+                        <input type="text"
+                               id="total-corte-actual"
+                               class="form-control"
+                               value="@Model.TotalCorteActual.ToString("C")"
+                               disabled>
+                    </div>
+
+                    <div class="info-tienda">
+                        Efectivo esperado:
+                        <input type="text"
+                               id="efectivo-esperado"
+                               class="form-control"
+                               value="@Model.EfectivoEsperado.ToString("C")"
+                               disabled>
+                    </div>
+
+                    <div class="info-tienda">
+                        Efectivo contado:
+                        <input type="number"
+                               id="saldo-final-corte"
+                               name="SaldoFinal"
+                               class="form-control"
+                               step="0.01"
+                               min="0"
+                               required>
+                    </div>
+
+                    <p class="text-danger fw-bold mt-2 mb-0">
+                        Al confirmar, se cerrará el corte de caja actual y se cerrará la sesión.
+                    </p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit"
+                            class="btn btn-danger">
+                        Confirmar corte
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-pago" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Método de pago</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="info-tienda">
+                    Método:
+                    <select id="metodo-pago" class="form-control form-select">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta">Tarjeta</option>
+                        <option value="Ambos">Efectivo y tarjeta</option>
+                    </select>
+                </div>
+
+                <div class="info-tienda">
+                    Total:
+                    <input type="text"
+                           id="total-pago"
+                           class="form-control"
+                           disabled>
+                </div>
+
+                <div id="grupo-efectivo" class="cont-pedido">
+                    <div class="info-tienda">
+                        Dinero recibido:
+                        <input type="number"
+                               id="monto-recibido"
+                               class="form-control"
+                               step="0.01"
+                               min="0">
+                    </div>
+                </div>
+
+                <div id="grupo-tarjeta" class="cont-pedido" style="display:none;">
+                    <div class="info-tienda">
+                        Monto con tarjeta:
+                        <input type="number"
+                               id="monto-tarjeta"
+                               class="form-control"
+                               step="0.01"
+                               min="0">
+                    </div>
+                </div>
+
+                <div id="grupo-cambio" class="cont-pedido">
+                    <div class="info-tienda">
+                        Cambio:
+                        <input type="text"
+                               id="cambio-pago"
+                               class="form-control"
+                               disabled>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <button type="button"
+                        id="btn-confirmar-pago"
+                        class="btn btn-success">
+                    Pagar e imprimir ticket
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-ticket" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header no-imprimir">
+                <h5 class="modal-title">Ticket de venta</h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div id="area-ticket" class="ticket">
+                </div>
+            </div>
+
+            <div class="modal-footer no-imprimir">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        onclick="window.print()">
+                    Imprimir otra vez
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-advertencia" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark" id="modal-advertencia-header">
+                <h5 class="modal-title" id="modal-advertencia-titulo">
+                    Advertencia
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Cerrar">
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <p id="modal-advertencia-mensaje" class="mb-0 text-dark"></p>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Aceptar
+                </button>
             </div>
         </div>
     </div>
@@ -142,9 +456,115 @@
     const cuerpoTablaProductos = document.getElementById('cuerpo-tabla-productos');
     const cuerpoTablaAcciones = document.getElementById('cuerpo-tabla-acciones');
     const celdaSubtotal = document.getElementById('celda-subtotal');
+    const celdaIva = document.getElementById('celda-iva');
     const celdaTotal = document.getElementById('celda-total');
 
-    // 1. Manejo del Buscador Dinámico
+    const metodoPago = document.getElementById('metodo-pago');
+    const grupoEfectivo = document.getElementById('grupo-efectivo');
+    const montoRecibido = document.getElementById('monto-recibido');
+
+    const grupoTarjeta = document.getElementById('grupo-tarjeta');
+    const montoTarjeta = document.getElementById('monto-tarjeta');
+
+    const grupoCambio = document.getElementById('grupo-cambio');
+    const cambioPago = document.getElementById('cambio-pago');
+    const totalPago = document.getElementById('total-pago');
+
+    const btnConfirmarPago = document.getElementById('btn-confirmar-pago');
+    const areaTicket = document.getElementById('area-ticket');
+
+    const IVA = 0.16;
+    let subtotalActual = 0;
+    let ivaActual = 0;
+    let totalActual = 0;
+
+    const formCorteCaja = document.getElementById("form-corte-caja");
+    const saldoFinalCorte = document.getElementById("saldo-final-corte");
+
+    formCorteCaja.addEventListener("submit", function (e) {
+        const valor = saldoFinalCorte.value.trim();
+        const saldo = Number(valor);
+
+        if (valor === "" || isNaN(saldo) || saldo < 0) {
+            e.preventDefault();
+            mostrarAdvertencia("Dato inválido", "Ingresa el efectivo contado antes de confirmar el corte.", "warning");
+            return;
+        }
+    });
+
+    function mostrarAdvertencia(titulo, mensaje, tipo = "warning") {
+        const modalElemento = document.getElementById("modal-advertencia");
+        const header = document.getElementById("modal-advertencia-header");
+        const tituloElemento = document.getElementById("modal-advertencia-titulo");
+        const mensajeElemento = document.getElementById("modal-advertencia-mensaje");
+
+        header.className = "modal-header";
+
+        if (tipo === "danger") {
+            header.classList.add("bg-danger", "text-white");
+        } else if (tipo === "success") {
+            header.classList.add("bg-success", "text-white");
+        } else if (tipo === "info") {
+            header.classList.add("bg-info", "text-dark");
+        } else {
+            header.classList.add("bg-warning", "text-dark");
+        }
+
+        tituloElemento.textContent = titulo;
+        mensajeElemento.textContent = mensaje;
+
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElemento);
+        modal.show();
+    }
+
+    const btnUltimaVenta = document.getElementById("codigo-venta");
+
+    btnUltimaVenta.addEventListener("click", function () {
+        if (areaTicket.innerHTML.trim() === "") {
+            mostrarAdvertencia("Sin ticket", "Todavía no hay un ticket generado.", "info");
+            return;
+        }
+
+        const modalTicket = bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-ticket'));
+        modalTicket.show();
+    });
+
+    function formatoMoneda(valor) {
+        return Number(valor).toLocaleString("es-MX", {
+            style: "currency",
+            currency: "MXN"
+        });
+    }
+
+    const btnCerrarSesion = document.getElementById("btn-cerrar-sesion");
+
+    btnCerrarSesion.addEventListener("click", function (e) {
+        const corteActivo = @Json.Serialize(Model.CorteActivo);
+
+        if (corteActivo) {
+            e.preventDefault();
+
+            const modalSesionElemento = document.getElementById("modal-sesion");
+            const modalSesion = bootstrap.Modal.getOrCreateInstance(modalSesionElemento);
+            modalSesion.hide();
+
+            setTimeout(() => {
+                const modalCorte = bootstrap.Modal.getOrCreateInstance(document.getElementById("modal-corte-caja"));
+                modalCorte.show();
+            }, 300);
+        }
+    });
+
+    function obtenerNumeroDesdeMoneda(texto) {
+        return Number(
+            texto
+                .replace("$", "")
+                .replace("MXN", "")
+                .replace(/,/g, "")
+                .trim()
+        );
+    }
+
     buscador.addEventListener('input', async function () {
         const termino = this.value.trim();
 
@@ -164,21 +584,37 @@
                 productos.forEach(prod => {
                     const li = document.createElement('li');
                     li.className = 'list-group-item sugerencia-item';
-                    li.textContent = `${prod.nombre} - $${prod.precio} (Cód: ${prod.codigo})`;
 
-                    // Al hacer clic en un producto de la lista
+                    if (prod.stock <= 0) {
+                        li.textContent = `${prod.nombre} - $${prod.precio} (Cód: ${prod.codigo}) | Sin stock`;
+                    } else {
+                        li.textContent = `${prod.nombre} - $${prod.precio} (Cód: ${prod.codigo}) | Stock: ${prod.stock}`;
+                    }
+
                     li.addEventListener('click', function () {
+                        if (prod.stock <= 0) {
+                            mostrarAdvertencia("Producto sin stock", `El producto "${prod.nombre}" no tiene stock disponible.`, "warning");
+                            buscador.focus();
+                            return;
+                        }
+
                         agregarAlCarrito(prod);
-                        buscador.value = ''; // Limpiamos la barra
-                        listaSugerencias.style.display = 'none'; // Ocultamos el menú
-                        buscador.focus(); // Regresamos el cursor a la barra
+                        buscador.value = '';
+                        listaSugerencias.style.display = 'none';
+                        buscador.focus();
                     });
 
                     listaSugerencias.appendChild(li);
                 });
+
                 listaSugerencias.style.display = 'block';
             } else {
-                listaSugerencias.style.display = 'none';
+                const li = document.createElement('li');
+                li.className = 'list-group-item sugerencia-item';
+                li.textContent = 'No hay productos disponibles con ese nombre o código';
+                listaSugerencias.appendChild(li);
+
+                listaSugerencias.style.display = 'block';
             }
         } catch (error) {
             console.error("Error al buscar productos:", error);
@@ -192,122 +628,450 @@
     });
 
     function agregarAlCarrito(producto) {
+        if (producto.stock <= 0) {
+            mostrarAdvertencia("Producto sin stock", `El producto "${producto.nombre}" no tiene stock disponible.`, "warning");
+            return;
+        }
+
         const itemExistente = carrito.find(p => p.codigo === producto.codigo);
 
         if (itemExistente) {
+            if (itemExistente.cantidad + 1 > producto.stock) {
+                mostrarAdvertencia("Stock insuficiente", `No hay suficiente stock de ${producto.nombre}. Stock disponible: ${producto.stock}.`, "warning");
+                return;
+            }
+
             itemExistente.cantidad += 1;
         } else {
             carrito.push({
                 codigo: producto.codigo,
                 nombre: producto.nombre,
-                precio: producto.precio,
+                precio: Number(producto.precio),
+                stock: Number(producto.stock),
                 cantidad: 1
             });
         }
+
         actualizarTablas();
     }
 
     function cambiarCantidad(codigo, cambio) {
         const index = carrito.findIndex(p => p.codigo === codigo);
-        if (index !== -1) {
-            carrito[index].cantidad += cambio;
 
-            // Si la cantidad llega a 0, lo quitamos del carrito
-            if (carrito[index].cantidad <= 0) {
+        if (index !== -1) {
+            const nuevaCantidad = carrito[index].cantidad + cambio;
+
+            if (nuevaCantidad <= 0) {
                 carrito.splice(index, 1);
+                actualizarTablas();
+                return;
             }
+
+            if (nuevaCantidad > carrito[index].stock) {
+                mostrarAdvertencia("Stock insuficiente", `No hay suficiente stock de ${carrito[index].nombre}. Stock disponible: ${carrito[index].stock}.`, "warning");
+                return;
+            }
+
+            carrito[index].cantidad = nuevaCantidad;
             actualizarTablas();
         }
     }
 
-    // 4. Redibujar el HTML y calcular totales
+    function eliminarProductoVenta(codigo) {
+        const index = carrito.findIndex(p => p.codigo === codigo);
+
+        if (index === -1) {
+            mostrarAdvertencia("Producto no encontrado", "No se pudo encontrar el producto en la venta.", "warning");
+            return;
+        }
+
+        const nombreProducto = carrito[index].nombre;
+
+        carrito.splice(index, 1);
+        actualizarTablas();
+
+        mostrarAdvertencia("Producto eliminado", `Se quitó "${nombreProducto}" de la venta.`, "info");
+    }
+
     function actualizarTablas() {
         cuerpoTablaProductos.innerHTML = '';
         cuerpoTablaAcciones.innerHTML = '';
-        let total = 0;
+
+        subtotalActual = 0;
 
         carrito.forEach(item => {
-            total += item.precio * item.cantidad;
+            subtotalActual += item.precio * item.cantidad;
 
-            // Tabla general
             cuerpoTablaProductos.innerHTML += `
                 <tr>
                     <td>${item.nombre}</td>
                     <td>${item.codigo}</td>
                     <td>${item.cantidad}</td>
-                    <td>$${item.precio}</td>
+                    <td>$${item.precio.toFixed(2)}</td>
+                    <td class="cantidad">
+                        <button class="btn-cantidad btn-quitar-producto" onclick="eliminarProductoVenta('${item.codigo}')">
+                            <img class="img-eliminar-producto" src="/img/eliminar.svg" alt="Eliminar">
+                        </button>
+                    </td>
                 </tr>
             `;
 
-            // Tabla de acciones
             cuerpoTablaAcciones.innerHTML += `
                 <tr>
                     <td>${item.nombre}</td>
-                    <td class="cantidad"><button class="btn-cantidad" onclick="cambiarCantidad('${item.codigo}', 1)"><img class="img-cantidad" src="/img/plus.svg" alt="+"></button></td>
+                    <td class="cantidad">
+                        <button class="btn-cantidad" onclick="cambiarCantidad('${item.codigo}', 1)">
+                            <img class="img-cantidad" src="/img/plus.svg" alt="+">
+                        </button>
+                    </td>
                     <td class="cantidad">${item.cantidad}</td>
-                    <td class="cantidad"><button class="btn-cantidad" onclick="cambiarCantidad('${item.codigo}', -1)"><img class="img-cantidad" src="/img/minus.svg" alt="-"></button></td>
+                    <td class="cantidad">
+                        <button class="btn-cantidad" onclick="cambiarCantidad('${item.codigo}', -1)">
+                            <img class="img-cantidad" src="/img/minus.svg" alt="-">
+                        </button>
+                    </td>
                 </tr>
             `;
         });
 
-        celdaSubtotal.innerText = `$${total.toFixed(2)}`;
-        celdaTotal.innerText = `$${total.toFixed(2)}`;
+        ivaActual = subtotalActual * IVA;
+        totalActual = subtotalActual + ivaActual;
+
+        celdaSubtotal.innerText = `$${subtotalActual.toFixed(2)}`;
+        celdaIva.innerText = `$${ivaActual.toFixed(2)}`;
+        celdaTotal.innerText = `$${totalActual.toFixed(2)}`;
     }
 
-    // 5. Función para Cobrar e insertar en la Base de Datos
     const btnCobrar = document.getElementById('btn-cobrar');
+    const btnCancelarVenta = document.getElementById("btn-cancelar-venta");
 
-    btnCobrar.addEventListener('click', async function () {
+    btnCobrar.addEventListener('click', function () {
         if (carrito.length === 0) {
-            alert("El carrito está vacío. Agrega productos para cobrar.");
+            mostrarAdvertencia("Carrito vacío", "Agrega productos para cobrar.", "warning");
             return;
         }
 
-        // Bloqueamos el botón para que el cajero no le dé doble clic por accidente
-        btnCobrar.disabled = true;
-        btnCobrar.innerText = "Procesando...";
+        metodoPago.value = "Efectivo";
+        grupoEfectivo.style.display = "block";
+        grupoTarjeta.style.display = "none";
+        grupoCambio.style.display = "block";
+
+        montoRecibido.value = "";
+        montoTarjeta.value = "";
+        cambioPago.value = "$0.00";
+        totalPago.value = formatoMoneda(totalActual);
+
+        const modalPago = new bootstrap.Modal(document.getElementById('modal-pago'));
+        modalPago.show();
+    });
+
+    function actualizarVistaMetodoPago() {
+        const metodo = metodoPago.value;
+
+        montoRecibido.value = "";
+        montoTarjeta.value = "";
+        cambioPago.value = "$0.00";
+
+        if (metodo === "Efectivo") {
+            grupoEfectivo.style.display = "block";
+            grupoTarjeta.style.display = "none";
+            grupoCambio.style.display = "block";
+        }
+        else if (metodo === "Tarjeta") {
+            grupoEfectivo.style.display = "none";
+            grupoTarjeta.style.display = "none";
+            grupoCambio.style.display = "none";
+        }
+        else if (metodo === "Ambos") {
+            grupoEfectivo.style.display = "block";
+            grupoTarjeta.style.display = "block";
+            grupoCambio.style.display = "block";
+        }
+    }
+
+    metodoPago.addEventListener('change', actualizarVistaMetodoPago);
+
+    btnCancelarVenta.addEventListener("click", function () {
+        if (carrito.length === 0) {
+            mostrarAdvertencia("Carrito vacío", "No hay una venta activa para cancelar.", "info");
+            return;
+        }
+
+        carrito = [];
+        actualizarTablas();
+
+        buscador.value = "";
+        listaSugerencias.innerHTML = "";
+        listaSugerencias.style.display = "none";
+
+        const modalPagoElemento = document.getElementById("modal-pago");
+        const modalPago = bootstrap.Modal.getInstance(modalPagoElemento);
+
+        if (modalPago) {
+            modalPago.hide();
+        }
+
+        mostrarAdvertencia("Venta cancelada", "La venta activa fue cancelada correctamente.", "success");
+    });
+
+    function actualizarCambioPago() {
+        const metodo = metodoPago.value;
+
+        if (metodo === "Efectivo") {
+            const efectivo = Number(montoRecibido.value);
+
+            if (montoRecibido.value.trim() === "" || isNaN(efectivo) || efectivo <= 0) {
+                cambioPago.value = "$0.00";
+                return;
+            }
+
+            const cambio = efectivo - totalActual;
+            cambioPago.value = cambio > 0 ? formatoMoneda(cambio) : "$0.00";
+            return;
+        }
+
+        if (metodo === "Ambos") {
+            if (montoRecibido.value.trim() === "" || montoTarjeta.value.trim() === "") {
+                cambioPago.value = "$0.00";
+                return;
+            }
+
+            const efectivo = Number(montoRecibido.value);
+            const tarjeta = Number(montoTarjeta.value);
+
+            if (isNaN(efectivo) || isNaN(tarjeta) || efectivo < 0 || tarjeta < 0) {
+                cambioPago.value = "$0.00";
+                return;
+            }
+
+            if (tarjeta >= totalActual) {
+                cambioPago.value = "$0.00";
+                return;
+            }
+
+            const efectivoNecesario = totalActual - tarjeta;
+            const cambio = efectivo - efectivoNecesario;
+
+            cambioPago.value = cambio > 0 ? formatoMoneda(cambio) : "$0.00";
+            return;
+        }
+
+        cambioPago.value = "$0.00";
+    }
+
+    montoRecibido.addEventListener('input', actualizarCambioPago);
+    montoTarjeta.addEventListener('input', actualizarCambioPago);
+
+    function generarTicket(resultado) {
+        let productosHtml = "";
+
+        carrito.forEach(item => {
+            const totalProducto = item.precio * item.cantidad;
+
+            productosHtml += `
+                <div class="ticket-producto">
+                    <span>${item.nombre} x${item.cantidad}</span>
+                    <span>$${totalProducto.toFixed(2)}</span>
+                </div>
+            `;
+        });
+
+        const nombreMetodo = resultado.metodoPago === "Ambos"
+            ? "Efectivo y tarjeta"
+            : resultado.metodoPago;
+
+        areaTicket.innerHTML = `
+            <h4>${resultado.tienda}</h4>
+            <p>Ticket de venta</p>
+            <p>${resultado.codigoVenta}</p>
+            <p>${resultado.fecha}</p>
+            <p>Cajero: ${resultado.cajero}</p>
+
+            <div class="ticket-linea"></div>
+
+            ${productosHtml}
+
+            <div class="ticket-linea"></div>
+
+            <div class="ticket-producto">
+                <strong>Subtotal</strong>
+                <strong>$${Number(resultado.subtotal).toFixed(2)}</strong>
+            </div>
+
+            <div class="ticket-producto">
+                <strong>IVA</strong>
+                <strong>$${Number(resultado.iva).toFixed(2)}</strong>
+            </div>
+
+            <div class="ticket-producto">
+                <strong>Total</strong>
+                <strong>$${Number(resultado.total).toFixed(2)}</strong>
+            </div>
+
+            <div class="ticket-linea"></div>
+
+            <div class="ticket-producto">
+                <span>Método</span>
+                <span>${nombreMetodo}</span>
+            </div>
+
+            <div class="ticket-producto">
+                <span>Efectivo</span>
+                <span>$${Number(resultado.montoRecibido).toFixed(2)}</span>
+            </div>
+
+            <div class="ticket-producto">
+                <span>Tarjeta</span>
+                <span>$${Number(resultado.montoTarjeta).toFixed(2)}</span>
+            </div>
+
+            <div class="ticket-producto">
+                <span>Cambio</span>
+                <span>$${Number(resultado.cambio).toFixed(2)}</span>
+            </div>
+
+            <div class="ticket-linea"></div>
+
+            <p>Gracias por su compra</p>
+        `;
+    }
+
+    btnConfirmarPago.addEventListener('click', async function () {
+        if (carrito.length === 0) {
+            mostrarAdvertencia("Carrito vacío", "El carrito está vacío.", "warning");
+            return;
+        }
+
+        const metodo = metodoPago.value;
+        let recibido = 0;
+        let tarjeta = 0;
+
+        if (metodo === "Efectivo") {
+            recibido = Number(montoRecibido.value);
+
+            if (isNaN(recibido) || recibido <= 0) {
+                mostrarAdvertencia("Pago incompleto", "Ingresa el dinero recibido.", "warning");
+                return;
+            }
+
+            if (recibido < totalActual) {
+                mostrarAdvertencia("Dinero insuficiente", "El dinero recibido no alcanza para pagar la venta.", "warning");
+                return;
+            }
+        }
+        else if (metodo === "Tarjeta") {
+            tarjeta = totalActual;
+        }
+        else if (metodo === "Ambos") {
+            recibido = Number(montoRecibido.value);
+            tarjeta = Number(montoTarjeta.value);
+
+            if (isNaN(recibido) || recibido <= 0) {
+                mostrarAdvertencia("Pago incompleto", "Ingresa el monto en efectivo.", "warning");
+                return;
+            }
+
+            if (isNaN(tarjeta) || tarjeta <= 0) {
+                mostrarAdvertencia("Pago incompleto", "Ingresa el monto con tarjeta.", "warning");
+                return;
+            }
+
+            if (tarjeta >= totalActual) {
+                mostrarAdvertencia(
+                    "Monto con tarjeta inválido",
+                    "En pago combinado, el monto con tarjeta debe ser menor al total. Si todo se pagará con tarjeta, selecciona solo Tarjeta.",
+                    "warning"
+                );
+                return;
+            }
+
+            if ((recibido + tarjeta) < totalActual) {
+                mostrarAdvertencia("Dinero insuficiente", "La suma de efectivo y tarjeta no alcanza para pagar la venta.", "warning");
+                return;
+            }
+        }
+
+        btnConfirmarPago.disabled = true;
+        btnConfirmarPago.innerText = "Procesando...";
 
         try {
-            // Obtenemos el token de seguridad oculto que insertamos arriba
             const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
             const token = tokenElement ? tokenElement.value : '';
 
-            // Preparamos los datos tal como los espera C#
-            const datosCarrito = carrito.map(item => ({
-                Codigo: item.codigo,
-                Cantidad: item.cantidad
-            }));
+            const datosVenta = {
+                metodoPago: metodo,
+                montoRecibido: recibido,
+                montoTarjeta: tarjeta,
+                carrito: carrito.map(item => ({
+                    codigo: item.codigo,
+                    cantidad: item.cantidad
+                }))
+            };
 
-            // Enviamos los datos por POST a nuestro handler "Cobrar"
             const respuesta = await fetch('?handler=Cobrar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'RequestVerificationToken': token
                 },
-                body: JSON.stringify(datosCarrito)
+                body: JSON.stringify(datosVenta)
             });
 
             const resultado = await respuesta.json();
 
             if (resultado.exito) {
-                // Si la base de datos responde que todo salió bien
-                alert(resultado.mensaje);
-                
-                // Limpiamos la pantalla para el siguiente cliente
+                document.getElementById("codigo-venta").innerText = "Venta " + resultado.codigoVenta;
+                document.getElementById("total-corte-actual").value = formatoMoneda(resultado.totalCorteActual);
+                document.getElementById("efectivo-esperado").value = formatoMoneda(resultado.efectivoEsperado);
+
+                generarTicket(resultado);
+
+                const modalPagoElemento = document.getElementById('modal-pago');
+                const modalPago = bootstrap.Modal.getOrCreateInstance(modalPagoElemento);
+                modalPago.hide();
+
+                const modalTicket = new bootstrap.Modal(document.getElementById('modal-ticket'));
+                modalTicket.show();
+
+                setTimeout(() => {
+                    window.print();
+                }, 500);
+
                 carrito = [];
                 actualizarTablas();
             } else {
-                alert(resultado.mensaje);
+                mostrarAdvertencia("No se pudo cobrar", resultado.mensaje, "danger");
             }
-
         } catch (error) {
             console.error("Error en la petición de cobro:", error);
-            alert("Ocurrió un error de conexión.");
+            mostrarAdvertencia("Error", "Ocurrió un error de conexión.", "danger");
         } finally {
-            // Desbloqueamos el botón
-            btnCobrar.disabled = false;
-            btnCobrar.innerText = "Cobrar";
+            btnConfirmarPago.disabled = false;
+            btnConfirmarPago.innerText = "Pagar e imprimir ticket";
+        }
+    });
+
+    window.addEventListener("load", function () {
+        const corteActivo = @Json.Serialize(Model.CorteActivo);
+        const modalAbrirCajaElemento = document.getElementById("modal-abrir-caja");
+
+        if (!corteActivo && modalAbrirCajaElemento) {
+            const modalAbrirCaja = bootstrap.Modal.getOrCreateInstance(modalAbrirCajaElemento);
+            modalAbrirCaja.show();
+        }
+    });
+
+    const formAbrirCaja = document.getElementById("form-abrir-caja");
+    const saldoInicialCaja = document.getElementById("saldo-inicial-caja");
+
+    formAbrirCaja.addEventListener("submit", function (e) {
+        const valor = saldoInicialCaja.value.trim();
+        const saldo = Number(valor);
+
+        if (valor === "" || isNaN(saldo) || saldo < 0) {
+            e.preventDefault();
+            mostrarAdvertencia("Dato inválido", "Ingresa el saldo inicial de caja.", "warning");
+            return;
         }
     });
 </script>

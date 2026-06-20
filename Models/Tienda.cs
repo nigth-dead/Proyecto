@@ -20,7 +20,7 @@ public partial class Tienda
 
     public virtual ICollection<HistorialPedido> HistorialPedido { get; set; } = new List<HistorialPedido>();
 
-    public virtual Inventario? Inventario { get; set; }
+    public virtual ICollection<Inventario> Inventario { get; set; } = new List<Inventario>();
 
-    public virtual ICollection<Usuario> Usuario { get; set; } = new List<Usuario>();
+    public virtual ICollection<UsuarioTienda> UsuarioTienda { get; set; } = new List<UsuarioTienda>();
 }

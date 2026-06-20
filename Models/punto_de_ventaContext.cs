@@ -37,6 +37,8 @@ public partial class punto_de_ventaContext : DbContext
 
     public virtual DbSet<Tienda> Tienda { get; set; }
 
+    public virtual DbSet<UsuarioTienda> UsuarioTienda { get; set; }
+
     public virtual DbSet<Usuario> Usuario { get; set; }
 
     public virtual DbSet<Venta> Venta { get; set; }
@@ -53,6 +55,31 @@ public partial class punto_de_ventaContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<UsuarioTienda>(entity =>
+        {
+            entity.HasKey(e => e.UsuarioTiendaId).HasName("PRIMARY");
+
+            entity.ToTable("usuario_tienda");
+
+            entity.HasIndex(e => new { e.UsuarioId, e.TiendaId }, "uq_usuario_tienda").IsUnique();
+
+            entity.HasIndex(e => e.TiendaId, "fk_usuario_tienda_tienda");
+
+            entity.Property(e => e.UsuarioTiendaId).HasColumnName("usuario_tienda_id");
+            entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
+            entity.Property(e => e.TiendaId).HasColumnName("tienda_id");
+
+            entity.HasOne(d => d.Usuario)
+                .WithMany(p => p.UsuarioTienda)
+                .HasForeignKey(d => d.UsuarioId)
+                .HasConstraintName("fk_usuario_tienda_usuario");
+
+            entity.HasOne(d => d.Tienda)
+                .WithMany(p => p.UsuarioTienda)
+                .HasForeignKey(d => d.TiendaId)
+                .HasConstraintName("fk_usuario_tienda_tienda");
+        });
+
         modelBuilder.Entity<Categoria>(entity =>
         {
             entity.HasKey(e => e.CategoriaId).HasName("PRIMARY");
@@ -289,8 +316,9 @@ public partial class punto_de_ventaContext : DbContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_inventario_producto");
 
-            entity.HasOne(d => d.Tienda).WithOne(p => p.Inventario)
-                .HasForeignKey<Inventario>(d => d.TiendaId)
+            entity.HasOne(d => d.Tienda)
+                .WithMany(p => p.Inventario)
+                .HasForeignKey(d => d.TiendaId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_inventario_tienda");
         });
@@ -301,27 +329,26 @@ public partial class punto_de_ventaContext : DbContext
 
             entity.ToTable("pago");
 
-            entity.HasIndex(e => e.VentaId, "idx_pago_venta");
+            entity.HasIndex(e => e.VentaId, "venta_id");
 
-            entity.Property(e => e.PagoId).HasColumnName("pago_id");
-            entity.Property(e => e.Fecha)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime")
-                .HasColumnName("fecha");
-            entity.Property(e => e.Metodo)
-                .HasDefaultValueSql("'efectivo'")
-                .HasColumnType("enum('efectivo','tarjeta','transferencia')")
-                .HasColumnName("metodo");
+            entity.Property(e => e.PagoId)
+                .HasColumnName("pago_id");
+
+            entity.Property(e => e.VentaId)
+                .HasColumnName("venta_id");
+
             entity.Property(e => e.Monto)
-                .HasPrecision(10)
+                .HasColumnType("decimal(10,2)")
                 .HasColumnName("monto");
-            entity.Property(e => e.Procesado).HasColumnName("procesado");
-            entity.Property(e => e.VentaId).HasColumnName("venta_id");
 
-            entity.HasOne(d => d.Venta).WithMany(p => p.Pago)
+            entity.Property(e => e.Metodo)
+                .HasColumnType("enum('Efectivo','Tarjeta')")
+                .HasColumnName("metodo");
+
+            entity.HasOne(d => d.Venta)
+                .WithMany(p => p.Pago)
                 .HasForeignKey(d => d.VentaId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("fk_pago_venta");
+                .HasConstraintName("pago_ibfk_1");
         });
 
         modelBuilder.Entity<Producto>(entity =>
@@ -330,36 +357,49 @@ public partial class punto_de_ventaContext : DbContext
 
             entity.ToTable("producto");
 
-            entity.HasIndex(e => e.CategoriaId, "fk_producto_categoria");
+            entity.HasIndex(e => e.CategoriaId, "categoria_id");
 
-            entity.HasIndex(e => e.ProveedorId, "idx_producto_proveedor");
+            entity.HasIndex(e => e.ProveedorId, "proveedor_id");
 
-            entity.Property(e => e.ProductoId).HasColumnName("producto_id");
+            entity.Property(e => e.ProductoId)
+                .HasColumnName("producto_id");
+
+            entity.Property(e => e.ProveedorId)
+                .HasColumnName("proveedor_id");
+
+            entity.Property(e => e.CategoriaId)
+                .HasColumnName("categoria_id");
+
+            entity.Property(e => e.Nombre)
+                .HasMaxLength(50)
+                .HasColumnName("nombre");
+
+            entity.Property(e => e.Codigo)
+                .HasMaxLength(50)
+                .HasColumnName("codigo");
+
+            entity.Property(e => e.PrecioCompra)
+                .HasColumnType("decimal(10,2)")
+                .HasColumnName("precio_compra");
+
+            entity.Property(e => e.PrecioVenta)
+                .HasColumnType("decimal(10,2)")
+                .HasColumnName("precio_venta");
+
             entity.Property(e => e.Activo)
                 .IsRequired()
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("activo");
-            entity.Property(e => e.CategoriaId).HasColumnName("categoria_id");
-            entity.Property(e => e.Codigo)
-                .HasMaxLength(50)
-                .HasColumnName("codigo");
-            entity.Property(e => e.Nombre)
-                .HasMaxLength(50)
-                .HasColumnName("nombre");
-            entity.Property(e => e.Precio)
-                .HasPrecision(10)
-                .HasColumnName("precio");
-            entity.Property(e => e.ProveedorId).HasColumnName("proveedor_id");
 
-            entity.HasOne(d => d.Categoria).WithMany(p => p.Producto)
+            entity.HasOne(d => d.Categoria)
+                .WithMany(p => p.Producto)
                 .HasForeignKey(d => d.CategoriaId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_producto_categoria");
+                .HasConstraintName("producto_ibfk_2");
 
-            entity.HasOne(d => d.Proveedor).WithMany(p => p.Producto)
+            entity.HasOne(d => d.Proveedor)
+                .WithMany(p => p.Producto)
                 .HasForeignKey(d => d.ProveedorId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_producto_proveedor");
+                .HasConstraintName("producto_ibfk_1");
         });
 
         modelBuilder.Entity<Proveedor>(entity =>
@@ -410,38 +450,36 @@ public partial class punto_de_ventaContext : DbContext
 
             entity.ToTable("usuario");
 
-            entity.HasIndex(e => e.TiendaId, "idx_usuario_tienda");
-
             entity.Property(e => e.UsuarioId).HasColumnName("usuario_id");
+
             entity.Property(e => e.Contrasena)
                 .HasMaxLength(255)
                 .HasComment("Guardar como hash (bcrypt/argon2)")
                 .HasColumnName("contrasena");
+
             entity.Property(e => e.Contratado)
                 .IsRequired()
                 .HasDefaultValueSql("'1'")
                 .HasColumnName("contratado");
+
             entity.Property(e => e.Nombre)
                 .HasMaxLength(50)
                 .HasColumnName("nombre");
+
             entity.Property(e => e.Rol)
                 .HasDefaultValueSql("'Cajero'")
                 .HasColumnType("enum('Administrador','Cajero')")
                 .HasColumnName("rol");
+
             entity.Property(e => e.Telefono)
                 .HasMaxLength(10)
                 .IsFixedLength()
                 .HasColumnName("telefono");
-            entity.Property(e => e.TiendaId).HasColumnName("tienda_id");
+
             entity.Property(e => e.Trabajando)
                 .IsRequired()
-                .HasDefaultValueSql("'1'")
+                .HasDefaultValueSql("'0'")
                 .HasColumnName("trabajando");
-
-            entity.HasOne(d => d.Tienda).WithMany(p => p.Usuario)
-                .HasForeignKey(d => d.TiendaId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("fk_usuario_tienda");
         });
 
         modelBuilder.Entity<Venta>(entity =>

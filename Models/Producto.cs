@@ -13,11 +13,13 @@ public partial class Producto
 
     public string Codigo { get; set; } = null!;
 
-    public decimal Precio { get; set; }
+    public decimal PrecioCompra { get; set; }
+
+    public decimal? PrecioVenta { get; set; }
 
     public bool? Activo { get; set; }
 
-    public int? CategoriaId { get; set; }
+    public int CategoriaId { get; set; }
 
     public virtual Categoria Categoria { get; set; } = null!;
 

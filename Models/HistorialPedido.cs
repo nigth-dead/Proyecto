@@ -25,5 +25,5 @@ public partial class HistorialPedido
 
     public virtual Tienda Tienda { get; set; } = null!;
 
-    public virtual Usuario Usuario { get; set; } = new();
+    public virtual Usuario Usuario { get; set; } = null!;
 }

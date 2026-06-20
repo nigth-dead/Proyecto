@@ -1,7 +1,7 @@
 ﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 $(document).ready(function () {
-    $('.tabla-dinamica').each(function () {
+    $('.tabla-mayor-menor').each(function () {
         if (!DataTable.isDataTable(this)) {
             
             const textoVacio = this.dataset.empty || "No hay registros disponibles";
@@ -13,6 +13,39 @@ $(document).ready(function () {
                 ordering: true,
                 autoWidth: false,
                 scrollX: false,
+                order: [[0, 'desc']],
+                language: {
+                    emptyTable: textoVacio,
+                },
+                colResize: {
+                    isEnabled: true,
+                    saveState: false
+                },
+                columnDefs: [
+                    {
+                        orderable: false,
+                        targets: 'no-ordenar'
+                    }
+                ]
+            });
+        }
+    });
+});
+
+$(document).ready(function () {
+    $('.tabla-menor-mayor').each(function () {
+        if (!DataTable.isDataTable(this)) {
+            
+            const textoVacio = this.dataset.empty || "No hay registros disponibles";
+
+            new DataTable(this, {
+                paging: false,
+                searching: false,
+                info: false,
+                ordering: true,
+                autoWidth: false,
+                scrollX: false,
+                order: [[0, 'asc']],
                 language: {
                     emptyTable: textoVacio,
                 },
@@ -87,15 +120,6 @@ function actualizarProductos() {
     });
 }
 
-window.addEventListener("load", function () {
-    const modal = document.getElementById("modalMensaje");
-
-    if (modal) {
-        const modalMensaje = new bootstrap.Modal(modal);
-        modalMensaje.show();
-    }
-});
-
 function eliminarProducto(boton) {
     const productos = document.querySelectorAll(".producto-pedido");
 
@@ -112,3 +136,69 @@ function eliminarProducto(boton) {
     calcularTotal();
     actualizarProductos();
 }
+
+function filtrarProductosPorProveedor() {
+    const proveedorSeleccionado = document.getElementById("proveedorId").value;
+    const selectsProductos = document.querySelectorAll(".select-producto");
+
+    selectsProductos.forEach(select => {
+        select.disabled = false;
+        select.value = "";
+
+        const opciones = select.querySelectorAll("option");
+
+        opciones.forEach(opcion => {
+            const proveedorProducto = opcion.dataset.proveedorId;
+
+            if (!proveedorProducto) {
+                opcion.hidden = false;
+                opcion.disabled = false;
+                opcion.textContent = "Seleccione un producto";
+                return;
+            }
+
+            if (proveedorProducto === proveedorSeleccionado) {
+                opcion.hidden = false;
+                opcion.disabled = false;
+                opcion.style.display = "";
+            } else {
+                opcion.hidden = true;
+                opcion.disabled = true;
+                opcion.style.display = "none";
+            }
+        });
+    });
+
+    actualizarProductos();
+    calcularTotal();
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const modalAutomatico = document.querySelector('[data-auto-open="true"]');
+
+    if (modalAutomatico) {
+        const modal = new bootstrap.Modal(modalAutomatico);
+        modal.show();
+        return;
+    }
+
+    const modalMensaje = document.getElementById("modalMensaje");
+
+    if (modalMensaje) {
+        const modal = new bootstrap.Modal(modalMensaje);
+        modal.show();
+    }
+});
+
+document.addEventListener("hidden.bs.modal", function () {
+    if (document.querySelectorAll(".modal.show").length === 0) {
+        document.body.classList.remove("modal-open");
+        document.body.style.removeProperty("overflow");
+        document.body.style.removeProperty("padding-right");
+
+        document.querySelectorAll(".modal-backdrop").forEach(backdrop => {
+            backdrop.remove();
+        });
+    }
+});
+

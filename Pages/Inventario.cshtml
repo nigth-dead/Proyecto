@@ -31,8 +31,12 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Aceptar</button>
-                            <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>
+                                    data-bs-dismiss="modal">
+                                Aceptar
+                            </button>
+                            <a asp-page="/Index" asp-page-handler="CerrarSesion" class="btn btn-primary">
+                                Cerrar sesion
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -72,8 +76,15 @@
 
             <div class="fila">
                 <form method="post" asp-page-handler="Busqueda" class="busqueda">
-                    <input class="barra-busqueda" type="text" placeholder="Buscar producto por nombre, categoria o codigo" name="ParametroDeBusqueda" value="@Model.ParametroDeBusqueda">
-                    <button type="submit" class="btn-busqueda-lupa"><img src="/img/lupa.png" alt="" class="img-lupa"></button>
+                    <input class="barra-busqueda"
+                        type="text"
+                        placeholder="Buscar por nombre, categoria, codigo o proveedor"
+                        name="ParametroDeBusqueda"
+                        value="@Model.ParametroDeBusqueda">
+
+                    <button type="submit" class="btn-busqueda-lupa">
+                        <img src="/img/lupa.png" alt="" class="img-lupa">
+                    </button>
                 </form>
 
                 <div class="info-encabezado">
@@ -91,6 +102,31 @@
 
                                 <form method="post" asp-page-handler="Agregar">
                                     <div class="modal-body">
+                                        @if (!Model.Proveedores.Any() || !Model.Categorias.Any())
+                                        {
+                                            <div class="alert alert-warning">
+                                                Para registrar este producto debe haber al menos un proveedor y una categoría registrados.
+                                            </div>
+                                        }
+                                        <div class="info-tienda">
+                                            Proveedor:
+                                            <select asp-for="NuevoProducto.ProveedorId" class="form-control form-select" required>
+                                                @if (!Model.Proveedores.Any())
+                                                {
+                                                    <option value="" selected disabled>No hay proveedores registrados</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="" selected disabled>Seleccione una opción</option>
+
+                                                    @foreach (var Proveedor in Model.Proveedores)
+                                                    {
+                                                        <option value="@Proveedor.ProveedorId">@Proveedor.Nombre</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+
                                         <div class="info-tienda">
                                             Nombre:
                                             <input asp-for="NuevoProducto.Nombre" class="form-control" maxlength="50" required>
@@ -98,20 +134,51 @@
 
                                         <div class="info-tienda">
                                             Codigo:
-                                            <input asp-for="NuevoProducto.Codigo" type="text" inputmode="numeric" pattern="[0-9]+" maxlength="50" placeholder="Solo numeros" class="form-control" required>
+                                            <input asp-for="NuevoProducto.Codigo"
+                                                   type="text"
+                                                   inputmode="numeric"
+                                                   pattern="[0-9]+"
+                                                   maxlength="50"
+                                                   placeholder="Solo numeros"
+                                                   class="form-control"
+                                                   required>
                                         </div>
 
                                         <div class="info-tienda">
-                                            Precio:
-                                            <input asp-for="NuevoProducto.Precio" type="number" step="0.01" min="0.01" class="form-control" required>
+                                            Precio de compra:
+                                            <input asp-for="NuevoProducto.PrecioCompra"
+                                                   type="number"
+                                                   step="0.01"
+                                                   min="0"
+                                                   class="form-control"
+                                                   required>
+                                        </div>
+
+                                        <div class="info-tienda">
+                                            Precio de venta:
+                                            <input asp-for="NuevoProducto.PrecioVenta"
+                                                type="number"
+                                                step="0.01"
+                                                min="0.01"
+                                                class="form-control"
+                                                required>
                                         </div>
 
                                         <div class="info-tienda">
                                             Categoria:
                                             <select asp-for="NuevoProducto.CategoriaId" class="form-control form-select" required>
-                                                <option value="" selected disabled hidden>Seleccione una opcion</option>
-                                                @foreach(var Categoria in Model.Categorias){
-                                                    <option value="@Categoria.CategoriaId">@Categoria.Nombre</option>
+                                                @if (!Model.Categorias.Any())
+                                                {
+                                                    <option value="" selected disabled>No hay categorías registradas</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="" selected disabled>Seleccione una opción</option>
+
+                                                    @foreach (var Categoria in Model.Categorias)
+                                                    {
+                                                        <option value="@Categoria.CategoriaId">@Categoria.Nombre</option>
+                                                    }
                                                 }
                                             </select>
                                         </div>
@@ -122,29 +189,50 @@
                                             Cancelar
                                         </button>
 
-                                        <button type="submit" class="btn btn-primary">
-                                            Registrar producto
-                                        </button>
+                                        @if (!Model.Proveedores.Any() || !Model.Categorias.Any())
+                                        {
+                                            <button type="submit" class="btn btn-primary" disabled>
+                                                Registrar producto
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn btn-primary">
+                                                Registrar producto
+                                            </button>
+                                        }
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
+
+                    <a asp-page="/Proveedores" class="elemento-info-encabezado">
+                        Proveedores
+                        <img class="btn-inventario" src="/img/boxes-packing.svg" alt="">
+                    </a>
+
+                    <a asp-page="/Categorias" class="elemento-info-encabezado">
+                        Categorias
+                        <img class="btn-inventario" src="/img/tag.svg" alt="">
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="tablas">
             <div class="contenedor-tabla">
-                <div class="tabla-productos">
-                    <table class="table table-dark table-striped tabla-dinamica">
+                <div class="tabla-productos orden-correcto">
+                    <table class="table table-dark table-striped tabla-menor-mayor" data-empty="No se encontraron productos">
                         <thead>
                             <tr>
                                 <th scope="col">Nombre</th>
                                 <th scope="col">Codigo</th>
                                 <th scope="col">Cantidad</th>
-                                <th scope="col">Precio</th>
+                                <th scope="col">Precio compra</th>
+                                <th scope="col">Precio venta</th>
                                 <th scope="col">Categoria</th>
+                                <th scope="col">Proveedor</th>
                                 <th scope="col">Estado</th>
                                 <th scope="col" class="no-ordenar">
                                     <span class="invisible">Detalles</span>
@@ -157,20 +245,51 @@
                             {
                                 <tr>
                                     <td>@producto.Nombre</td>
-                                    <td>@producto.Codigo<span class="invisible">codigo</span></td>
-                                    <td>@producto.Inventario.Sum(i => i.Stock)<span class="invisible">cantidad</span></td>
-                                    <td>$@producto.Precio<span class="invisible">precio</span></td>
-                                    <td>@producto.Categoria?.Nombre</td>
+
                                     <td>
-                                        @if(producto.Activo ==true){
-                                            @:Activo
-                                        } else{
-                                            @:Desactivado
+                                        @producto.Codigo
+                                        <span class="invisible">codigo</span>
+                                    </td>
+
+                                    <td>
+                                        @producto.Inventario.Sum(i => i.Stock)
+                                        <span class="invisible">cantidad</span>
+                                    </td>
+
+                                    <td>
+                                        @producto.PrecioCompra.ToString("C")
+                                        <span class="invisible">precio compra</span>
+                                    </td>
+
+                                    <td>
+                                        @if (producto.PrecioVenta != null)
+                                        {
+                                            @((producto.PrecioVenta ?? 0).ToString("C"))
+                                        }
+                                        else
+                                        {
+                                            @:<span class="text-warning">Sin asignar</span>
+                                        }
+                                        <span class="invisible">precio venta</span>
+                                    </td>
+
+                                    <td>@producto.Categoria?.Nombre</td>
+                                    <td>@producto.Proveedor?.Nombre</td>
+
+                                    <td>
+                                        @if (producto.Activo == true)
+                                        {
+                                            @:<p class="text-success">Activo</p>
+                                        }
+                                        else
+                                        {
+                                            @:<p class="text-danger">Desactivado</p>
                                         }
                                     </td>
 
                                     <td>
-                                        <button class="btn-detalles-tienda" data-bs-toggle="modal"
+                                        <button class="btn-detalles-tienda"
+                                                data-bs-toggle="modal"
                                                 data-bs-target="#modal-editar-producto-@producto.ProductoId">
                                             Editar
                                             <img class="btn-inventario" src="/img/editar.svg" alt="">
@@ -189,41 +308,113 @@
                                                     </div>
 
                                                     <form method="post" asp-page-handler="Editar">
-                                                        <input type="hidden" name="ProductoEditar.ProductoId"
+                                                        <input type="hidden"
+                                                               name="ProductoEditar.ProductoId"
                                                                value="@producto.ProductoId">
 
                                                         <div class="modal-body">
+                                                            @if (!Model.Proveedores.Any() || !Model.Categorias.Any())
+                                                            {
+                                                                <div class="alert alert-warning">
+                                                                    Para editar este producto debe haber al menos un proveedor y una categoría registrados.
+                                                                </div>
+                                                            }
                                                             <div class="info-tienda">
                                                                 Id:
-                                                                <input type="text" class="form-control" value="@producto.ProductoId" disabled>
+                                                                <input type="text"
+                                                                       class="form-control"
+                                                                       value="@producto.ProductoId"
+                                                                       disabled>
+                                                            </div>
+
+                                                            <div class="info-tienda">
+                                                                Proveedor:
+                                                                <select name="ProductoEditar.ProveedorId" class="form-control form-select" required>
+                                                                    @if (!Model.Proveedores.Any())
+                                                                    {
+                                                                        <option value="" selected disabled>No hay proveedores registrados</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@producto.ProveedorId" selected>
+                                                                            @(producto.Proveedor?.Nombre ?? "Seleccione un proveedor")
+                                                                        </option>
+
+                                                                        @foreach (var Proveedor in Model.Proveedores)
+                                                                        {
+                                                                            if (Proveedor.ProveedorId != producto.ProveedorId)
+                                                                            {
+                                                                                <option value="@Proveedor.ProveedorId">@Proveedor.Nombre</option>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                </select>
                                                             </div>
 
                                                             <div class="info-tienda">
                                                                 Nombre:
-                                                                <input type="text" class="form-control" name="ProductoEditar.Nombre" maxlength="50"
+                                                                <input type="text"
+                                                                       class="form-control"
+                                                                       name="ProductoEditar.Nombre"
+                                                                       maxlength="50"
+                                                                       required
                                                                        value="@producto.Nombre">
                                                             </div>
 
                                                             <div class="info-tienda">
                                                                 Codigo:
-                                                                <input type="text" class="form-control" inputmode="numeric" pattern="[0-9]+" 
-                                                                placeholder="Solo numeros" name="ProductoEditar.Codigo" required maxlength="50"
+                                                                <input type="text"
+                                                                       class="form-control"
+                                                                       inputmode="numeric"
+                                                                       pattern="[0-9]+"
+                                                                       placeholder="Solo numeros"
+                                                                       name="ProductoEditar.Codigo"
+                                                                       required
+                                                                       maxlength="50"
                                                                        value="@producto.Codigo">
                                                             </div>
 
                                                             <div class="info-tienda">
-                                                                Precio:
-                                                                <input type="number" class="form-control" name="ProductoEditar.Precio" step="0.01" min="0.01" required
-                                                                       value="@producto.Precio">
+                                                                Precio de compra:
+                                                                <input type="number"
+                                                                       class="form-control"
+                                                                       name="ProductoEditar.PrecioCompra"
+                                                                       step="0.01"
+                                                                       min="0"
+                                                                       required
+                                                                       value="@producto.PrecioCompra.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)">
+                                                            </div>
+
+                                                            <div class="info-tienda">
+                                                                Precio de venta:
+                                                                <input type="number"
+                                                                    class="form-control"
+                                                                    name="ProductoEditar.PrecioVenta"
+                                                                    step="0.01"
+                                                                    min="0.01"
+                                                                    required
+                                                                    value="@(producto.PrecioVenta?.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))">
                                                             </div>
 
                                                             <div class="info-tienda">
                                                                 Categoria:
                                                                 <select name="ProductoEditar.CategoriaId" class="form-control form-select" required>
-                                                                    <option value="@producto.CategoriaId" selected hidden>@producto.Categoria?.Nombre</option>
-                                                                    @foreach(var Categoria in Model.Categorias){
-                                                                        if(Categoria.CategoriaId != producto.CategoriaId){
-                                                                            <option value="@Categoria.CategoriaId">@Categoria.Nombre</option>
+                                                                    @if (!Model.Categorias.Any())
+                                                                    {
+                                                                        <option value="" selected disabled>No hay categorías registradas</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="@producto.CategoriaId" selected>
+                                                                            @(producto.Categoria?.Nombre ?? "Seleccione una categoría")
+                                                                        </option>
+
+                                                                        @foreach (var Categoria in Model.Categorias)
+                                                                        {
+                                                                            if (Categoria.CategoriaId != producto.CategoriaId)
+                                                                            {
+                                                                                <option value="@Categoria.CategoriaId">@Categoria.Nombre</option>
+                                                                            }
                                                                         }
                                                                     }
                                                                 </select>
@@ -251,24 +442,35 @@
                                                                     data-bs-dismiss="modal">
                                                                 Cancelar
                                                             </button>
+
                                                             <button type="button"
                                                                     class="btn btn-danger"
+                                                                    data-bs-dismiss="modal"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#modal-confirmar-eliminar-@producto.ProductoId">
                                                                 Borrar
                                                             </button>
-                                                            <button type="submit" class="btn btn-primary">
-                                                                Guardar cambios
-                                                            </button>
+                                                            @if (!Model.Proveedores.Any() || !Model.Categorias.Any())
+                                                            {
+                                                                <button type="submit" class="btn btn-primary" disabled>
+                                                                    Guardar cambios
+                                                                </button>
+                                                            }
+                                                            else
+                                                            {
+                                                                <button type="submit" class="btn btn-primary">
+                                                                    Guardar cambios
+                                                                </button>
+                                                            }
                                                         </div>
                                                     </form>
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="modal fade" id="modal-confirmar-eliminar-@producto.ProductoId" tabindex="-1">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
-
                                                     <div class="modal-header">
                                                         <h5 class="modal-title">Confirmar eliminación</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -302,7 +504,6 @@
                                                             </button>
                                                         </form>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -316,3 +517,90 @@
         </div>
     </div>
 </div>
+
+@if (!string.IsNullOrWhiteSpace(Model.ProductoIdDesactivar))
+{
+    <div class="modal fade"
+         id="modalDesactivarProducto"
+         tabindex="-1"
+         data-bs-backdrop="static"
+         data-auto-open="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post" asp-page-handler="Desactivar">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title">No se puede eliminar el producto</h5>
+
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Cerrar">
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="@Model.ProductoIdDesactivar">
+
+                        <p>
+                            <strong>Producto:</strong> @Model.NombreProductoDesactivar
+                        </p>
+
+                        <p>
+                            @Model.MensajeDesactivar
+                        </p>
+
+                        <p class="text-danger fw-bold mb-0">
+                            ¿Deseas desactivarlo en su lugar?
+                        </p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+
+                        <button type="submit" class="btn btn-danger">
+                            Sí, desactivar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="modal fade" id="modalMensaje" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header bg-@Model.TipoMensaje text-white">
+                    <h5 class="modal-title">@Model.TituloMensaje</h5>
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Cerrar">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p class="mb-0">@Model.Mensaje</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal">
+                        Aceptar
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

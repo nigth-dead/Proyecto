@@ -1,0 +1,185 @@
+@page
+@using Proyecto.Models
+@model HistorialMovimientoModel
+@{
+    ViewData["Title"] = "Historial de movimientos";
+}
+
+<div class="estilo-tiendas">
+
+    <ul class="nav menu">
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion">
+                <img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt="">
+            </button>
+
+            <div class="modal" tabindex="-1" id="modal-sesion">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Informacion de Usuario</h5>
+
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close">
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+                            @if (Model.UsuarioActual != null)
+                            {
+                                <p>Nombre: @Model.UsuarioActual.Nombre</p>
+                                <p>Telefono: @Model.UsuarioActual.Telefono</p>
+                                <p>Rol: @Model.UsuarioActual.Rol</p>
+                            }
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                Aceptar
+                            </button>
+
+                            <a asp-page="/Index" asp-page-handler="CerrarSesion" class="btn btn-primary">
+                                Cerrar sesion
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Administrador">
+                <img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt="">
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Inventario">
+                <img title="Inventario" class="img-menu" src="/img/barcode-solid.svg" alt="">
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(Model.TiendaId.HasValue ? "seleccionado" : "")" asp-page="/Tiendas">
+                <img title="Tiendas" class="img-menu" src="/img/store.svg" alt="">
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(!Model.TiendaId.HasValue ? "seleccionado" : "")" asp-page="/Historial">
+                <img title="Historial" class="img-menu" src="/img/historial.svg" alt="">
+            </a>
+        </li>
+    </ul>
+
+    <div class="tiendas detalles-tienda">
+        <div class="encabezado">
+            <div class="fila-titulo">
+                <div class="regreso">
+                    @if (Model.TiendaId.HasValue)
+                    {
+                        <a asp-page="/DetallesTienda" class="btn-regreso">
+                            <img src="/img/arrow-left-solid.svg" alt="">
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-page="/Historial" class="btn-regreso">
+                            <img src="/img/arrow-left-solid.svg" alt="">
+                        </a>
+                    }
+                </div>
+
+                <div class="titulo">
+                    @if (Model.TiendaId.HasValue)
+                    {
+                        @:Historial de movimientos: @(Model.NombreTiendaFiltro ?? "Tienda no encontrada")
+                    }
+                    else
+                    {
+                        @:Historial de movimientos de inventario
+                    }
+                </div>
+            </div>
+
+            <div class="fila">
+                <form method="post" asp-page-handler="Busqueda" class="busqueda completo">
+                    <input type="hidden" name="TiendaId" value="@Model.TiendaId">
+
+                    <input class="barra-busqueda"
+                           type="text"
+                           placeholder="@(Model.TiendaId.HasValue
+                                ? "Buscar por producto, usuario, tipo, motivo o fecha"
+                                : "Buscar por producto, tienda, usuario, tipo, motivo o fecha")"
+                           name="ParametroDeBusqueda"
+                           value="@Model.ParametroDeBusqueda">
+
+                    <button type="submit" class="btn-busqueda-lupa">
+                        <img src="/img/lupa.png" alt="" class="img-lupa">
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="detalles orden-correcto">
+            <div class="contenedor-tabla-detalles">
+                <table class="table table-dark table-striped tabla-mayor-menor" data-empty="No se encontraron movimientos">
+                    <thead>
+                        <tr>
+                            <th scope="col">Fecha</th>
+                            <th scope="col">Tienda</th>
+                            <th scope="col">Producto</th>
+                            <th scope="col">Código</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Motivo</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (HistorialMovimiento movimiento in Model.Movimientos)
+                        {
+                            <tr>
+                                <td data-order="@movimiento.Fecha.ToString("yyyy-MM-dd HH:mm:ss")">
+                                    @movimiento.Fecha.ToString("dd/MM/yyyy HH:mm")
+                                </td>
+
+                                <td>@(movimiento.Inventario?.Tienda?.Nombre ?? "Sin tienda")</td>
+
+                                <td>@(movimiento.Inventario?.Producto?.Nombre ?? "Sin producto")</td>
+
+                                <td>@(movimiento.Inventario?.Producto?.Codigo ?? "Sin código")</td>
+
+                                <td>@(movimiento.Usuario?.Nombre ?? "Sin usuario")</td>
+
+                                <td>
+                                    @if (movimiento.Tipo == "Entrada")
+                                    {
+                                        @:<p class="text-success">Entrada</p>
+                                    }
+                                    else if (movimiento.Tipo == "Venta")
+                                    {
+                                        @:<p class="text-danger">Venta</p>
+                                    }
+                                    else
+                                    {
+                                        @:<p class="text-warning">@movimiento.Tipo</p>
+                                    }
+                                </td>
+
+                                <td>@movimiento.Cantidad</td>
+
+                                <td>@(movimiento.Motivo ?? "Sin motivo")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

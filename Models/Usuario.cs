@@ -7,8 +7,6 @@ public partial class Usuario
 {
     public int UsuarioId { get; set; }
 
-    public int TiendaId { get; set; }
-
     public string Nombre { get; set; } = null!;
 
     public string Telefono { get; set; } = "";
@@ -29,8 +27,9 @@ public partial class Usuario
     public virtual ICollection<HistorialMovimiento> HistorialMovimiento { get; set; } = new List<HistorialMovimiento>();
 
     public virtual ICollection<HistorialPedido> HistorialPedido { get; set; } = new List<HistorialPedido>();
+    
 
-    public virtual Tienda Tienda { get; set; } = null!;
+    public virtual ICollection<UsuarioTienda> UsuarioTienda { get; set; } = new List<UsuarioTienda>();
 
     public virtual ICollection<Venta> Venta { get; set; } = new List<Venta>();
 }

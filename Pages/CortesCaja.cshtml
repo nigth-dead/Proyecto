@@ -1,0 +1,346 @@
+@page
+@model CortesCajaModel
+@{
+    ViewData["Title"] = "Cortes de caja";
+}
+
+<div class="estilo-tiendas">
+    <ul class="nav menu">
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion">
+                <img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt="">
+            </button>
+
+            <div class="modal" tabindex="-1" id="modal-sesion">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Informacion de Usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            @if (Model.UsuarioActual != null)
+                            {
+                                <p>Nombre: @Model.UsuarioActual.Nombre</p>
+                                <p>Telefono: @Model.UsuarioActual.Telefono</p>
+                                <p>Rol: @Model.UsuarioActual.Rol</p>
+                            }
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aceptar</button>
+                            <a asp-page="/Index" asp-page-handler="CerrarSesion" class="btn btn-primary">
+                                Cerrar sesion
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Administrador">
+                <img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt="">
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Inventario">
+                <img title="Inventario" class="img-menu" src="/img/barcode-solid.svg" alt="">
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Tiendas">
+                <img title="Tiendas" class="img-menu" src="/img/store.svg" alt="">
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link seleccionado" asp-page="/Historial">
+                <img title="Historial de ventas" class="img-menu" src="/img/historial.svg" alt="">
+            </a>
+        </li>
+    </ul>
+
+    <div class="tiendas detalles-tienda">
+        <div class="encabezado">
+            <div class="fila-titulo">
+                <div class="regreso">
+                    <a asp-page="/Historial" class="btn-regreso">
+                        <img src="/img/arrow-left-solid.svg" alt="">
+                    </a>
+                </div>
+
+                <div class="titulo">
+                    Historial de cortes de caja
+                </div>
+            </div>
+
+            <div class="fila">
+                <form method="post" asp-page-handler="Busqueda" class="busqueda completo">
+                    <input class="barra-busqueda"
+                           type="text"
+                           placeholder="Buscar por codigo, cajero, tienda, estado o fecha"
+                           name="ParametroDeBusqueda"
+                           value="@Model.ParametroDeBusqueda">
+
+                    <button type="submit" class="btn-busqueda-lupa">
+                        <img src="/img/lupa.png" alt="" class="img-lupa">
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="detalles orden-correcto">
+            <div class="contenedor-tabla-detalles">
+                <table class="table table-dark table-striped tabla-mayor-menor">
+                    <thead>
+                        <tr>
+                            <th scope="col">Codigo</th>
+                            <th scope="col">Apertura</th>
+                            <th scope="col">Cierre</th>
+                            <th scope="col">Tienda</th>
+                            <th scope="col">Cajero</th>
+                            <th scope="col">Esperado</th>
+                            <th scope="col">Final</th>
+                            <th scope="col">Diferencia</th>
+                            <th scope="col">Estado</th>
+                            <th scope="col" class="no-ordenar"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (!Model.Cortes.Any())
+                        {
+                            <tr>
+                                <td colspan="10" class="text-center text-warning">
+                                    No hay cortes de caja para mostrar.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var corte in Model.Cortes)
+                            {
+                                <tr>
+                                    <td>@corte.CorteId</td>
+
+                                    <td data-order="@corte.FechaApertura.ToString("yyyy-MM-dd HH:mm:ss")">
+                                        @corte.FechaApertura.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+
+                                    <td data-order="@(corte.FechaCierre?.ToString("yyyy-MM-dd HH:mm:ss") ?? "")">
+                                        @(corte.FechaCierre?.ToString("dd/MM/yyyy HH:mm") ?? "Sin cerrar")
+                                    </td>
+
+                                    <td>@corte.Tienda</td>
+                                    <td>@corte.Usuario</td>
+                                    <td>@((corte.SaldoEsperado ?? 0).ToString("C"))</td>
+                                    <td>@(corte.SaldoFinal.HasValue ? corte.SaldoFinal.Value.ToString("C") : "Sin corte")</td>
+
+                                    <td>
+                                        @if (corte.Diferencia.HasValue)
+                                        {
+                                            if (corte.Diferencia.Value < 0)
+                                            {
+                                                <p class="text-danger mb-0">@corte.Diferencia.Value.ToString("C")</p>
+                                            }
+                                            else if (corte.Diferencia.Value > 0)
+                                            {
+                                                <p class="text-warning mb-0">@corte.Diferencia.Value.ToString("C")</p>
+                                            }
+                                            else
+                                            {
+                                                <p class="text-success mb-0">@corte.Diferencia.Value.ToString("C")</p>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <p class="text-secondary mb-0">Pendiente</p>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        @if (corte.Estado == "Completo")
+                                        {
+                                            <p class="text-success mb-0">Completo</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-warning mb-0">Pendiente</p>
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <button class="btn-detalles-tienda"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modal-corte-@corte.CorteId">
+                                            Detalles
+                                            <img class="btn-inventario" src="/img/editar.svg" alt="">
+                                        </button>
+
+                                        <div class="modal" tabindex="-1" id="modal-corte-@corte.CorteId" data-bs-backdrop="static">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Informacion del corte</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+
+                                                    <div class="modal-body">
+                                                        <div class="info-tienda">
+                                                            Codigo:
+                                                            <input type="text" class="form-control" value="@corte.CorteId" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Tienda:
+                                                            <input type="text" class="form-control" value="@corte.Tienda" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Cajero:
+                                                            <input type="text" class="form-control" value="@corte.Usuario" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Fecha apertura:
+                                                            <input type="text" class="form-control" value="@corte.FechaApertura.ToString("dd/MM/yyyy HH:mm")" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Fecha cierre:
+                                                            <input type="text" class="form-control" value="@(corte.FechaCierre?.ToString("dd/MM/yyyy HH:mm") ?? "Sin cerrar")" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Saldo inicial:
+                                                            <input type="text" class="form-control" value="@corte.SaldoInicial.ToString("C")" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Total vendido:
+                                                            <input type="text" class="form-control" value="@corte.TotalVendido.ToString("C")" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Efectivo vendido:
+                                                            <input type="text" class="form-control" value="@corte.EfectivoVendido.ToString("C")" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Tarjeta vendida:
+                                                            <input type="text" class="form-control" value="@corte.TarjetaVendido.ToString("C")" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Saldo esperado:
+                                                            <input type="text" class="form-control" value="@((corte.SaldoEsperado ?? 0).ToString("C"))" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Saldo final:
+                                                            <input type="text" class="form-control" value="@(corte.SaldoFinal.HasValue ? corte.SaldoFinal.Value.ToString("C") : "Sin corte")" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Diferencia:
+                                                            <input type="text" class="form-control" value="@(corte.Diferencia.HasValue ? corte.Diferencia.Value.ToString("C") : "Pendiente")" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Ventas realizadas:
+                                                            <input type="text" class="form-control" value="@corte.NumeroVentas" disabled>
+                                                        </div>
+
+                                                        <div class="info-tienda">
+                                                            Estado:
+                                                            <input type="text" class="form-control" value="@corte.Estado" disabled>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="modal-footer">
+                                                        @if (corte.Estado != "Completo" && corte.FechaCierre.HasValue && corte.SaldoFinal.HasValue)
+                                                        {
+                                                            <button type="button"
+                                                                    class="btn btn-success"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#modal-confirmar-completar-@corte.CorteId">
+                                                                Marcar como completo
+                                                            </button>
+                                                        }
+                                                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                                                            Aceptar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="modal-confirmar-completar-@corte.CorteId" tabindex="-1" data-bs-backdrop="static">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form method="post" asp-page-handler="Completar">
+                                                        <div class="modal-header bg-success text-white">
+                                                            <h5 class="modal-title">Completar corte de caja</h5>
+
+                                                            <button type="button"
+                                                                    class="btn-close"
+                                                                    data-bs-dismiss="modal"
+                                                                    aria-label="Cerrar">
+                                                            </button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <input type="hidden" name="corteId" value="@corte.CorteId">
+
+                                                            <p class="text-dark">
+                                                                ¿Seguro que deseas marcar este corte como completo?
+                                                            </p>
+
+                                                            <div class="info-tienda">
+                                                                Código:
+                                                                <input type="text" class="form-control" value="@corte.CorteId" disabled>
+                                                            </div>
+
+                                                            <div class="info-tienda">
+                                                                Tienda:
+                                                                <input type="text" class="form-control" value="@corte.Tienda" disabled>
+                                                            </div>
+
+                                                            <div class="info-tienda">
+                                                                Cajero:
+                                                                <input type="text" class="form-control" value="@corte.Usuario" disabled>
+                                                            </div>
+
+                                                            <p class="text-danger fw-bold mt-2 mb-0">
+                                                                Esta acción cambiará el estado del corte a Completo.
+                                                            </p>
+                                                        </div>
+
+                                                        <div class="modal-footer">
+                                                            <button type="button"
+                                                                    class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">
+                                                                Cancelar
+                                                            </button>
+
+                                                            <button type="submit" class="btn btn-success">
+                                                                Sí, completar
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

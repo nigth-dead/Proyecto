@@ -4,11 +4,14 @@
 @{
     ViewData["Title"] = "Administrador";
 }
-<!--ya no se usa el menú de navegación ni el pie de página, por lo que se han comentado en el archivo _Layout.cshtml-->
+
 <div class="estilo-administrador">
     <ul class="nav menu">
         <li class="nav-item">
-            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion"><img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt=""></button>
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion">
+                <img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt="">
+            </button>
+
             <div class="modal" tabindex="-1" id="modal-sesion">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -17,105 +20,213 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
+
                         <div class="modal-body">
-                            @if(Model.UsuarioActual != null){
+                            @if (Model.UsuarioActual != null)
+                            {
                                 <p>Nombre: @Model.UsuarioActual.Nombre</p>
                                 <p>Telefono: @Model.UsuarioActual.Telefono</p>
                                 <p>Rol: @Model.UsuarioActual.Rol</p>
                             }
                         </div>
+
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary"
-                                    data-bs-dismiss="modal">Aceptar</button>
-                            <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>
+                                    data-bs-dismiss="modal">
+                                Aceptar
+                            </button>
+
+                            <a asp-page="/Index" asp-page-handler="CerrarSesion" class="btn btn-primary">
+                                Cerrar sesion
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link seleccionado" asp-page="/Administrador"><img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt=""></a>
+            <a class="nav-link seleccionado" asp-page="/Administrador">
+                <img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt="">
+            </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" asp-page="/Inventario"><img title="Inventario" class = "img-menu" src="/img/barcode-solid.svg" alt=""></a>
+            <a class="nav-link" asp-page="/Inventario">
+                <img title="Inventario" class="img-menu" src="/img/barcode-solid.svg" alt="">
+            </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" asp-page="/Tiendas"><img title="Tiendas" class="img-menu" src="/img/store.svg" alt=""></a>
+            <a class="nav-link" asp-page="/Tiendas">
+                <img title="Tiendas" class="img-menu" src="/img/store.svg" alt="">
+            </a>
         </li>
+
         <li class="nav-item">
-            <a class="nav-link" asp-page="/Historial"><img title="Historial" class="img-menu" src="/img/historial.svg" alt=""></a>
+            <a class="nav-link" asp-page="/Historial">
+                <img title="Historial" class="img-menu" src="/img/historial.svg" alt="">
+            </a>
         </li>
     </ul>
+
     <div class="dashboard">
-        <!-- Primera fila -->
         <div class="filas">
-            <div class="card" onclick="location.href='@Url.Page("/Historial")';">
+            <div class="card">
                 <div class="card-body">
+                    @{
+                        string colorPorcentaje = "text-secondary";
+
+                        if (Model.Porcentaje > 0)
+                        {
+                            colorPorcentaje = "text-success";
+                        }
+                        else if (Model.Porcentaje < 0)
+                        {
+                            colorPorcentaje = "text-danger";
+                        }
+                    }
+
                     <h5 class="card-title">Ventas hoy</h5>
-                    <p class="card-text display-6">$12,450.75</p>
-                    <p class="card-text">+8.4% respecto a ayer</p>
+                    <p class="card-text display-6">@Model.TotalVentasDelDia.ToString("C")</p>
+                    <p class="card-text">
+                        <span class="@colorPorcentaje">@Model.Porcentaje.ToString("+0.##;-0.##;0")%</span>
+                        respecto a ayer
+                    </p>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Productos en stock</h5>
-                    <p class="card-text display-6">1,248</p>
-                    <p class="card-text">37 productos con stock bajo</p>
+                    <p class="card-text display-6">@Model.TotalProductos</p>
+                    <p class="card-text">@Model.ProductosBajosDeStock productos con stock bajo</p>
                 </div>
             </div>
 
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
                     <h5 class="card-title">Tienda con mas ventas del mes</h5>
-                    <p class="card-text display-6">1,245 ventas</p>
-                    <p class="card-text">Tienda Centro</p>
-
+                    <p class="card-text display-6">@Model.MasVentasDelMes ventas</p>
+                    <p class="card-text">
+                        @if (Model.TiendaConMasVentas == null)
+                        {
+                            @:No hay tiendas o ventas registradas
+                        }
+                        else
+                        {
+                            @:Tienda: @Model.TiendaConMasVentas?.Nombre
+                        }
+                    </p>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Venta promedio</h5>
-                    <p class="card-text display-6">$66.94</p>
-                    <p class="card-text">5.2 artículos por ticket</p>
+                    <h5 class="card-title">Venta promedio diaria</h5>
+                    <p class="card-text display-6">@Model.Promedio.ToString("C")</p>
+                    <p class="card-text">Basado en el ultimo mes</p>
                 </div>
             </div>
         </div>
 
-        <!-- Segunda fila -->
         <div class="filas">
-            <div class="card" onclick="location.href='';">
+            <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Ventas por categoría</h5>
-                    <p class="card-text">Abarrotes: 42%</p>
-                    <p class="card-text">Bebidas: 28%</p>
-                    <p class="card-text">Limpieza: 18%</p>
-                    <p class="card-text">Otros: 12%</p>
+
+                    <div class="scroll">
+                        @if (Model.PorcentajesCategorias.Any())
+                        {
+                            @foreach (var x in Model.PorcentajesCategorias)
+                            {
+                                <div class="categoria-venta">
+                                    <div class="categoria-info">
+                                        <span>@x.Categoria</span>
+                                        <span>@x.PorcentajeCategoria.ToString("0.##")%</span>
+                                    </div>
+
+                                    <div class="progress">
+                                        <div class="progress-bar"
+                                             role="progressbar"
+                                             style="width: @x.PorcentajeCategoria.ToString("0.##")%">
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="card-text">No hay ventas registradas</p>
+                        }
+                    </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Alertas de stock</h5>
-                    <p class="card-text">⚠️ Coca-Cola 600 ml: 4 unidades</p>
-                    <p class="card-text">⚠️ Arroz 1 kg: 2 unidades</p>
-                    <p class="card-text">⚠️ Papel higiénico: 1 unidad</p>
-                    <p class="card-text">⚠️ Jabón en polvo: agotado</p>
+
+                    <div class="scroll">
+                        @if (Model.ProductosSinStock.Any())
+                        {
+                            @foreach (var x in Model.ProductosSinStock)
+                            {
+                                <div class="alerta-stock">
+                                    <img src="/img/triangle-exclamation.svg" class="alerta-icono" alt="">
+
+                                    <div class="alerta-info">
+                                        <div class="alerta-producto">
+                                            @x.Producto.Nombre
+                                        </div>
+
+                                        <div class="alerta-tienda">
+                                            Tienda: @x.Tienda.Nombre
+                                        </div>
+                                    </div>
+
+                                    <div class="alerta-cantidad">
+                                        @x.Stock unidades
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="card-text text-center">No hay alertas de stock</p>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tercera fila -->
         <div class="filas">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Últimas ventas del día</h5>
-                    <p class="card-text">14:35 - Ticket #0186 - $124.50</p>
-                    <p class="card-text">14:29 - Ticket #0185 - $58.00</p>
-                    <p class="card-text">14:22 - Ticket #0184 - $340.90</p>
-                    <p class="card-text">14:15 - Ticket #0183 - $79.50</p>
-                    <p class="card-text">14:08 - Ticket #0182 - $212.00</p>
+
+                    <div class="scroll">
+                        @if (Model.UltimasVentasDelDia.Any())
+                        {
+                            @foreach (var x in Model.UltimasVentasDelDia)
+                            {
+                                <div class="venta-reciente">
+                                    <div class="venta-info">
+                                        <div class="venta-id">Venta #@x.VentaId</div>
+                                        <div class="venta-fecha">@x.Fecha.ToString("HH:mm")</div>
+                                    </div>
+
+                                    <div class="venta-total">
+                                        @x.Total.ToString("C")
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="card-text text-center">No hay ventas registradas hoy</p>
+                        }
+                    </div>
                 </div>
             </div>
         </div>

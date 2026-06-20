@@ -1,12 +1,10 @@
 @page
-@using Proyecto.Models
-@model TiendasModel
+@model ProveedoresModel
 @{
-    ViewData["Title"] = "Tiendas";
+    ViewData["Title"] = "Proveedores";
 }
 
-<div class="estilo-tiendas">
-
+<div class="estilo-inventario">
     <ul class="nav menu">
         <li class="nav-item">
             <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion">
@@ -17,7 +15,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Informacion de Usuario</h5>
+                            <h5 class="modal-title">Información de Usuario</h5>
 
                             <button type="button"
                                     class="btn-close"
@@ -30,7 +28,7 @@
                             @if (Model.UsuarioActual != null)
                             {
                                 <p>Nombre: @Model.UsuarioActual.Nombre</p>
-                                <p>Telefono: @Model.UsuarioActual.Telefono</p>
+                                <p>Teléfono: @Model.UsuarioActual.Telefono</p>
                                 <p>Rol: @Model.UsuarioActual.Rol</p>
                             }
                         </div>
@@ -43,7 +41,7 @@
                             </button>
 
                             <a asp-page="/Index" asp-page-handler="CerrarSesion" class="btn btn-primary">
-                                Cerrar sesion
+                                Cerrar sesión
                             </a>
                         </div>
                     </div>
@@ -58,13 +56,13 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" asp-page="/Inventario">
+            <a class="nav-link seleccionado" asp-page="/Inventario">
                 <img title="Inventario" class="img-menu" src="/img/barcode-solid.svg" alt="">
             </a>
         </li>
 
         <li class="nav-item">
-            <a class="nav-link seleccionado" asp-page="/Tiendas">
+            <a class="nav-link" asp-page="/Tiendas">
                 <img title="Tiendas" class="img-menu" src="/img/store.svg" alt="">
             </a>
         </li>
@@ -76,17 +74,23 @@
         </li>
     </ul>
 
-    <div class="tiendas">
+    <div class="inventario">
         <div class="encabezado">
-            <div class="fila">
-                <div class="titulo">Tiendas</div>
+            <div class="fila-titulo">
+                <div class="regreso">
+                    <a asp-page="/Inventario" class="btn-regreso">
+                        <img src="/img/arrow-left-solid.svg" alt="">
+                    </a>
+                </div>
+
+                <div class="titulo">Proveedores</div>
             </div>
 
             <div class="fila">
                 <form method="post" asp-page-handler="Busqueda" class="busqueda">
                     <input class="barra-busqueda"
                            type="text"
-                           placeholder="Buscar por nombre o direccion"
+                           placeholder="Buscar por nombre, teléfono o correo"
                            name="ParametroDeBusqueda"
                            value="@Model.ParametroDeBusqueda">
 
@@ -96,38 +100,49 @@
                 </form>
 
                 <div class="info-encabezado">
-                    <button class="elemento-info-encabezado" data-bs-toggle="modal" data-bs-target="#modal-tienda">
-                        Nueva tienda
+                    <button class="elemento-info-encabezado" data-bs-toggle="modal" data-bs-target="#modal-proveedor">
+                        Nuevo proveedor
                         <img class="btn-inventario" src="/img/agregar.svg" alt="">
                     </button>
 
-                    <div class="modal" tabindex="-1" id="modal-tienda" data-bs-backdrop="static">
+                    <div class="modal" tabindex="-1" id="modal-proveedor" data-bs-backdrop="static">
                         <div class="modal-dialog">
-                            <form method="post" asp-page-handler="Registrar">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">Ingrese la informacion de la tienda</h5>
-                                    </div>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Ingrese la información del proveedor</h5>
+                                </div>
 
+                                <form method="post" asp-page-handler="Agregar">
                                     <div class="modal-body">
                                         <div class="info-tienda">
-                                            Nombre de la tienda:
-                                            <input type="text"
-                                                   name="Nombre"
-                                                   id="nombre"
+                                            Nombre:
+                                            <input name="Nombre"
                                                    class="form-control"
                                                    maxlength="50"
                                                    required>
                                         </div>
 
                                         <div class="info-tienda">
-                                            Direccion de la tienda:
-                                            <input type="text"
-                                                   name="Direccion"
-                                                   id="direccion"
+                                            Teléfono:
+                                            <input type="tel"
+                                                   name="Telefono"
                                                    class="form-control"
-                                                   maxlength="50"
-                                                   required>
+                                                   required
+                                                   pattern="^\d{10}$"
+                                                   maxlength="10"
+                                                   title="El teléfono debe contener exactamente 10 dígitos numéricos."
+                                                   placeholder="10 dígitos">
+                                        </div>
+
+                                        <div class="info-tienda">
+                                            Correo:
+                                            <input name="Correo"
+                                                   type="email"
+                                                   maxlength="30"
+                                                   class="form-control"
+                                                   required
+                                                   pattern="^[^@@\s]+@@[^@@\s]+\.[^@@\s]+$"
+                                                   title="Ingresa un correo válido, por ejemplo: proveedor@correo.com">
                                         </div>
                                     </div>
 
@@ -137,11 +152,11 @@
                                         </button>
 
                                         <button type="submit" class="btn btn-primary">
-                                            Registrar nueva tienda
+                                            Registrar proveedor
                                         </button>
                                     </div>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -151,31 +166,29 @@
         <div class="tablas">
             <div class="contenedor-tabla">
                 <div class="tabla-productos orden-correcto">
-                    <table class="table table-dark table-striped tabla-menor-mayor" data-empty="No se encontraron tiendas">
+                    <table class="table table-dark table-striped tabla-menor-mayor" data-empty="No se encontraron proveedores">
                         <thead>
                             <tr>
                                 <th scope="col">Nombre</th>
-                                <th scope="col">Direccion</th>
-                                <th scope="col">Ventas de hoy</th>
-                                <th scope="col">Ganancias de hoy</th>
+                                <th scope="col">Teléfono</th>
+                                <th scope="col">Correo</th>
                                 <th scope="col">Estado</th>
-                                <th scope="col" class="no-ordenar"></th>
-                                <th scope="col" class="no-ordenar"></th>
-                                <th scope="col" class="no-ordenar"></th>
+                                <th scope="col" class="no-ordenar">
+                                    <span class="invisible">Editar</span>
+                                </th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            @for (int i = 0; i < Model.Tiendas.Count; i++)
+                            @foreach (var proveedor in Model.Proveedores)
                             {
                                 <tr>
-                                    <td>@Model.Tiendas[i].Nombre</td>
-                                    <td>@Model.Tiendas[i].Direccion</td>
-                                    <td>@Model.Tiendas[i].VentaTotal.ToString("C")</td>
-                                    <td>@Model.Tiendas[i].GananciaTotal.ToString("C")</td>
+                                    <td>@proveedor.Nombre</td>
+                                    <td>@proveedor.Telefono</td>
+                                    <td>@proveedor.Correo</td>
 
                                     <td>
-                                        @if (Model.Tiendas[i].Estado == true)
+                                        @if (proveedor.Activo == true)
                                         {
                                             @:<p class="text-success">Activo</p>
                                         }
@@ -186,81 +199,79 @@
                                     </td>
 
                                     <td>
-                                        <a asp-page-handler="AbrirInventario"
-                                           asp-route-id="@Model.Tiendas[i].TiendaId"
-                                           class="btn-detalles-tienda">
-                                            Inventario
-                                        </a>
-                                    </td>
-
-                                    <td>
-                                        <a asp-page-handler="AbrirEmpleados"
-                                           asp-route-id="@Model.Tiendas[i].TiendaId"
-                                           class="btn-detalles-tienda">
-                                            Empleados
-                                        </a>
-                                    </td>
-
-                                    <td>
-                                        <button type="button"
-                                                class="btn-detalles-tienda"
+                                        <button class="btn-detalles-tienda"
                                                 data-bs-toggle="modal"
-                                                data-bs-target="#modal-editar-@Model.Tiendas[i].TiendaId">
+                                                data-bs-target="#modal-editar-proveedor-@proveedor.ProveedorId">
                                             Editar
                                             <img class="btn-inventario" src="/img/editar.svg" alt="">
                                         </button>
 
-                                        <div class="modal" tabindex="-1" id="modal-editar-@Model.Tiendas[i].TiendaId" data-bs-backdrop="static">
+                                        <div class="modal" tabindex="-1" id="modal-editar-proveedor-@proveedor.ProveedorId"
+                                             data-bs-backdrop="static">
                                             <div class="modal-dialog">
-                                                <form method="post" asp-page-handler="Editar">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Información de la tienda</h5>
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Información del proveedor</h5>
 
-                                                            <button type="button"
-                                                                    class="btn-close"
-                                                                    data-bs-dismiss="modal"
-                                                                    aria-label="Cerrar">
-                                                            </button>
-                                                        </div>
+                                                        <button type="button"
+                                                                class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close">
+                                                        </button>
+                                                    </div>
+
+                                                    <form method="post" asp-page-handler="Editar">
+                                                        <input type="hidden" name="ProveedorId" value="@proveedor.ProveedorId">
 
                                                         <div class="modal-body">
-                                                            <input type="hidden" name="TiendaId" value="@Model.Tiendas[i].TiendaId">
-
                                                             <div class="info-tienda">
                                                                 Id:
-                                                                <input type="number"
-                                                                       value="@Model.Tiendas[i].TiendaId"
+                                                                <input type="text"
                                                                        class="form-control"
+                                                                       value="@proveedor.ProveedorId"
                                                                        disabled>
                                                             </div>
 
                                                             <div class="info-tienda">
                                                                 Nombre:
                                                                 <input type="text"
-                                                                       value="@Model.Tiendas[i].Nombre"
-                                                                       name="Nombre"
                                                                        class="form-control"
+                                                                       name="Nombre"
                                                                        maxlength="50"
+                                                                       value="@proveedor.Nombre"
                                                                        required>
                                                             </div>
 
                                                             <div class="info-tienda">
-                                                                Dirección:
-                                                                <input type="text"
-                                                                       value="@Model.Tiendas[i].Direccion"
-                                                                       name="Direccion"
+                                                                Teléfono:
+                                                                <input type="tel"
                                                                        class="form-control"
-                                                                       maxlength="50"
-                                                                       required>
+                                                                       name="Telefono"
+                                                                       value="@proveedor.Telefono"
+                                                                       required
+                                                                       pattern="^\d{10}$"
+                                                                       maxlength="10"
+                                                                       title="El teléfono debe contener exactamente 10 dígitos numéricos.">
+                                                            </div>
+
+                                                            <div class="info-tienda">
+                                                                Correo:
+                                                                <input name="Correo"
+                                                                       value="@proveedor.Correo"
+                                                                       type="email"
+                                                                       maxlength="30"
+                                                                       class="form-control"
+                                                                       required
+                                                                       pattern="^[^@@\s]+@@[^@@\s]+\.[^@@\s]+$"
+                                                                       title="Ingresa un correo válido, por ejemplo: proveedor@correo.com">
                                                             </div>
 
                                                             <div class="info-tienda">
                                                                 Estado:
-                                                                <select class="form-control form-select" name="Estado">
-                                                                    @if (Model.Tiendas[i].Estado == true)
+                                                                <select name="Activo" class="form-control form-select">
+                                                                    @if (proveedor.Activo == true)
                                                                     {
-                                                                        <option selected value="true" hidden>Activo</option>
+                                                                        <option value="true" selected hidden>Activo</option>
                                                                         <option value="false">Inactivo</option>
                                                                     }
                                                                     else
@@ -283,7 +294,7 @@
                                                                     class="btn btn-danger"
                                                                     data-bs-dismiss="modal"
                                                                     data-bs-toggle="modal"
-                                                                    data-bs-target="#modal-confirmar-eliminar-@Model.Tiendas[i].TiendaId">
+                                                                    data-bs-target="#modal-confirmar-eliminar-@proveedor.ProveedorId">
                                                                 Borrar
                                                             </button>
 
@@ -291,12 +302,12 @@
                                                                 Guardar cambios
                                                             </button>
                                                         </div>
-                                                    </div>
-                                                </form>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="modal fade" id="modal-confirmar-eliminar-@Model.Tiendas[i].TiendaId" tabindex="-1" data-bs-backdrop="static">
+                                        <div class="modal fade" id="modal-confirmar-eliminar-@proveedor.ProveedorId" tabindex="-1" data-bs-backdrop="static">
                                             <div class="modal-dialog modal-dialog-centered">
                                                 <div class="modal-content">
                                                     <form method="post" asp-page-handler="Eliminar">
@@ -311,19 +322,19 @@
                                                         </div>
 
                                                         <div class="modal-body">
-                                                            <input type="hidden" name="id" value="@Model.Tiendas[i].TiendaId">
+                                                            <input type="hidden" name="ProveedorId" value="@proveedor.ProveedorId">
 
                                                             <p>
-                                                                ¿Seguro que deseas eliminar esta tienda?
+                                                                ¿Seguro que deseas eliminar este proveedor?
                                                             </p>
 
                                                             <p>
-                                                                <strong>@Model.Tiendas[i].Nombre</strong>
+                                                                <strong>@proveedor.Nombre</strong>
                                                             </p>
 
                                                             <p class="text-danger mb-0">
-                                                                Si la tienda tiene empleados asignados, inventario, pedidos,
-                                                                cortes de caja o ventas, no se eliminará directamente.
+                                                                Si el proveedor tiene productos o pedidos registrados,
+                                                                no se eliminará directamente.
                                                             </p>
                                                         </div>
 
@@ -353,10 +364,10 @@
     </div>
 </div>
 
-@if (!string.IsNullOrWhiteSpace(Model.TiendaIdDesactivar))
+@if (!string.IsNullOrWhiteSpace(Model.ProveedorIdDesactivar))
 {
     <div class="modal fade"
-         id="modalDesactivarTienda"
+         id="modalDesactivarProveedor"
          tabindex="-1"
          data-bs-backdrop="static"
          data-auto-open="true">
@@ -365,7 +376,7 @@
             <div class="modal-content">
                 <form method="post" asp-page-handler="Desactivar">
                     <div class="modal-header bg-warning text-dark">
-                        <h5 class="modal-title">No se puede eliminar la tienda</h5>
+                        <h5 class="modal-title">No se puede eliminar el proveedor</h5>
 
                         <button type="button"
                                 class="btn-close"
@@ -375,10 +386,10 @@
                     </div>
 
                     <div class="modal-body">
-                        <input type="hidden" name="id" value="@Model.TiendaIdDesactivar">
+                        <input type="hidden" name="ProveedorId" value="@Model.ProveedorIdDesactivar">
 
                         <p>
-                            <strong>Tienda:</strong> @Model.NombreTiendaDesactivar
+                            <strong>Proveedor:</strong> @Model.NombreProveedorDesactivar
                         </p>
 
                         <p>
@@ -386,7 +397,7 @@
                         </p>
 
                         <p class="text-danger fw-bold mb-0">
-                            ¿Deseas desactivarla en su lugar?
+                            ¿Deseas desactivarlo en su lugar?
                         </p>
                     </div>
 

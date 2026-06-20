@@ -74,10 +74,6 @@ body {
   border-radius: 20px;
 }
 
-.card:hover {
-  background-color: rgb(100, 100, 100);
-  color: white;
-}
 
 /*cuentas de usuario existentes*/
 .cuentas {
@@ -138,6 +134,7 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
+  height: 100vh;
 }
 
 .filas {
@@ -145,6 +142,7 @@ body {
   flex: 1;
   margin: 15px;
   gap: 15px;
+  height: 30%;
 }
 
 .card {
@@ -155,11 +153,116 @@ body {
   background-color: rgb(52, 73, 94);
   color: white;
   min-height: 0;
+  overflow: hidden;
 }
 
 .card-title {
   font-weight: bold;
   text-align: center;
+}
+
+.card-body{
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-align: center;
+  justify-content: center;
+}
+
+.scroll{
+  overflow: auto;
+  padding-right: 5px;
+}
+
+.categoria-venta {
+  margin-bottom: 12px;
+}
+
+.categoria-info {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.progress {
+  height: 10px;
+  border-radius: 20px;
+}
+
+.alerta-icono {
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.alerta-stock {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: rgb(44, 62, 80);
+  border: 1px solid black;
+  border-radius: 12px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.alerta-info {
+  flex: 1;
+}
+
+.alerta-producto {
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.alerta-tienda {
+  font-size: 13px;
+}
+
+.alerta-cantidad {
+  background-color: rgb(192, 57, 43);
+  color: white;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 20px;
+}
+
+.venta-reciente {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(44, 62, 80);
+  border: 1px solid black;
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.venta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.venta-id {
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.venta-fecha {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.venta-total {
+  font-weight: bold;
+  background-color: rgb(39, 174, 96);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
 }
 
 /*Vista cajero*/
@@ -238,6 +341,49 @@ body {
   border-color: black;
   background-color: rgb(52, 73, 94);
   color: white;
+}
+
+.fila-cajero {
+  display: flex;
+  width: 100%;
+  gap: 2px;
+}
+
+.busqueda-cajero {
+  display: flex;
+  flex: 1;
+  height: 35px;
+  gap: 4px;
+  min-width: 0;
+}
+
+.contenedor-buscador-cajero {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.contenedor-buscador-cajero .barra-busqueda {
+  width: 100%;
+  height: 35px;
+  margin-left: 0;
+  border-radius: 10px;
+}
+
+.cajero-info {
+  flex: 1;
+  width: auto;
+  margin-right: 4px;
+}
+
+#lista-sugerencias {
+  z-index: 1050;
+  display: none;
+  width: 100%;
+  top: 100%;
+  left: 0;
+  max-height: 250px;
+  overflow-y: auto;
 }
 
 .busqueda {
@@ -360,6 +506,83 @@ body {
   margin-bottom: 0;
 }
 
+/*Ticket*/
+.ticket {
+  color: black;
+  text-align: left;
+  width: 100%;
+  font-family: monospace;
+}
+
+.ticket h4,
+.ticket p {
+  text-align: center;
+  margin: 2px 0;
+}
+
+.ticket-linea {
+  border-top: 1px dashed black;
+  margin: 8px 0;
+}
+
+.ticket-producto {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #area-ticket,
+  #area-ticket * {
+    visibility: visible;
+  }
+
+  #area-ticket {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 280px;
+    padding: 10px;
+  }
+
+  .no-imprimir {
+    display: none !important;
+  }
+}
+
+#codigo-venta {
+  cursor: pointer;
+}
+
+.btn-cancelar-venta {
+  background-color: rgb(192, 57, 43);
+  color: white;
+  border: 2px solid black;
+}
+
+.btn-cancelar-venta:hover {
+  background-color: rgb(169, 50, 38);
+}
+
+.btn-quitar-producto {
+  background-color: rgb(192, 57, 43);
+  color: white;
+  font-weight: bold;
+}
+
+.btn-quitar-producto:hover {
+  background-color: rgb(169, 50, 38);
+}
+
+.img-eliminar-producto {
+  height: 16px;
+  width: 16px;
+}
+
 /*inventario*/
 .estilo-inventario {
   display: flex;
@@ -430,8 +653,6 @@ body {
   height: 100vh;
 }
 
-
-
 .contenedor-tabla-historial {
   display: flex;
   overflow: hidden;
@@ -450,21 +671,43 @@ body {
   min-height: auto;
 }
 
+.producto-venta{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: solid rgb(200, 200, 200);
+  border-radius: 10px;
+  margin-bottom: 2px;
+}
+
 /*Quita el espacio de arriba de las tablas*/
 .dt-layout-row {
   margin: 0 !important;
 }
 
 /*Acomodar las tablas numericas correctamente*/
-.tabla-ventas thead th.dt-type-numeric .dt-column-header {
+.orden-correcto thead th.dt-type-numeric .dt-column-header {
   flex-direction: row !important;
 }
 
-.tabla-ventas thead th.dt-type-numeric {
+.orden-correcto thead th.dt-type-numeric {
   text-align: left !important;
 }
 
-.tabla-ventas tbody td.dt-type-numeric {
+.orden-correcto tbody td.dt-type-numeric {
+  text-align: center !important;
+}
+
+/* Acomodar columnas de fecha */
+.orden-correcto thead th.dt-type-date .dt-column-header {
+  flex-direction: row !important;
+}
+
+.orden-correcto thead th.dt-type-date {
+  text-align: left !important;
+}
+
+.orden-correcto tbody td.dt-type-date {
   text-align: center !important;
 }
 /*Cambiar el color de la barra de scroll*/
@@ -537,6 +780,19 @@ body {
   width: 100%;
   gap: 4px;
   color: black;
+  
+}
+
+.modal-body,
+.modal-body p,
+.modal-body strong {
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.modal-body p{
+  width: 100%;
 }
 
 .info-tienda{
@@ -696,4 +952,49 @@ form{
   display: flex;
   flex-direction: column;
   width: 100%;
+}
+
+.info-tienda .selector-tiendas {
+  width: 50%;
+  margin-left: auto;
+  border: 2px solid #dee2e6;
+  padding: 8px 12px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  border-radius: 20px;
+  background-color: white;
+  color: black;
+  text-align: left;
+  min-height: 42px;
+  max-height: 130px;
+  overflow-y: auto;
+}
+
+.selector-tiendas .opcion-tienda {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 3px 0;
+  padding: 3px 6px;
+  border-radius: 10px;
+}
+
+.selector-tiendas .opcion-tienda:hover {
+  background-color: rgb(236, 240, 243);
+}
+
+.selector-tiendas .form-check-input {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.selector-tiendas .form-check-label {
+  margin: 0;
+  width: 100%;
+  text-align: left;
+}
+
+.selector-tiendas p {
+  margin: 0;
+  text-align: center;
 }

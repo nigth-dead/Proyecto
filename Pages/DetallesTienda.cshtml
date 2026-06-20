@@ -27,7 +27,9 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary"
                                     data-bs-dismiss="modal">Aceptar</button>
-                            <a asp-page="/Index" class="btn btn-primary">Cerrar sesion</a>
+                            <a asp-page="/Index" asp-page-handler="CerrarSesion" class="btn btn-primary">
+                                Cerrar sesion
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -53,11 +55,8 @@
                     <a asp-page="/Tiendas" class="btn-regreso"><img src="/img/arrow-left-solid.svg" alt=""></a>
                 </div>
                 <div class="titulo">
-                    Inventario de la tienda:
-                    @if(Model.TiendaActual != null){
-                        @Model.TiendaActual.Nombre;
-                    }
-                    </div>
+                    Inventario de la tienda: @(Model.TiendaActual?.Nombre ?? "Sin tienda seleccionada")
+                </div>
             </div>
             <div class="fila">
                 <form method="post" asp-page-handler="Busqueda" class="busqueda">
@@ -65,8 +64,25 @@
                     <button type="submit" class="btn-busqueda-lupa"><img src="/img/lupa.png" alt="" class="img-lupa"></button>
                 </form>
                 <div class="info-encabezado">
-                    <a class="elemento-info-encabezado" asp-page="/Pedidos">Historial de pedidos<img class="btn-inventario" src="/img/historial.svg" alt=""></a>
-                    <button class="elemento-info-encabezado" data-bs-toggle="modal" data-bs-target="#modal-registrar-pedido">Registrar pedido<img class="btn-inventario"src="/img/agregar.svg" alt=""></button>
+                    <a class="elemento-info-encabezado" asp-page="/Pedidos">
+                        Historial de pedidos
+                        <img class="btn-inventario" src="/img/historial.svg" alt="">
+                    </a>
+
+                    @if (Model.TiendaActual != null)
+                    {
+                        <a class="elemento-info-encabezado"
+                           asp-page="/HistorialMovimiento"
+                           asp-route-TiendaId="@Model.TiendaActual.TiendaId">
+                            Historial de movimientos
+                            <img class="btn-inventario" src="/img/historial.svg" alt="">
+                        </a>
+                    }
+
+                    <button class="elemento-info-encabezado" data-bs-toggle="modal" data-bs-target="#modal-registrar-pedido">
+                        Registrar pedido
+                        <img class="btn-inventario" src="/img/agregar.svg" alt="">
+                    </button>
                     <div class="modal" tabindex="-1" id="modal-registrar-pedido" data-bs-backdrop="static">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -76,14 +92,34 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
+                                        @if (!Model.Proveedores.Any() || !Model.Productos.Any())
+                                        {
+                                            <div class="alert alert-warning">
+                                                Para registrar un pedido debe haber proveedores y productos activos.
+                                            </div>
+                                        }
                                         <!--Ingresar datos-->
                                         <div class="info-tienda">
-                                            Proveedor: <select name="ProveedorId" class="form-control form-select" id="proveedorId" required>
-                                                <option value="" selected disabled>Seleccione un proveedor</option>
-                                                @foreach(var proveedor in Model.Proveedores){
-                                                    <option value="@proveedor.ProveedorId">
-                                                        @proveedor.Nombre
-                                                    </option>
+                                            Proveedor:
+                                            <select name="ProveedorId"
+                                                    class="form-control form-select"
+                                                    id="proveedorId"
+                                                    required
+                                                    onchange="filtrarProductosPorProveedor()">
+                                                @if (!Model.Proveedores.Any())
+                                                {
+                                                    <option value="" selected disabled>No hay proveedores activos registrados</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="" selected disabled>Seleccione un proveedor</option>
+
+                                                    @foreach (var proveedor in Model.Proveedores)
+                                                    {
+                                                        <option value="@proveedor.ProveedorId">
+                                                            @proveedor.Nombre
+                                                        </option>
+                                                    }
                                                 }
                                             </select>
                                         </div>
@@ -94,13 +130,31 @@
                                             <div class="producto-pedido">
                                                 <div class="info-tienda">
                                                     Producto:
-                                                    <select name="ProductoIds" class="form-control form-select" required onchange="actualizarProductos()">
-                                                        <option value="" selected disabled>Seleccione un producto</option>
-                                                        @foreach (var producto in Model.Productos)
+                                                    <select name="ProductoIds"
+                                                            class="form-control form-select select-producto"
+                                                            required
+                                                            disabled
+                                                            onchange="actualizarProductos()">
+
+                                                        @if (!Model.Productos.Any())
                                                         {
-                                                            <option value="@producto.ProductoId">
-                                                                @producto.Nombre
-                                                            </option>
+                                                            <option value="" selected disabled>No hay productos activos registrados</option>
+                                                        }
+                                                        else if (!Model.Proveedores.Any())
+                                                        {
+                                                            <option value="" selected disabled>Primero registra un proveedor</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="" selected disabled>Primero seleccione un proveedor</option>
+
+                                                            @foreach (var producto in Model.Productos)
+                                                            {
+                                                                <option value="@producto.ProductoId"
+                                                                        data-proveedor-id="@producto.ProveedorId">
+                                                                    @producto.Nombre
+                                                                </option>
+                                                            }
                                                         }
                                                     </select>
                                                 </div>
@@ -127,14 +181,21 @@
                                         <div class="info-tienda">
                                             Total: <input type="text" class="form-control" id="montoTotal" readonly value="$0.00">
                                         </div>
-                                        <button type="button" class="btn btn-secondary" onclick="agregarProducto()">
+                                        <button type="button"
+                                                class="btn btn-secondary"
+                                                onclick="agregarProducto()"
+                                                @((!Model.Proveedores.Any() || !Model.Productos.Any()) ? "disabled" : "")>
                                             Agregar otro producto
                                         </button>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                                 data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-primary" >Registrar pedido</button>
+                                        <button type="submit"
+                                                class="btn btn-primary"
+                                                @((!Model.Proveedores.Any() || !Model.Productos.Any()) ? "disabled" : "")>
+                                            Registrar pedido
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -144,16 +205,18 @@
                 
             </div>
         </div>
-        <div class="detalles">
+        <div class="detalles orden-correcto">
             <div class="contenedor-tabla-detalles">
-                <table class="table table-dark table-striped tabla-dinamica">
+                <table class="table table-dark table-striped tabla-menor-mayor">
                     <thead>
                         <tr>
                             <th scope="col">Nombre</th>
                             <th scope="col">Codigo</th>
                             <th scope="col">Cantidad</th>
-                            <th scope="col">Precio</th>
+                            <th scope="col">Precio de venta</th>
+                            <th scope="col">Proveedor</th>
                             <th scope="col">Categoria</th>
+                            <th scope="col" class="no-ordenar ajustar"></th>
                             <th scope="col" class="no-ordenar ajustar"></th>
                         </tr>
                     </thead>
@@ -162,16 +225,57 @@
                             @foreach(var inventario in Model.Inventarios){
                             <tr>
                                 <td>@inventario.Producto.Nombre</td>
-                                <td>@inventario.Producto.Codigo <span class="invisible">codigo</span></td>
-                                <td>@inventario.Stock<span class="invisible">cantidad</span></td>
-                                <td>$@inventario.Producto.Precio<span class="invisible">precio</span></td>
+                                <td>@inventario.Producto.Codigo</td>
+                                <td>@inventario.Stock</td>
+                                <td>@((inventario.Producto.PrecioVenta ?? 0m).ToString("C"))</td>
+                                <td>@inventario.Producto.Proveedor?.Nombre</td>
                                 <td>
                                     @if(inventario.Producto.Categoria != null){
                                         @inventario.Producto.Categoria.Nombre
                                     }
                                 </td>
                                 <td>
-                                    <button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-reducir-stock-@inventario.InventarioId">Reducir Stock<img class="btn-inventario"src="/img/circle-minus.svg" alt=""></button>
+                                    <button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-aumentar-stock-@inventario.InventarioId">Aumentar Stock<img class="btn-inventario" src="/img/agregar.svg" alt=""></button>
+                                    <div class="modal" tabindex="-1" id="modal-aumentar-stock-@inventario.InventarioId" data-bs-backdrop="static">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <form method="post" id="AumentoDeStock" asp-page-handler="AumentarStock">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Aumento de stock</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <!--Ingresar datos-->
+                                                        <input type="hidden" name="InventarioId" value="@inventario.InventarioId">
+                                                        <div class="info-tienda">
+                                                            Id: <input type="text" class="form-control" disabled value="@inventario.Producto.ProductoId">
+                                                        </div>
+                                                        <div class="info-tienda">
+                                                            Nombre: <input type="text" class="form-control" disabled value="@inventario.Producto.Nombre">
+                                                        </div>
+                                                        <div class="info-tienda">
+                                                            Codigo: <input type="text" class="form-control" disabled value="@inventario.Producto.Codigo">
+                                                        </div>
+                                                        <div class="info-tienda">
+                                                            Cantidad: <input type="number" class="form-control" min="1" required name="Cantidad">
+                                                        </div>
+                                                        <div class="info-tienda">
+                                                            Razon del aumento: <input type="text" class="form-control" maxlength="100" required name="Motivo">
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn-detalles-tienda" data-bs-toggle="modal" data-bs-target="#modal-reducir-stock-@inventario.InventarioId">Reducir Stock<img class="btn-inventario" src="/img/circle-minus.svg" alt=""></button>
                                     <div class="modal" tabindex="-1" id="modal-reducir-stock-@inventario.InventarioId" data-bs-backdrop="static">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -185,19 +289,19 @@
                                                         <!--Ingresar datos-->
                                                         <input type="hidden" name="InventarioId" value="@inventario.InventarioId">
                                                         <div class="info-tienda">
-                                                            Id: <input type="text" class="form-control" id="productoId" disabled value="@inventario.Producto.ProductoId">
+                                                            Id: <input type="text" class="form-control" disabled value="@inventario.Producto.ProductoId">
                                                         </div>
                                                         <div class="info-tienda">
-                                                            Nombre: <input type="text" class="form-control" id="nombre" disabled value="@inventario.Producto.Nombre">
+                                                            Nombre: <input type="text" class="form-control" disabled value="@inventario.Producto.Nombre">
                                                         </div>
                                                         <div class="info-tienda">
-                                                            Codigo: <input type="text" class="form-control" id="codigo" disabled value="@inventario.Producto.Codigo">
+                                                            Codigo: <input type="text" class="form-control" disabled value="@inventario.Producto.Codigo">
                                                         </div>
                                                         <div class="info-tienda">
-                                                            Cantidad: <input type="number" class="form-control" id="categoria" min="1" max="@inventario.Stock" required name="Cantidad">
+                                                            Cantidad: <input type="number" class="form-control" min="1" max="@inventario.Stock" required name="Cantidad">
                                                         </div>
                                                         <div class="info-tienda">
-                                                            Razon de la reduccion: <input type="text" class="form-control" maxlength="100" id="precio" required name="Motivo">
+                                                            Razon de la reduccion: <input type="text" class="form-control" maxlength="100" required name="Motivo">
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">

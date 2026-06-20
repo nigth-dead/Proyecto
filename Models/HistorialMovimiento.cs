@@ -15,7 +15,7 @@ public partial class HistorialMovimiento
 
     public int Cantidad { get; set; }
 
-    public string? Motivo { get; set; }
+    public string Motivo { get; set; } = "";
 
     public DateTime Fecha { get; set; }
 

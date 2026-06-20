@@ -11,5 +11,7 @@ namespace Proyecto.Models
         public bool? Estado { get; set; }
 
         public decimal VentaTotal { get; set; }
+
+        public decimal GananciaTotal { get; set; }
     }
 }

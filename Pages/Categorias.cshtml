@@ -1,0 +1,318 @@
+@page
+@model CategoriasModel
+@{
+    ViewData["Title"] = "Categorías";
+}
+
+<div class="estilo-inventario">
+    <ul class="nav menu">
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="modal" data-bs-target="#modal-sesion">
+                <img class="cuenta-busqueda" src="/img/usuarioIcono2.png" alt="">
+            </button>
+            <div class="modal" tabindex="-1" id="modal-sesion">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Información de Usuario</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @if (Model.UsuarioActual != null)
+                            {
+                                <p>Nombre: @Model.UsuarioActual.Nombre</p>
+                                <p>Teléfono: @Model.UsuarioActual.Telefono</p>
+                                <p>Rol: @Model.UsuarioActual.Rol</p>
+                            }
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aceptar</button>
+                            <a asp-page="/Index" asp-page-handler="CerrarSesion" class="btn btn-primary">
+                                Cerrar sesión
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Administrador">
+                <img title="Dashboard" class="img-menu" src="/img/dashboard.svg" alt="">
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link seleccionado" asp-page="/Inventario">
+                <img title="Inventario" class="img-menu" src="/img/barcode-solid.svg" alt="">
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Tiendas">
+                <img title="Tiendas" class="img-menu" src="/img/store.svg" alt="">
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-page="/Historial">
+                <img title="Historial" class="img-menu" src="/img/historial.svg" alt="">
+            </a>
+        </li>
+    </ul>
+    <div class="inventario">
+        <div class="encabezado">
+            <div class="fila-titulo">
+                <div class="regreso">
+                    <a asp-page="/Inventario" class="btn-regreso">
+                        <img src="/img/arrow-left-solid.svg" alt="">
+                    </a>
+                </div>
+                <div class="titulo">Categorías</div>
+            </div>
+            <div class="fila">
+                <form method="post" asp-page-handler="Busqueda" class="busqueda">
+                    <input class="barra-busqueda" type="text" placeholder="Buscar por nombre o descripción"
+                        name="ParametroDeBusqueda" value="@Model.ParametroDeBusqueda">
+                    <button type="submit" class="btn-busqueda-lupa">
+                        <img src="/img/lupa.png" alt="" class="img-lupa">
+                    </button>
+                </form>
+                <div class="info-encabezado">
+                    <button class="elemento-info-encabezado" data-bs-toggle="modal" data-bs-target="#modal-categoria">
+                        Nueva categoría
+                        <img class="btn-inventario" src="/img/agregar.svg" alt="">
+                    </button>
+                    <div class="modal" tabindex="-1" id="modal-categoria" data-bs-backdrop="static">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Ingrese la información de la categoría</h5>
+                                </div>
+                                <form method="post" asp-page-handler="Agregar">
+                                    <div class="modal-body">
+                                        <div class="info-tienda">
+                                            Nombre:
+                                            <input name="Nombre" class="form-control" maxlength="50" required>
+                                        </div>
+                                        <div class="info-tienda">
+                                            Descripción:
+                                            <input name="Descripcion" class="form-control" maxlength="100" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Cancelar
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">
+                                            Registrar categoría
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tablas">
+            <div class="contenedor-tabla">
+                <div class="tabla-productos orden-correcto">
+                    <table class="table table-dark table-striped tabla-menor-mayor">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nombre</th>
+                                <th scope="col">Descripción</th>
+                                <th scope="col">Estado</th>
+                                <th scope="col" class="no-ordenar">
+                                    <span class="invisible">Editar</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var categoria in Model.Categorias)
+                            {
+                                <tr>
+                                    <td>@categoria.Nombre</td>
+                                    <td>@categoria.Descripcion</td>
+                                    <td>
+                                        @if (categoria.Activo == true)
+                                        {
+                                            @:<p class="text-success">Activo</p>
+                                        }
+                                        else
+                                        {
+                                            @:<p class="text-danger">Inactivo</p>
+                                        }
+                                    </td>
+                                    <td>
+                                        <button class="btn-detalles-tienda" data-bs-toggle="modal"
+                                                data-bs-target="#modal-editar-categoria-@categoria.CategoriaId">
+                                            Editar
+                                            <img class="btn-inventario" src="/img/editar.svg" alt="">
+                                        </button>
+                                        <div class="modal" tabindex="-1" id="modal-editar-categoria-@categoria.CategoriaId"
+                                            data-bs-backdrop="static">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Información de la categoría</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                aria-label="Close">
+                                                        </button>
+                                                    </div>
+                                                    <form method="post" asp-page-handler="Editar">
+                                                        <input type="hidden" name="CategoriaId"
+                                                            value="@categoria.CategoriaId">
+                                                        <div class="modal-body">
+                                                            <div class="info-tienda">
+                                                                Id:
+                                                                <input type="text" class="form-control"
+                                                                    value="@categoria.CategoriaId" disabled>
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Nombre:
+                                                                <input type="text" class="form-control" name="Nombre"
+                                                                    maxlength="50" value="@categoria.Nombre" required>
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Descripción:
+                                                                <input type="text" class="form-control" name="Descripcion"
+                                                                    maxlength="100" value="@categoria.Descripcion" required>
+                                                            </div>
+                                                            <div class="info-tienda">
+                                                                Estado:
+                                                                <select name="Activo" class="form-control form-select">
+                                                                    @if (categoria.Activo == true)
+                                                                    {
+                                                                        <option value="true" selected hidden>Activo</option>
+                                                                        <option value="false">Inactivo</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="true">Activo</option>
+                                                                        <option value="false" selected hidden>Inactivo</option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">
+                                                                Cancelar
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger"
+                                                                    data-bs-dismiss="modal" data-bs-toggle="modal"
+                                                                    data-bs-target="#modal-confirmar-eliminar-@categoria.CategoriaId">
+                                                                Borrar
+                                                            </button>
+                                                            <button type="submit" class="btn btn-primary">
+                                                                Guardar cambios
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="modal-confirmar-eliminar-@categoria.CategoriaId"
+                                            tabindex="-1" data-bs-backdrop="static">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <form method="post" asp-page-handler="Eliminar">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Confirmar eliminación</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                                    aria-label="Cerrar">
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <input type="hidden" name="CategoriaId"
+                                                                value="@categoria.CategoriaId" />
+                                                            <p>
+                                                                ¿Seguro que deseas eliminar esta categoría?
+                                                            </p>
+                                                            <p>
+                                                                <strong>@categoria.Nombre</strong>
+                                                            </p>
+                                                            <p class="text-danger mb-0">
+                                                                Si la categoría tiene productos registrados, no se eliminará
+                                                                directamente.
+                                                            </p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                    data-bs-dismiss="modal">
+                                                                Cancelar
+                                                            </button>
+                                                            <button type="submit" class="btn btn-danger">
+                                                                Sí, borrar
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@if (!string.IsNullOrWhiteSpace(Model.CategoriaIdDesactivar))
+{
+    <div class="modal fade" id="modalDesactivarCategoria" tabindex="-1" data-bs-backdrop="static" data-auto-open="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form method="post" asp-page-handler="Desactivar">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title">No se puede eliminar la categoría</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar">
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="CategoriaId" value="@Model.CategoriaIdDesactivar">
+                        <p>
+                            <strong>Categoría:</strong> @Model.NombreCategoriaDesactivar
+                        </p>
+                        <p>
+                            @Model.MensajeDesactivar
+                        </p>
+                        <p class="text-danger fw-bold mb-0">
+                            ¿Deseas desactivarla en su lugar?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-danger">
+                            Sí, desactivar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+@if (!string.IsNullOrWhiteSpace(Model.Mensaje))
+{
+    <div class="modal fade" id="modalMensaje" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-@Model.TipoMensaje text-white">
+                    <h5 class="modal-title">@Model.TituloMensaje</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">@Model.Mensaje</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
