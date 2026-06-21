@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Proyecto.Models;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +25,19 @@ builder.Services.AddDbContext<punto_de_ventaContext>(options =>
     options.UseMySQL(connectionString);
 });
 
+var culturaMexico = new CultureInfo("es-MX");
+
+CultureInfo.DefaultThreadCurrentCulture = culturaMexico;
+CultureInfo.DefaultThreadCurrentUICulture = culturaMexico;
+
 var app = builder.Build();
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(culturaMexico),
+    SupportedCultures = new[] { culturaMexico },
+    SupportedUICultures = new[] { culturaMexico }
+});
 
 // Configure HTTP pipeline
 if (!app.Environment.IsDevelopment())
