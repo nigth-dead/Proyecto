@@ -74,29 +74,6 @@ body {
   border-radius: 20px;
 }
 
-
-/*cuentas de usuario existentes*/
-.cuentas {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-end;
-  height: 100vh;
-  gap: 10px;
-}
-
-.cuenta {
-  padding: 10px;
-  width: 150px;
-  border-color: black;
-  border-style: solid;
-  border-radius: 15px;
-  text-align: left;
-  font-weight: bold;
-  background-color: rgb(52, 73, 94);
-  color: white;
-}
-
 /*vista de administrador*/
 .estilo-administrador {
   display: flex;

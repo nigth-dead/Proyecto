@@ -6,10 +6,8 @@
 
 
 <!--Login-->
-<div class="estilo-login row">
-    <div class="col"></div>
-
-    <div class="estilo-login col">
+<div class="estilo-login">
+    <div class="estilo-login">
         @if (Model.MostrarSeleccionTienda)
         {
             <form method="post" asp-page-handler="SeleccionarTienda" class="login">
@@ -72,14 +70,5 @@
                 }
             </form>
         }
-    </div>
-
-    <!--seleccion de usuarios registrados-->
-    <div class="col">
-        <div class="cuentas">
-            <button class="cuenta" onclick="seleccionarUsuario('Edgar')">Edgar</button>
-            <button class="cuenta" onclick="seleccionarUsuario('Emmanuel')">Emmanuel</button>
-            <button class="cuenta" onclick="seleccionarUsuario('Juan')">Juan</button>
-        </div>
     </div>
 </div>

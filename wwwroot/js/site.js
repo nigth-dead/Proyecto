@@ -64,14 +64,6 @@ $(document).ready(function () {
     });
 });
 
-function seleccionarUsuario(nombre) {
-    document.getElementById("Nombre").value = nombre;
-}
-
-function seleccionarUsuario(nombre) {
-    document.getElementById("Nombre").value = nombre;
-}
-
 
 // Write your JavaScript code.
 function seleccionarUsuario(nombre) {
